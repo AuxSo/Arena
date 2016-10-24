@@ -19,7 +19,8 @@
 
     <footer>
         <p>Copyright </p>
-       <p> Meilleur combattant : <?php pr($bestFighter);?></p>
+       <!--<p> Meilleur combattant : <?php pr($bestFighter);?></p>-->
+       <!-- <p> Event : <?php pr($Event);?></p>-->
     </footer>
 
     </body>

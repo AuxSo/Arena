@@ -14,10 +14,9 @@ class ArenasController  extends AppController
     {
         $this->set('myname', "Romain Baticle");
 
-        $this->loadModel('Fighters');
-        $fighterlist=$this->Fighters->find('all');
 
-        $this->set('bestFighter',$this->Fighters->getBestFighter());
+
+
 
     }
     public function login()
@@ -26,6 +25,10 @@ class ArenasController  extends AppController
     }
     public function fighter()
     {
+        $this->loadModel('Fighters');
+        $fighterlist=$this->Fighters->find('all');
+
+        $this->set('bestFighter',$this->Fighters->getBestFighter());
 
     }
     public function sight()
@@ -34,6 +37,8 @@ class ArenasController  extends AppController
     }
     public function diary()
     {
+        $this->loadModel('Events');
+        $this->set('Event',$this->Events->getEvent());
 
     }
 }
