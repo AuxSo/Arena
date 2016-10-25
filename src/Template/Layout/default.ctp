@@ -58,6 +58,8 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         <?= $this->fetch('content') ?>
     </div>
     <footer>
+        Groupe : Gr1-03-AG
+        Membres : Baticle, Bourhim, Gauthier, Thouary
     </footer>
 </body>
 </html>
