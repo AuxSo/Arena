@@ -42,6 +42,7 @@ class ArenasController  extends AppController
     public function diary()
     {
         $this->loadModel('Events');
+
         $this->set('Event',$this->Events->getEvent());
 
     }
