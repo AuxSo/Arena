@@ -1,0 +1,16 @@
+/* Main stylesheet */
+
+table {
+    width: auto;
+    margin : 40px auto;
+}
+
+tr {
+    height: 20px;
+}
+
+td {
+    width: 50px;
+    height: 50px;
+    border : solid 1px #000000;
+}

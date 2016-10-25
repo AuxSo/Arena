@@ -39,7 +39,16 @@ class ArenasController  extends AppController
     }
     public function sight()
     {
+        $this->set('arenaWidth',15);
+        $this->set('arenaHeight',10);
 
+
+        $this->loadModel('Fighters');
+        //$this->set('fighters',$this->Fighters->getFighters());
+
+
+        $this->loadModel('Tools');
+        $this->set('tools',$this->Tools->getTools());
     }
     public function diary()
     {
