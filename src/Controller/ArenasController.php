@@ -28,6 +28,10 @@ class ArenasController  extends AppController
         $this->loadModel('Fighters');
         $fighterlist=$this->Fighters->find('all');
 
+
+        $this->loadModel('Tools');
+        $this->set('tools',$this->Tools->getTools());
+
         $this->set('bestFighter',$this->Fighters->getBestFighter());
 
     }
