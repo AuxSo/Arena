@@ -33,6 +33,8 @@ class ArenasController  extends AppController
         $this->set('tools',$this->Tools->getTools());
 
         $this->set('bestFighter',$this->Fighters->getBestFighter());
+        $this->set('myFighterById',$this->Fighters->getFighterById(2));
+        $this->set('myFightersByPlayer',$this->Fighters->getFightersByPlayer('545f827c-576c-4dc5-ab6d-27c33186dc3e'));
 
     }
     public function sight()

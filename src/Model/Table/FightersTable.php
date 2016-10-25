@@ -20,6 +20,45 @@ class FightersTable extends Table
     }
 
     /**
+     * Fonction qui retourne le fighter qui a pour ID la variable récupérée en paramètre
+     * @param $id
+     * @return array
+     *
+     */
+    public function getFighterById($id)
+    {
+        $fighter=$this->find('all')->order('id desc');
+        $tabFighters = $fighter->toArray();
+        foreach($tabFighters as $key => $myFighter)
+        {
+            if($myFighter['id'] == $id)
+            {
+                $fighterById[]=$myFighter;
+            }
+        }
+        return $fighterById;
+    }
+
+    /**
+     * Fonction qui retourne les fighters du player qui a pour Id la variable récupérée en paramètre
+     * @param $playerId
+     * @return array
+     */
+    public function getFightersByPlayer($playerId)
+    {
+        $fighter=$this->find('all')->order('player_id desc');
+        $tabFighters = $fighter->toArray();
+        foreach($tabFighters as $key => $myFighter)
+        {
+            if($myFighter['player_id'] == $playerId)
+            {
+                $fightersByPlayer[]=$myFighter;
+            }
+        }
+        return $fightersByPlayer;
+    }
+
+    /**
      *
      */
     public function getBestFighter()
