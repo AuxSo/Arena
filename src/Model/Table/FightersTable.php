@@ -121,4 +121,5 @@ class FightersTable extends Table
         $tools->save($tool);
         $this->save($fighter);
     }
+
 }
