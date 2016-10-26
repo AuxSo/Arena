@@ -26,3 +26,5 @@
     </body>
 
 </html>
+
+<?php $this->assign('title','Accueil');?>

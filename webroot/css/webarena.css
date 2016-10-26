@@ -14,3 +14,12 @@ td {
     height: 50px;
     border : solid 1px #000000;
 }
+
+section {
+    border : solid 1px #000000;
+    margin : 10px;
+}
+
+dt, dd{
+    margin-left:20px;
+}
