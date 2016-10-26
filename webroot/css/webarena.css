@@ -29,14 +29,14 @@ dt, dd {
 }
 
 #fightersNav li {
-    display : inline-block;
-    margin : 5px;
-    padding : 0 10px;
+    display: inline-block;
+    margin: 5px;
+    padding: 0 10px;
     border: solid 1px #000000;
 }
 
 .selected {
-    background-color : #1cc7ff;
+    background-color: #1cc7ff;
 }
 
 .hidden {

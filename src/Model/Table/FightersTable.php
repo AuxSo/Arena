@@ -28,13 +28,11 @@ class FightersTable extends Table
      */
     public function getFighterById($id)
     {
-        $fighter=$this->find('all')->order('id desc');
+        $fighter = $this->find('all')->order('id desc');
         $tabFighters = $fighter->toArray();
-        foreach($tabFighters as $key => $myFighter)
-        {
-            if($myFighter['id'] == $id)
-            {
-                $fighterById[]=$myFighter;
+        foreach ($tabFighters as $key => $myFighter) {
+            if ($myFighter['id'] == $id) {
+                $fighterById[] = $myFighter;
             }
         }
         return $fighterById;
@@ -47,13 +45,11 @@ class FightersTable extends Table
      */
     public function getFightersByPlayer($playerId)
     {
-        $fighter=$this->find('all')->order('player_id desc');
+        $fighter = $this->find('all')->order('player_id desc');
         $tabFighters = $fighter->toArray();
-        foreach($tabFighters as $key => $myFighter)
-        {
-            if($myFighter['player_id'] == $playerId)
-            {
-                $fightersByPlayer[]=$myFighter;
+        foreach ($tabFighters as $key => $myFighter) {
+            if ($myFighter['player_id'] == $playerId) {
+                $fightersByPlayer[] = $myFighter;
             }
         }
         return $fightersByPlayer;
@@ -64,32 +60,30 @@ class FightersTable extends Table
      */
     public function getBestFighter()
     {
-        $fighter=$this->find('all')->order('level desc');
+        $fighter = $this->find('all')->order('level desc');
         $tabFighters = $fighter->toArray();
         $lvlMax = $tabFighters[0]['level'];
-        foreach($tabFighters as $key => $myFighter)
-        {
-            if($myFighter['level'] == $lvlMax)
-            {
-                $bestFighters[]=$myFighter;
+        foreach ($tabFighters as $key => $myFighter) {
+            if ($myFighter['level'] == $lvlMax) {
+                $bestFighters[] = $myFighter;
             }
         }
         return $bestFighters;
     }
+
     public function get_index($id)
     {
-        $fighter=$this->find('all')->order('id desc');
+        $fighter = $this->find('all')->order('id desc');
         $tabFighters = $fighter->toArray();
 
-        foreach ($tabFighters as $key => $myFighter)
-        {
-            if($myFighter['id'] == $id)
-            {
+        foreach ($tabFighters as $key => $myFighter) {
+            if ($myFighter['id'] == $id) {
                 $i++;
             }
         }
         return $i;
     }
+
     //FAIRE FONCTION GET_INDEX pour récupérer l'index du fighter en fonction de son id dans le tableau
     public function moveFighter($id, $dep_x, $dep_y)
     {
@@ -114,13 +108,13 @@ class FightersTable extends Table
 
         switch ($ToolType) {
             case 'Health':
-                $fighter->skill_health+=$ToolBonus;
+                $fighter->skill_health += $ToolBonus;
                 break;
             case 'Strength':
-                $fighter->skill_strength+=$ToolBonus;
+                $fighter->skill_strength += $ToolBonus;
                 break;
             case 'Sight':
-                $fighter->skill_sight+=$ToolBonus;
+                $fighter->skill_sight += $ToolBonus;
                 break;
         }
 

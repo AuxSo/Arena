@@ -1,5 +1,6 @@
 <?php
 namespace App\Controller;
+
 use App\Controller\AppController;
 use App\Model\Table\FightersTable;
 
@@ -8,42 +9,42 @@ use App\Model\Table\FightersTable;
  * User personal interface
  *
  */
-class ArenasController  extends AppController
+class ArenasController extends AppController
 {
     public function index()
     {
         $this->set('myname', "Romain Baticle");
 
 
-
-
-
     }
+
     public function login()
     {
 
     }
+
     public function fighter()
     {
         $this->loadModel('Fighters');
-        $fighterlist=$this->Fighters->find('all');
+        $fighterlist = $this->Fighters->find('all');
 
 
         $this->loadModel('Tools');
-        $this->set('tools',$this->Tools->getTools());
+        $this->set('tools', $this->Tools->getTools());
 
-        $this->set('bestFighter',$this->Fighters->getBestFighter());
-        $this->set('myFighterById',$this->Fighters->getFighterById(2));
-        $this->set('myFightersByPlayer',$this->Fighters->getFightersByPlayer('545f827c-576c-4dc5-ab6d-27c33186dc3e'));
+        $this->set('bestFighter', $this->Fighters->getBestFighter());
+        $this->set('myFighterById', $this->Fighters->getFighterById(2));
+        $this->set('myFightersByPlayer', $this->Fighters->getFightersByPlayer('545f827c-576c-4dc5-ab6d-27c33186dc3e'));
 
         $this->Fighters->moveFighter(2, 3, 5);
-        $this->Fighters->FighterTakeObject(1,1);
+        $this->Fighters->FighterTakeObject(1, 1);
 
     }
+
     public function sight()
     {
-        $this->set('arenaWidth',15);
-        $this->set('arenaHeight',10);
+        $this->set('arenaWidth', 15);
+        $this->set('arenaHeight', 10);
 
 
         $this->loadModel('Fighters');
@@ -51,13 +52,14 @@ class ArenasController  extends AppController
 
 
         $this->loadModel('Tools');
-        $this->set('tools',$this->Tools->getTools());
+        $this->set('tools', $this->Tools->getTools());
     }
+
     public function diary()
     {
         $this->loadModel('Events');
 
-        $this->set('Event',$this->Events->getRecentEvents());
+        $this->set('Event', $this->Events->getRecentEvents());
 
     }
 }

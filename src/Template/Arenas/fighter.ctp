@@ -1,24 +1,24 @@
-<header> Combattant actuel : <?php echo($myFighterById[0]['name']); ?> </header>
+<header> Your fighters </header>
 <nav id="fightersNav">
     <ul>
-    <?php
-    $addedClass = 'selected';
-    foreach ($myFightersByPlayer as $index => $fighter) {
-        ?>
-         <li class="tab <?=$addedClass?>" name="<?= $index ?>">
-             <?=$index?>
-         </li>
         <?php
-        $addedClass = '';
-    }
-    ?>
+        $addedClass = 'selected';
+        foreach ($myFightersByPlayer as $index => $fighter) {
+            ?>
+            <li class="tab <?= $addedClass ?>" name="<?= $index ?>">
+                <?= $index + 1?>
+            </li>
+            <?php
+            $addedClass = '';
+        }
+        ?>
 
     </ul>
 </nav>
 <?php
 foreach ($myFightersByPlayer as $index => $fighter) {
     ?>
-    <section class="fighterCard <?=$addedClass?>" id="<?= $index ?>">
+    <section class="fighterCard <?= $addedClass ?>" id="<?= $index ?>">
         <h3>Fighter : <?= $fighter->name ?></h3>
         <article>
             <h4>Infos :</h4>
