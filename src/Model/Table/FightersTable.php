@@ -2,6 +2,7 @@
 namespace App\Model\Table;
 
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 
 /**
  * Created by PhpStorm.
@@ -79,7 +80,7 @@ class FightersTable extends Table
     {
         $fighter=$this->find('all')->order('id desc');
         $tabFighters = $fighter->toArray();
-        $i=0;
+
         foreach ($tabFighters as $key => $myFighter)
         {
             if($myFighter['id'] == $id)
@@ -98,5 +99,32 @@ class FightersTable extends Table
         $fighters->coordinate_y = $dep_y;
         $this->save($fighters);
 
+    }
+
+    public function FighterTakeObject($idFighter, $idTool)
+    {
+        $fighter = $this->get($idFighter);
+        $tools = TableRegistry::get('Tools');
+        $tool = $tools->get($idTool);
+
+        $tool->fighter_id = $idFighter; // On assigne à l'objet l'id du fighter qui le prend.
+        $ToolType = $tool->type;
+        $ToolBonus = $tool->bonus;
+
+
+        switch ($ToolType) {
+            case 'Health':
+                $fighter->skill_health+=$ToolBonus;
+                break;
+            case 'Strength':
+                $fighter->skill_strength+=$ToolBonus;
+                break;
+            case 'Sight':
+                $fighter->skill_sight+=$ToolBonus;
+                break;
+        }
+
+        $tools->save($tool);
+        $this->save($fighter);
     }
 }
