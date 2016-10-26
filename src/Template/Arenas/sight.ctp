@@ -7,12 +7,17 @@
         {
             ?> <td> <?php
 
+            if(in_array("Fighter", $matrice[$i][$j]))
+                echo("F");
+            if(in_array("Tool", $matrice[$i][$j]))
+                echo("T");
 
             ?> </td> <?php
         }
         ?> </tr> <?php
     }
 
+    //pr($tabArenaElements);
 
 ?>
 </table>

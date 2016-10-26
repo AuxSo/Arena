@@ -46,16 +46,16 @@ class ArenasController  extends AppController
     }
     public function sight()
     {
-        $this->set('arenaWidth',15);
-        $this->set('arenaHeight',10);
-
-
         $this->loadModel('Fighters');
-        //$this->set('fighters',$this->Fighters->getFighters());
 
+        //récupère les constantes de taille du terrain$this->Fighters->ARENA_HEIGHT
+        $this->set('arenaWidth', 15);
+        $this->set('arenaHeight', 10);
 
-        $this->loadModel('Tools');
-        $this->set('tools',$this->Tools->getTools());
+        //stock tous les elements à afficher dans la variable tabArenaElements (DEBUG)
+        $this->set('tabArenaElements', $this->Fighters->getArenaElements());
+        //stock dans une matrice les elements à afficher dans la vue
+        $this->set('matrice', $this->Fighters->getMatrice());
     }
     public function diary()
     {

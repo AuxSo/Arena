@@ -22,7 +22,7 @@ class EventsTable extends Table
     /**
      *
      */
-    public function getEvent()
+    public function getRecentEvents()
     {
         $event = $this->find('all');
         $tabEvents = $event->toArray();
