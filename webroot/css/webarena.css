@@ -2,7 +2,7 @@
 
 table {
     width: auto;
-    margin : 40px auto;
+    margin: 40px auto;
 }
 
 tr {
@@ -12,14 +12,33 @@ tr {
 td {
     width: 50px;
     height: 50px;
-    border : solid 1px #000000;
+    border: solid 1px #000000;
 }
 
 section {
-    border : solid 1px #000000;
-    margin : 10px;
+    border: solid 1px #000000;
+    margin: 10px;
 }
 
-dt, dd{
-    margin-left:20px;
+dt, dd {
+    margin-left: 20px;
+}
+
+#fightersNav ul {
+    list-style: none;
+}
+
+#fightersNav li {
+    display : inline-block;
+    margin : 5px;
+    padding : 0 10px;
+    border: solid 1px #000000;
+}
+
+.selected {
+    background-color : #1cc7ff;
+}
+
+.hidden {
+    display: none;
 }

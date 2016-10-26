@@ -1,26 +1,48 @@
 <header> Combattant actuel : <?php echo($myFighterById[0]['name']); ?> </header>
+<nav id="fightersNav">
+    <ul>
+    <?php
+    $addedClass = 'selected';
+    foreach ($myFightersByPlayer as $index => $fighter) {
+        ?>
+         <li class="tab <?=$addedClass?>" name="<?= $index ?>">
+             <?=$index?>
+         </li>
+        <?php
+        $addedClass = '';
+    }
+    ?>
+
+    </ul>
+</nav>
 <?php
-foreach ($myFightersByPlayer as $index => $fighter){
-?>
-<section class="fighterCard" id="<?=$index?>">
-    <h3>Fighter : <?=$fighter->name?></h3>
-    <article>
-        <h4>Infos :</h4>
-        <dl>
-            <dt>Level :</dt><dd><?=$fighter->level?></dd>
-            <dt>Experience :</dt><dd><?=$fighter->xp?></dd>
-        </dl>
-    </article>
-    <article>
-        <h4>Stats :</h4>
-        <dl>
-            <dt>Health :</dt><dd><?=$fighter->current_health?>/<?=$fighter->skill_health?></dd>
-            <dt>Strength :</dt><dd><?=$fighter->skill_strength?></dd>
-            <dt>Sight :</dt><dd><?=$fighter->skill_sight?></dd>
-        </dl>
-    </article>
-</section>
-<?php
+foreach ($myFightersByPlayer as $index => $fighter) {
+    ?>
+    <section class="fighterCard <?=$addedClass?>" id="<?= $index ?>">
+        <h3>Fighter : <?= $fighter->name ?></h3>
+        <article>
+            <h4>Infos :</h4>
+            <dl>
+                <dt>Level :</dt>
+                <dd><?= $fighter->level ?></dd>
+                <dt>Experience :</dt>
+                <dd><?= $fighter->xp ?></dd>
+            </dl>
+        </article>
+        <article>
+            <h4>Stats :</h4>
+            <dl>
+                <dt>Health :</dt>
+                <dd><?= $fighter->current_health ?>/<?= $fighter->skill_health ?></dd>
+                <dt>Strength :</dt>
+                <dd><?= $fighter->skill_strength ?></dd>
+                <dt>Sight :</dt>
+                <dd><?= $fighter->skill_sight ?></dd>
+            </dl>
+        </article>
+    </section>
+    <?php
+    $addedClass = "hidden";
 }
 ?>
 
