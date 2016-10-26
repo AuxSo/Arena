@@ -21,14 +21,13 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        <?= $cakeDescription ?>:
         <?= $this->fetch('title') ?>
     </title>
     <?= $this->Html->meta('icon') ?>
 
     <?= $this->Html->css('base.css') ?>
     <?= $this->Html->css('cake.css') ?>
-    <?= $this->Html->css('global.css') ?>
+    <?= $this->Html->css('webarena.css') ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
@@ -44,11 +43,11 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         </ul>
         <div class="top-bar-section">
             <ul class="right">
-                <li> <a href="index">Accueil</a></li>
-                <li> <a href="login">Connexion</a></li>
-                <li> <a href="fighter">Combattant</a></li>
-                <li> <a href="sight">Vision</a></li>
-                <li> <a href="diary">Journal</a></li>
+                <li> <?= $this->Html->link('Accueil',['controller'=> 'Arenas', 'action'=>'index'])?></li>
+                <li> <?= $this->Html->link('Log in',['controller'=> 'Arenas', 'action'=>'login'])?></li>
+                <li> <?= $this->Html->link('Fighters',['controller'=> 'Arenas', 'action'=>'fighter'])?></li>
+                <li> <?= $this->Html->link('Sight',['controller'=> 'Arenas', 'action'=>'sight'])?></li>
+                <li> <?= $this->Html->link('Diary',['controller'=> 'Arenas', 'action'=>'diary'])?></li>
                 <!--<li><a target="_blank" href="http://book.cakephp.org/3.0/">Documentation</a></li>
                 <li><a target="_blank" href="http://api.cakephp.org/3.0/">API</a></li>-->
             </ul>
