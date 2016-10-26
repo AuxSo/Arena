@@ -1,3 +1,4 @@
+<?= $this->assign('title','Your fighters') ?>
 <header> Your fighters </header>
 <nav id="fightersNav">
     <ul>
@@ -46,7 +47,7 @@ foreach ($myFightersByPlayer as $index => $fighter) {
 }
 ?>
 
-<!--<h3> Liste des objets :
+<h3> Liste des objets :
 </h3>
 <dl>
     <?php
@@ -58,4 +59,6 @@ foreach ($myFightersByPlayer as $index => $fighter) {
             <?php
 /*        }
     } */?>
-</dl>-->
+</dl>
+
+

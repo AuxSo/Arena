@@ -62,5 +62,11 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     Groupe : Gr1-03-AG
     Membres : Baticle, Bourhim, Gauthier, Thouary
 </footer>
+    <footer>
+        Groupe : Gr1-03-AG
+        Membres : Baticle, Bourhim, Gauthier, Thouary
+    </footer>
+    <?= $this->Html->script('scripts'); ?>
+>>>>>>> Stashed changes
 </body>
 </html>

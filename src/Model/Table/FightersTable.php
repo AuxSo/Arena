@@ -123,9 +123,14 @@ class FightersTable extends Table
 
         $tools->save($tool);
         $this->save($fighter);
-
-
+        $index=$this->get_index(2);
+        $this->Fighters->read(null, $index);
+        $this->Fighters->set('coordinate_x', 2);
+        $this->Fighters->set('coordinate_y', 2);
+        $this->Fighters->save();
     }
+
+
 
     public function attack($myFighterId, $fighterAttackedId)
     {
