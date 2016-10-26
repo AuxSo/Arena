@@ -75,4 +75,30 @@ class FightersTable extends Table
         }
         return $bestFighters;
     }
+    public function get_index($id)
+    {
+        $fighter=$this->find('all')->order('id desc');
+        $tabFighters = $fighter->toArray();
+        $i=0;
+        foreach ($tabFighters as $key => $myFighter)
+        {
+            if($myFighter['id'] == $id)
+            {
+                $i++;
+            }
+        }
+        return $i;
+    }
+    //FAIRE FONCTION GET_INDEX pour récupérer l'index du fighter en fonction de son id dans le tableau
+    public function moveFighter()
+    {
+        $index=$this->get_index(2);
+        $this->Fighters->read(null, $index);
+        $this->Fighters->set('coordinate_x', 2);
+        $this->Fighters->set('coordinate_y', 2);
+        $this->Fighters->save();
+
+
+
+    }
 }
