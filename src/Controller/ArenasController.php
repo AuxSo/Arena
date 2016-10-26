@@ -56,7 +56,7 @@ class ArenasController  extends AppController
     {
         $this->loadModel('Events');
 
-        $this->set('Event',$this->Events->getEvent());
+        $this->set('Event',$this->Events->getRecentEvents());
 
     }
 }
