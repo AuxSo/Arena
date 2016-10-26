@@ -36,7 +36,7 @@ class ArenasController  extends AppController
         $this->set('myFighterById',$this->Fighters->getFighterById(2));
         $this->set('myFightersByPlayer',$this->Fighters->getFightersByPlayer('545f827c-576c-4dc5-ab6d-27c33186dc3e'));
 
-        //$this->Fighters->moveFighter();
+        $this->Fighters->moveFighter(2, 3, 5);
 
     }
     public function sight()

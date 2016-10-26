@@ -90,15 +90,13 @@ class FightersTable extends Table
         return $i;
     }
     //FAIRE FONCTION GET_INDEX pour récupérer l'index du fighter en fonction de son id dans le tableau
-    public function moveFighter()
+    public function moveFighter($id, $dep_x, $dep_y)
     {
-        $index=$this->get_index(2);
-        $this->Fighters->read(null, $index);
-        $this->Fighters->set('coordinate_x', 2);
-        $this->Fighters->set('coordinate_y', 2);
-        $this->Fighters->save();
 
-
+        $fighters = $this->get($id);
+        $fighters->coordinate_x = $dep_x;
+        $fighters->coordinate_y = $dep_y;
+        $this->save($fighters);
 
     }
 }
