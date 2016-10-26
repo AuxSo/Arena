@@ -30,6 +30,7 @@ class FightersTable extends Table
     {
         $fighter = $this->find('all')->order('id desc');
         $tabFighters = $fighter->toArray();
+        $fighterById=null;
         foreach ($tabFighters as $key => $myFighter) {
             if ($myFighter['id'] == $id) {
                 $fighterById[] = $myFighter;
@@ -47,6 +48,7 @@ class FightersTable extends Table
     {
         $fighter = $this->find('all')->order('player_id desc');
         $tabFighters = $fighter->toArray();
+        $fightersByPlayer=null;
         foreach ($tabFighters as $key => $myFighter) {
             if ($myFighter['player_id'] == $playerId) {
                 $fightersByPlayer[] = $myFighter;
@@ -63,6 +65,7 @@ class FightersTable extends Table
         $fighter = $this->find('all')->order('level desc');
         $tabFighters = $fighter->toArray();
         $lvlMax = $tabFighters[0]['level'];
+        $bestFighters=null;
         foreach ($tabFighters as $key => $myFighter) {
             if ($myFighter['level'] == $lvlMax) {
                 $bestFighters[] = $myFighter;
@@ -120,6 +123,91 @@ class FightersTable extends Table
 
         $tools->save($tool);
         $this->save($fighter);
+        $index=$this->get_index(2);
+        $this->Fighters->read(null, $index);
+        $this->Fighters->set('coordinate_x', 2);
+        $this->Fighters->set('coordinate_y', 2);
+        $this->Fighters->save();
+    }
+
+
+
+    public function attack($myFighterId, $fighterAttackedId)
+    {
+        $myfighter = $this->get($myFighterId);
+        $fighterattacked = $this->get($fighterAttackedId);
+
+        $myfighterLevel= $myfighter->level;
+        $fighterattackedLevel= $fighterattacked->level;
+        $myfighterStrength= $myfighter->skill_strength;
+        $randomNumber = rand(1,20);
+        $fighterattackedHealth= $fighterattacked->current_health;
+        pr($myfighterLevel);
+        pr($fighterattackedLevel);
+        pr($randomNumber);
+        $attackReussie=null;
+
+        //Si l'attaque réussit
+        if($randomNumber> (10 + $fighterattackedLevel - $myfighterLevel))
+        {
+            $attackReussie=true;
+            $myfighter->xp+=1; //L'attaquant gagne 1 point d'xp
+            $fighterattacked->current_health-=$myfighterStrength; //L'attaqué perd de la vie
+
+
+            //Si l'attaqué meurt
+            if($fighterattackedHealth-$myfighterStrength=0)
+            {
+                $myfighter->xp+=$fighterattackedLevel;
+            }
+        }
+
+        else
+        {
+            $attackReussie=false;
+        }
+
+        $this->save($myfighter);
+        $this->save($fighterattacked);
+        pr ($attackReussie);
+        return $attackReussie;
+
+    }
+
+    public function fighterDead($idFighter)
+    {
+        $myfighter = $this->get($idFighter);
+        $myFighterHealth= $myfighter->current_health;
+
+        if($myFighterHealth==0)
+        {
+            $this->delete($myfighter);
+        }
+    }
+
+    public function fighterProgression($idFighter, $choice)
+    {
+        $myfighter = $this->get($idFighter);
+        $myFighterXP= $myfighter->xp;
+
+        if($myFighterXP== $myFighterXP - ($myFighterXP % 4))
+        {
+            $myfighter->level+=1;
+            switch ($choice) {
+                case 1: //Vue
+                    $myfighter->skill_sight+=1;
+                    break;
+                case 2://Force
+                    $myfighter->skill_strength+=1;
+                    break;
+                case 3://Vie
+                    $myfighter->skill_health+=3;
+                    break;
+                default;
+            }
+
+        }
+        $this->save($myfighter);
     }
 
 }
