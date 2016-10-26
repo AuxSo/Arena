@@ -180,8 +180,29 @@ class FightersTable extends Table
         }
     }
 
-    public function fighterProgression($idFighter)
+    public function fighterProgression($idFighter, $choice)
     {
+        $myfighter = $this->get($idFighter);
+        $myFighterXP= $myfighter->xp;
 
+        if($myFighterXP== $myFighterXP - ($myFighterXP % 4))
+        {
+            $myfighter->level+=1;
+            switch ($choice) {
+                case 1: //Vue
+                    $myfighter->skill_sight+=1;
+                    break;
+                case 2://Force
+                    $myfighter->skill_strength+=1;
+                    break;
+                case 3://Vie
+                    $myfighter->skill_health+=3;
+                    break;
+                default;
+            }
+
+        }
+        $this->save($myfighter);
     }
+
 }

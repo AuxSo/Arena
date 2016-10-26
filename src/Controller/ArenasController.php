@@ -40,6 +40,7 @@ class ArenasController  extends AppController
         //$this->Fighters->FighterTakeObject(1,1);
         //$this->Fighters->attack(1,2);
         //$this->Fighters->fighterDead(2);
+        //$this->Fighters->fighterProgression(1,1);
 
 
     }
