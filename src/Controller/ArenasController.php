@@ -30,7 +30,13 @@ class ArenasController  extends AppController
 
 
         $this->loadModel('Tools');
-        $this->set('tools',$this->Tools->getTools());
+        $this->set('tools', $this->Tools->getTools());
+
+        // The tools owned by the fighter whose id is given in param (here 1 as test)
+        // The chosen fighter will be stored in a session variable
+        $this->set('sightTool',$this->Tools->getSightTool(1));
+        $this->set('strengthTool',$this->Tools->getStrengthTool(1));
+        $this->set('healthTool',$this->Tools->getHealthTool(1));
 
         $this->set('bestFighter',$this->Fighters->getBestFighter());
         $this->set('myFighterById',$this->Fighters->getFighterById(2));

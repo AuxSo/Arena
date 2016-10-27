@@ -2,8 +2,6 @@
 namespace App\Model\Table;
 
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
-
 
 /**
  * Created by PhpStorm.
@@ -34,7 +32,11 @@ class ToolsTable extends Table
      */
     public function getSightTool($idFighter)
     {
-        return $this->find('all', ['conditions' => 'fighter_id =' . $idFighter . ' and type = "sight"'])->toArray()[0];
+        $tab = $this->find('all', ['conditions' => 'fighter_id =' . $idFighter . ' and type = "sight"'])->toArray();
+        if ($tab != null)
+            return $tab[0];
+        else
+            return null;
     }
 
     /**
@@ -44,7 +46,11 @@ class ToolsTable extends Table
      */
     public function getStrengthTool($idFighter)
     {
-        return $this->find('all', ['conditions' => 'fighter_id =' . $idFighter . ' and type = "sight"'])->toArray()[0];
+        $tab = $this->find('all', ['conditions' => 'fighter_id =' . $idFighter . ' and type = "strength"'])->toArray();
+        if ($tab != null)
+            return $tab[0];
+        else
+            return null;
     }
 
     /**
@@ -54,6 +60,10 @@ class ToolsTable extends Table
      */
     public function getHealthTool($idFighter)
     {
-        return $this->find('all', ['conditions' => 'fighter_id =' . $idFighter . ' and type = "health"'])->toArray()[0];
+        $tab = $this->find('all', ['conditions' => 'fighter_id =' . $idFighter . ' and type = "health"'])->toArray();
+        if ($tab != null)
+            return $tab[0];
+        else
+            return null;
     }
 }
