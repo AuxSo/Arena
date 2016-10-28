@@ -25,12 +25,12 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     </title>
     <?= $this->Html->meta('icon') ?>
 
-    <?= $this->Html->css('base.css') ?>
+    <?= $this->fetch('css') ?>
+    <?= $this->Html->css('base.css')?>
     <?= $this->Html->css('cake.css') ?>
     <?= $this->Html->css('webarena.css') ?>
 
     <?= $this->fetch('meta') ?>
-    <?= $this->fetch('css') ?>
     <?= $this->Html->script('http://code.jquery.com/jquery.min.js') ?>
     <?= $this->Html->script('tabs') ?>
     <?= $this->Html->script('infoDisplayer') ?>

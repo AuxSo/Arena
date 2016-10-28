@@ -5,9 +5,15 @@
         <tr> <?php
             for ($j = 0; $j < $arenaWidth; $j++) {
                 ?>
-                <td class="case <?php
-                if (in_array("Fighter", $outputMatrice[$i][$j]) || in_array("Tool", $outputMatrice[$i][$j])) {
+                <td class="case<?php
+                if (in_array("Fighter", $outputMatrice[$i][$j]) || in_array("Tool", $outputMatrice[$i][$j])|| in_array("Adjacent", $outputMatrice[$i][$j])) {
                     ?> clickable<?php
+                } ?><?php
+                if (in_array("Adjacent", $outputMatrice[$i][$j])) {
+                    ?> adjacent<?php
+                } ?><?php
+                if (in_array("Fighter", $outputMatrice[$i][$j])) {
+                    ?> occupied<?php
                 } ?>"
                     value="<?= $i . '-' . $j ?>"> <?php
 
@@ -22,11 +28,19 @@
             }
             ?> </tr> <?php
     }
-
-    //pr($tabArenaElements);
-
     ?>
 </table>
+
+<section id="actions">
+    <form>
+        <input class="hidden" type="text" name="xSelected" id="xSelected">
+        <input class="hidden" type="text" name="ySelected" id="ySelected">
+        <input class="hidden" type="submit" id ="attack" name="attack" value="attack">
+        <input class="hidden" type="submit" id ="move" name="move" value="move">
+    </form>
+</section>
+
+
 <section id="infos">
     <h3>Information</h3>
     <?php

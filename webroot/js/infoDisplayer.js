@@ -3,12 +3,15 @@
  */
 $(function () {
     $('.case').click(function () {
-        console.log("click");
         var coord = $(this).attr('value').split('-');
         var x = coord[0];
         var y = coord[1];
 
         $('.infoBlock').addClass('hidden');
+        $('#move').addClass('hidden');
+        $('#attack').addClass('hidden');
+        $(".selected").removeClass("selected");
+
 
         $('.infoBlock').each(function () {
             var coord = $(this).attr('value').split('-');
@@ -20,4 +23,25 @@ $(function () {
             }
         });
     });
+
+    $('.adjacent').click(function(){
+        $(this).addClass("selected");
+
+        var coord = $(this).attr('value').split('-');
+        var x = coord[0];
+        var y = coord[1];
+
+        $("#xSelected").attr('value',x);
+        $("#ySelected").attr('value',y);
+
+
+        if(!$(this).hasClass('occupied')){
+            $('#move').removeClass('hidden');
+        }
+        else
+            $('#attack').removeClass('hidden');
+    })
+
+
+
 })
