@@ -33,6 +33,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->fetch('css') ?>
     <?= $this->Html->script('http://code.jquery.com/jquery.min.js') ?>
     <?= $this->Html->script('tabs') ?>
+    <?= $this->Html->script('infoDisplayer') ?>
 </head>
 <body>
 

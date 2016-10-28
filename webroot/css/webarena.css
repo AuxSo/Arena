@@ -46,3 +46,10 @@ dt, dd {
 .hidden {
     display: none;
 }
+
+.infoBlock {
+}
+
+.clickable {
+    cursor : pointer;
+}

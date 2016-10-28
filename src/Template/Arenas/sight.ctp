@@ -5,7 +5,11 @@
         <tr> <?php
             for ($j = 0; $j < $arenaWidth; $j++) {
                 ?>
-                <td> <?php
+                <td class="case <?php
+                if (in_array("Fighter", $outputMatrice[$i][$j]) || in_array("Tool", $outputMatrice[$i][$j])) {
+                    ?> clickable<?php
+                } ?>"
+                    value="<?= $i . '-' . $j ?>"> <?php
 
                     if (in_array("Fighter", $outputMatrice[$i][$j]))
                         echo("F");
@@ -24,6 +28,7 @@
     ?>
 </table>
 <section id="infos">
+    <h3>Information</h3>
     <?php
     foreach ($matrice as $i => $row) {
         foreach ($row as $j => $cell) {
@@ -31,7 +36,7 @@
                 foreach ($cell as $element) {
                     if (isset($element->xp)) { ?>
 
-                        <article>
+                        <article class="infoBlock hidden" value="<?= $i . '-' . $j ?>">
                             <h4> <?= $element->name ?> </h4>
                             <dl>
                                 <dt>Level :</dt>
@@ -42,7 +47,7 @@
                         </article>
 
                     <?php } else { ?>
-                        <article>
+                        <article class="infoBlock hidden" value="<?= $i . '-' . $j ?>">
                             <h4> Tool </h4>
                             <dl>
                                 <dt>Type :</dt>
@@ -51,7 +56,7 @@
                                 <dd><?= $element->bonus ?></dd>
                             </dl>
                         </article>
-                    <?php
+                        <?php
                     }
                 }
             }
