@@ -30,9 +30,6 @@ class ArenasController extends AppController
         $this->loadModel('Tools');
         $this->set('tools', $this->Tools->getTools());
 
-        $this->set('bestFighter', $this->Fighters->getBestFighter());
-        $this->set('myFighterById', $this->Fighters->getFighterById(2));
-        $this->set('myFightersByPlayer', $this->Fighters->getFightersByPlayer('545f827c-576c-4dc5-ab6d-27c33186dc3e'));
         // The tools owned by the fighter whose id is given in param (here 1 as test)
         // The chosen fighter will be stored in a session variable
         $this->set('sightTool',$this->Tools->getSightTool(1));
@@ -66,10 +63,11 @@ class ArenasController extends AppController
         //$this->set('matrice', $this->Fighters->getMatrice());
         if($this->request->session()->check('myFighterId')){
             $myFighter = $this->Fighters->getFighterById($this->request->session()->read('myFighterId'));
+            $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible($myFighter->coordinate_x,$myFighter->coordinate_y,$myFighter->skill_sight));
             $this->set('matrice', $this->Fighters->getMatriceVisible($myFighter->coordinate_x,$myFighter->coordinate_y,$myFighter->skill_sight));
         }
         else
-            $this->set('matrice', $this->Fighters->getMatriceVisible(5,5,2));
+            $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible(5,5,2));
     }
 
     public function diary()

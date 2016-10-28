@@ -237,56 +237,76 @@ class FightersTable extends Table
         $this->save($myfighter);
     }
 
-    public function getArenaFighters(){
-        $fighters = $this->find('all',['conditions'=>'current_health > 0']);
-        $tabFighters = $fighters->toArray();
-
-        return $tabFighters;
-    }
-
-    public function getArenaTools(){
-        $tools = TableRegistry::get('Tools');
-        $tools = $tools->find('all',['conditions'=>'fighter_id is null']);
-        $tabTools = $tools->toArray();
-
-        return $tabTools;
-    }
-
-    public function getElementByCoord($x, $y)
+    /**
+     * Retourne les éléments présents aux coordonnées passées en parametres
+     * @param $x
+     * @param $y
+     * @return array|bool
+     */
+    public function getElementsByCoord($x, $y)
     {
         $tabElements = $this->getArenaElements();
-        foreach($tabElements as $element){
-            if(($element->coordonate_x == $x) && ($element->coordonate_y == $y))
-                return $element;
+        foreach ($tabElements as $element) {
+            if (($element->coordinate_x == $x) && ($element->coordinate_y == $y))
+                $result[] = $element;
         }
-        return false;
+        if (isset($result))
+            return $result;
+        else
+            return false;
     }
 
+    /**
+     * Retourne les types des éléments présents aux coordonnées passées en parametres
+     * @param $x
+     * @param $y
+     * @return array
+     */
     public function getElementTypeByCoord($x, $y)
     {
         $answer = [];
         $tabArenaFighters = $this->getArenaFighters();
-        foreach($tabArenaFighters as $arenaFighter){
-            if(($arenaFighter->coordinate_x == $x) && ($arenaFighter->coordinate_y == $y))
+        foreach ($tabArenaFighters as $arenaFighter) {
+            if (($arenaFighter->coordinate_x == $x) && ($arenaFighter->coordinate_y == $y))
                 $answer[] = 'Fighter';
         }
         $tabArenaTools = $this->getArenaTools();
-        foreach($tabArenaTools as $arenaTool){
-            if(($arenaTool->coordinate_x == $x) && ($arenaTool->coordinate_y == $y))
+        foreach ($tabArenaTools as $arenaTool) {
+            if (($arenaTool->coordinate_x == $x) && ($arenaTool->coordinate_y == $y))
                 $answer[] = 'Tool';
         }
         return $answer;
     }
 
-    public function getMatrice(){
-        for($i=0; $i<$this->ARENA_HEIGHT; $i++){
-            for($j=0; $j<$this->ARENA_WIDTH; $j++){
-                $matrice[$i][$j] = $this->getElementTypeByCoord($i, $j);
-            }
-        }
-        return $matrice;
+    /**
+     * Retourne un tableau contenant la liste de tous les Figjters du terrain
+     * @return array
+     */
+    public function getArenaFighters()
+    {
+        $fighters = $this->find('all', ['conditions' => 'current_health > 0']);
+        $tabFighters = $fighters->toArray();
+
+        return $tabFighters;
     }
 
+    /**
+     * Retourne un tableau contenant la liste de tous les Tools du terrain
+     * @return array
+     */
+    public function getArenaTools()
+    {
+        $tools = TableRegistry::get('Tools');
+        $tools = $tools->find('all', ['conditions' => 'fighter_id is null']);
+        $tabTools = $tools->toArray();
+
+        return $tabTools;
+    }
+
+    /**
+     * Retourne une matrice contenant les éléments Fighters et tools du terrain
+     * @return array
+     */
     public function getArenaElements()
     {
         $tabFighters = $this->getArenaFighters();
@@ -296,13 +316,74 @@ class FightersTable extends Table
         return $tabElements;
     }
 
-    public function getMatriceVisible($x, $y, $view){
+    /**
+     * Retourne une matrice contenant les elements du terrains
+     * @return mixed
+     */
+    public function getMatrice()
+    {
+        for ($i = 0; $i < $this->ARENA_HEIGHT; $i++) {
+            for ($j = 0; $j < $this->ARENA_WIDTH; $j++) {
+                $matrice[$i][$j] = $this->getElementsByCoord($i, $j);
+            }
+        }
+        return $matrice;
+    }
+
+    /**
+     * Retourne une matrice contenant, pour chaque case, un tableau des types des éléments présents (String)
+     * @return mixed
+     */
+    public function getOutputMatrice()
+    {
+        $matrice = $this->getMatrice();
+        for ($i = 0; $i < $this->ARENA_HEIGHT; $i++) {
+            for ($j = 0; $j < $this->ARENA_WIDTH; $j++) {
+                if ($matrice[$i][$j] != false) {
+                    foreach ($matrice[$i][$j] as $caseElement) {
+                        if (isset($caseElement->xp)) {
+                            $outputMatrice[$i][$j][] = 'Fighter';
+                        } else
+                            $outputMatrice[$i][$j][] = 'Tool';
+                    }
+                } else
+                    $outputMatrice[$i][$j][] = 'Empty';
+            }
+        }
+        return $outputMatrice;
+    }
+
+    /**
+     * Retourne une matrice contenant, pour chaque case, un tableau des types des éléments présents visibles (String)
+     * Les cases non visibles contiennent un String 'Hidden'
+     * @return mixed
+     */
+    public function getOutputMatriceVisible($x, $y, $view)
+    {
+        $fullMatrice = $this->getOutputMatrice();
+
+        for ($i = 0; $i < $this->ARENA_HEIGHT; $i++) {
+            for ($j = 0; $j < $this->ARENA_WIDTH; $j++) {
+                if ((abs($i - $x) + abs($j - $y)) > $view)
+                    $fullMatrice[$i][$j] = ['Hidden'];
+            }
+        }
+        return $fullMatrice;
+    }
+
+    /**
+     * Retourne une matrice contenant, pour chaque case, un tableau contenant les éléments présents visibles(String)
+     * Les cases non visibles sont des tableaux vides
+     * @return mixed
+     */
+    public function getMatriceVisible($x, $y, $view)
+    {
         $fullMatrice = $this->getMatrice();
 
-        for($i=0; $i<$this->ARENA_HEIGHT; $i++){
-            for($j=0; $j<$this->ARENA_WIDTH; $j++){
-                if( (abs($i-$x)+abs($j- $y)) > $view)
-                    $fullMatrice[$i][$j] = ['Hidden'];
+        for ($i = 0; $i < $this->ARENA_HEIGHT; $i++) {
+            for ($j = 0; $j < $this->ARENA_WIDTH; $j++) {
+                if ((abs($i - $x) + abs($j - $y)) > $view)
+                    $fullMatrice[$i][$j] = [];
             }
         }
         return $fullMatrice;
