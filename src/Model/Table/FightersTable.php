@@ -35,7 +35,7 @@ class FightersTable extends Table
     {
         $fighter = $this->find('all')->order('id desc');
         $tabFighters = $fighter->toArray();
-        $fighterById = null;
+        $fighterById=null;
         foreach ($tabFighters as $key => $myFighter) {
             if ($myFighter['id'] == $id) {
                 $fighterById = $myFighter;
@@ -53,7 +53,7 @@ class FightersTable extends Table
     {
         $fighter = $this->find('all')->order('player_id desc');
         $tabFighters = $fighter->toArray();
-        $fightersByPlayer = null;
+        $fightersByPlayer=null;
         foreach ($tabFighters as $key => $myFighter) {
             if ($myFighter['player_id'] == $playerId) {
                 $fightersByPlayer[] = $myFighter;
@@ -70,7 +70,7 @@ class FightersTable extends Table
         $fighter = $this->find('all')->order('level desc');
         $tabFighters = $fighter->toArray();
         $lvlMax = $tabFighters[0]['level'];
-        $bestFighters = null;
+        $bestFighters=null;
         foreach ($tabFighters as $key => $myFighter) {
             if ($myFighter['level'] == $lvlMax) {
                 $bestFighters[] = $myFighter;
@@ -79,27 +79,24 @@ class FightersTable extends Table
         return $bestFighters;
     }
 
-    public function get_index($id)
-    {
-        $fighter = $this->find('all')->order('id desc');
-        $tabFighters = $fighter->toArray();
-        $i = 0;
-        foreach ($tabFighters as $key => $myFighter) {
-            if ($myFighter['id'] == $id) {
-                $i++;
-            }
-        }
-        return $i;
-    }
 
     //FAIRE FONCTION GET_INDEX pour récupérer l'index du fighter en fonction de son id dans le tableau
-    public function moveFighter($id, $dep_x, $dep_y)
+    public function moveFighter($id, $coord_x, $coord_y)
     {
+        $events = TableRegistry::get('Events');
 
         $fighters = $this->get($id);
-        $fighters->coordinate_x = $dep_x;
-        $fighters->coordinate_y = $dep_y;
+        $fighterName= $fighters->name;
+        $fighter_x=$fighters->coordinate_x;
+        $fighter_y=$fighters->coordinate_y;
+        $fighters->coordinate_x = $coord_x;
+        $fighters->coordinate_y = $coord_y;
+
         $this->save($fighters);
+
+        $eventName="Déplacement de $fighterName";
+
+        $events->create_event($eventName,$fighter_x,$fighter_y);
 
     }
 
@@ -107,98 +104,131 @@ class FightersTable extends Table
     {
         $fighter = $this->get($idFighter);
         $tools = TableRegistry::get('Tools');
+        $events = TableRegistry::get('Events');
+
+        $fighterName= $fighter->name;
+        $fighter_x=$fighter->coordinate_x;
+        $fighter_y=$fighter->coordinate_y;
+
         $tool = $tools->get($idTool);
 
         $tool->fighter_id = $idFighter; // On assigne à l'objet l'id du fighter qui le prend.
         $ToolType = $tool->type;
         $ToolBonus = $tool->bonus;
 
+        $events->create_event("$fighterName prend l'objet $ToolType", $fighter_x, $fighter_y);
+
 
         switch ($ToolType) {
             case 'Health':
                 $fighter->skill_health += $ToolBonus;
+                $events->create_event("$fighterName augmente Skill_Health de $ToolBonus", $fighter_x, $fighter_y);
                 break;
             case 'Strength':
                 $fighter->skill_strength += $ToolBonus;
+                $events->create_event("$fighterName augmente Skill_Strength de $ToolBonus", $fighter_x, $fighter_y);
+
                 break;
             case 'Sight':
                 $fighter->skill_sight += $ToolBonus;
+                $events->create_event("$fighterName augmente Skill_Sight de $ToolBonus", $fighter_x, $fighter_y);
                 break;
         }
 
         $tools->save($tool);
         $this->save($fighter);
-        $index = $this->get_index(2);
-        $this->Fighters->read(null, $index);
-        $this->Fighters->set('coordinate_x', 2);
-        $this->Fighters->set('coordinate_y', 2);
-        $this->Fighters->save();
+
     }
+
 
 
     public function attack($myFighterId, $fighterAttackedId)
     {
         $myfighter = $this->get($myFighterId);
         $fighterattacked = $this->get($fighterAttackedId);
+        $events = TableRegistry::get('Events');
 
-        $myfighterLevel = $myfighter->level;
-        $fighterattackedLevel = $fighterattacked->level;
-        $myfighterStrength = $myfighter->skill_strength;
-        $randomNumber = rand(1, 20);
-        $fighterattackedHealth = $fighterattacked->current_health;
-        pr($myfighterLevel);
-        pr($fighterattackedLevel);
-        pr($randomNumber);
-        $attackReussie = null;
+        $myfighterLevel= $myfighter->level;
+        $myfighterStrength= $myfighter->skill_strength;
+        $myfighterName=$myfighter->name;
+        $myfighter_x=$myfighter->coordinate_x;
+        $myfighter_y=$myfighter->coordinate_y;
+
+        $fighterattackedLevel= $fighterattacked->level;
+        $fighterattackedName=$fighterattacked->name;
+        $fighterattacked_x=$fighterattacked->coordinate_x;
+        $fighterattacked_y=$fighterattacked->coordinate_y;
+        $fighterattackedHealth= $fighterattacked->current_health;
+
+        $randomNumber = rand(1,20);
 
         //Si l'attaque réussit
-        if ($randomNumber > (10 + $fighterattackedLevel - $myfighterLevel)) {
-            $attackReussie = true;
-            $myfighter->xp += 1; //L'attaquant gagne 1 point d'xp
-            $fighterattacked->current_health -= $myfighterStrength; //L'attaqué perd de la vie
+        if($randomNumber> (10 + $fighterattackedLevel - $myfighterLevel))
+        {
 
+            $myfighter->xp+=1; //L'attaquant gagne 1 point d'xp
+            $fighterattacked->current_health-=$myfighterStrength; //L'attaqué perd de la vie
+
+
+            $eventName="Attaque réussie de $myfighterName sur $fighterattackedName";
+            $events->create_event($eventName,$myfighter_x,$myfighter_y);
 
             //Si l'attaqué meurt
-            if ($fighterattackedHealth - $myfighterStrength = 0) {
-                $myfighter->xp += $fighterattackedLevel;
+            if($fighterattackedHealth-$myfighterStrength=0)
+            {
+                $myfighter->xp+=$fighterattackedLevel;
+                $this->fighterDead($fighterAttackedId);
+
             }
-        } else {
-            $attackReussie = false;
+        }
+        else{
+
+
+            $eventName="Attaque raté de $myfighterName sur $fighterattackedName";
+            $events->create_event($eventName,$myfighter_x,$myfighter_y);
         }
 
         $this->save($myfighter);
         $this->save($fighterattacked);
-        pr($attackReussie);
-        return $attackReussie;
+
 
     }
 
     public function fighterDead($idFighter)
     {
         $myfighter = $this->get($idFighter);
-        $myFighterHealth = $myfighter->current_health;
+        $events = TableRegistry::get('Events');
 
-        if ($myFighterHealth == 0) {
+        $myFighterHealth= $myfighter->current_health;
+        $myfighterName=$myfighter->name;
+        $myfighter_x=$myfighter->coordinate_x;
+        $myfighter_y=$myfighter->coordinate_y;
+
+        if($myFighterHealth==0)
+        {
             $this->delete($myfighter);
+            $eventName="Mort de $myfighterName";
+            $events->create_event($eventName,$myfighter_x,$myfighter_y);
         }
     }
 
     public function fighterProgression($idFighter, $choice)
     {
         $myfighter = $this->get($idFighter);
-        $myFighterXP = $myfighter->xp;
+        $myFighterXP= $myfighter->xp;
 
-        if ($myFighterXP == $myFighterXP - ($myFighterXP % 4)) {
-            $myfighter->level += 1;
+        if($myFighterXP== $myFighterXP - ($myFighterXP % 4))
+        {
+            $myfighter->level+=1;
             switch ($choice) {
                 case 1: //Vue
-                    $myfighter->skill_sight += 1;
+                    $myfighter->skill_sight+=1;
                     break;
                 case 2://Force
-                    $myfighter->skill_strength += 1;
+                    $myfighter->skill_strength+=1;
                     break;
                 case 3://Vie
-                    $myfighter->skill_health += 3;
+                    $myfighter->skill_health+=3;
                     break;
                 default;
             }
