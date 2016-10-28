@@ -230,14 +230,17 @@ class FightersTable extends Table
         return $tabTools;
     }
 
-    public function getElementByCoord($x, $y)
+    public function getElementsByCoord($x, $y)
     {
         $tabElements = $this->getArenaElements();
         foreach($tabElements as $element){
-            if(($element->coordonate_x == $x) && ($element->coordonate_y == $y))
-                return $element;
+            if(($element->coordinate_x == $x) && ($element->coordinate_y == $y))
+                $result[] = $element;
         }
-        return false;
+        if(isset($result))
+            return $result;
+        else
+            return false;
     }
 
     public function getElementTypeByCoord($x, $y)
@@ -259,10 +262,30 @@ class FightersTable extends Table
     public function getMatrice(){
         for($i=0; $i<$this->ARENA_HEIGHT; $i++){
             for($j=0; $j<$this->ARENA_WIDTH; $j++){
-                $matrice[$i][$j] = $this->getElementTypeByCoord($i, $j);
+                $matrice[$i][$j] = $this->getElementsByCoord($i, $j);
             }
         }
         return $matrice;
+    }
+
+    public function getOutputMatrice(){
+        $matrice = $this->getMatrice();
+        for($i=0; $i<$this->ARENA_HEIGHT; $i++){
+            for($j=0; $j<$this->ARENA_WIDTH; $j++){
+                if($matrice[$i][$j] != false){
+                    foreach($matrice[$i][$j] as $caseElement){
+                        if(isset($caseElement->xp)){
+                            $outputMatrice[$i][$j][] = 'Fighter';
+                        }
+                        else
+                            $outputMatrice[$i][$j][] = 'Tool';
+                    }
+                }
+                else
+                    $outputMatrice[$i][$j][] = 'Empty';
+            }
+        }
+        return $outputMatrice;
     }
 
     public function getArenaElements()
@@ -275,7 +298,7 @@ class FightersTable extends Table
     }
 
     public function getMatriceVisible($x, $y, $view){
-        $fullMatrice = $this->getMatrice();
+        $fullMatrice = $this->getOutputMatrice();
 
         for($i=0; $i<$this->ARENA_HEIGHT; $i++){
             for($j=0; $j<$this->ARENA_WIDTH; $j++){
