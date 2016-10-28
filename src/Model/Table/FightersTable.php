@@ -35,7 +35,7 @@ class FightersTable extends Table
     {
         $fighter = $this->find('all')->order('id desc');
         $tabFighters = $fighter->toArray();
-        $fighterById=null;
+        $fighterById = null;
         foreach ($tabFighters as $key => $myFighter) {
             if ($myFighter['id'] == $id) {
                 $fighterById = $myFighter;
@@ -53,7 +53,7 @@ class FightersTable extends Table
     {
         $fighter = $this->find('all')->order('player_id desc');
         $tabFighters = $fighter->toArray();
-        $fightersByPlayer=null;
+        $fightersByPlayer = null;
         foreach ($tabFighters as $key => $myFighter) {
             if ($myFighter['player_id'] == $playerId) {
                 $fightersByPlayer[] = $myFighter;
@@ -70,7 +70,7 @@ class FightersTable extends Table
         $fighter = $this->find('all')->order('level desc');
         $tabFighters = $fighter->toArray();
         $lvlMax = $tabFighters[0]['level'];
-        $bestFighters=null;
+        $bestFighters = null;
         foreach ($tabFighters as $key => $myFighter) {
             if ($myFighter['level'] == $lvlMax) {
                 $bestFighters[] = $myFighter;
@@ -128,7 +128,7 @@ class FightersTable extends Table
 
         $tools->save($tool);
         $this->save($fighter);
-        $index=$this->get_index(2);
+        $index = $this->get_index(2);
         $this->Fighters->read(null, $index);
         $this->Fighters->set('coordinate_x', 2);
         $this->Fighters->set('coordinate_y', 2);
@@ -136,45 +136,39 @@ class FightersTable extends Table
     }
 
 
-
     public function attack($myFighterId, $fighterAttackedId)
     {
         $myfighter = $this->get($myFighterId);
         $fighterattacked = $this->get($fighterAttackedId);
 
-        $myfighterLevel= $myfighter->level;
-        $fighterattackedLevel= $fighterattacked->level;
-        $myfighterStrength= $myfighter->skill_strength;
-        $randomNumber = rand(1,20);
-        $fighterattackedHealth= $fighterattacked->current_health;
+        $myfighterLevel = $myfighter->level;
+        $fighterattackedLevel = $fighterattacked->level;
+        $myfighterStrength = $myfighter->skill_strength;
+        $randomNumber = rand(1, 20);
+        $fighterattackedHealth = $fighterattacked->current_health;
         pr($myfighterLevel);
         pr($fighterattackedLevel);
         pr($randomNumber);
-        $attackReussie=null;
+        $attackReussie = null;
 
         //Si l'attaque réussit
-        if($randomNumber> (10 + $fighterattackedLevel - $myfighterLevel))
-        {
-            $attackReussie=true;
-            $myfighter->xp+=1; //L'attaquant gagne 1 point d'xp
-            $fighterattacked->current_health-=$myfighterStrength; //L'attaqué perd de la vie
+        if ($randomNumber > (10 + $fighterattackedLevel - $myfighterLevel)) {
+            $attackReussie = true;
+            $myfighter->xp += 1; //L'attaquant gagne 1 point d'xp
+            $fighterattacked->current_health -= $myfighterStrength; //L'attaqué perd de la vie
 
 
             //Si l'attaqué meurt
-            if($fighterattackedHealth-$myfighterStrength=0)
-            {
-                $myfighter->xp+=$fighterattackedLevel;
+            if ($fighterattackedHealth - $myfighterStrength = 0) {
+                $myfighter->xp += $fighterattackedLevel;
             }
-        }
-
-        else
-        {
-            $attackReussie=false;
+        } else {
+            $attackReussie = false;
         }
 
         $this->save($myfighter);
         $this->save($fighterattacked);
-        pr ($attackReussie);
+        pr($attackReussie);
         return $attackReussie;
 
     }
@@ -182,10 +176,9 @@ class FightersTable extends Table
     public function fighterDead($idFighter)
     {
         $myfighter = $this->get($idFighter);
-        $myFighterHealth= $myfighter->current_health;
+        $myFighterHealth = $myfighter->current_health;
 
-        if($myFighterHealth==0)
-        {
+        if ($myFighterHealth == 0) {
             $this->delete($myfighter);
         }
     }
@@ -193,20 +186,19 @@ class FightersTable extends Table
     public function fighterProgression($idFighter, $choice)
     {
         $myfighter = $this->get($idFighter);
-        $myFighterXP= $myfighter->xp;
+        $myFighterXP = $myfighter->xp;
 
-        if($myFighterXP== $myFighterXP - ($myFighterXP % 4))
-        {
-            $myfighter->level+=1;
+        if ($myFighterXP == $myFighterXP - ($myFighterXP % 4)) {
+            $myfighter->level += 1;
             switch ($choice) {
                 case 1: //Vue
-                    $myfighter->skill_sight+=1;
+                    $myfighter->skill_sight += 1;
                     break;
                 case 2://Force
-                    $myfighter->skill_strength+=1;
+                    $myfighter->skill_strength += 1;
                     break;
                 case 3://Vie
-                    $myfighter->skill_health+=3;
+                    $myfighter->skill_health += 3;
                     break;
                 default;
             }
@@ -215,79 +207,76 @@ class FightersTable extends Table
         $this->save($myfighter);
     }
 
-    public function getArenaFighters(){
-        $fighters = $this->find('all',['conditions'=>'current_health > 0']);
-        $tabFighters = $fighters->toArray();
-
-        return $tabFighters;
-    }
-
-    public function getArenaTools(){
-        $tools = TableRegistry::get('Tools');
-        $tools = $tools->find('all',['conditions'=>'fighter_id is null']);
-        $tabTools = $tools->toArray();
-
-        return $tabTools;
-    }
-
+    /**
+     * Retourne les éléments présents aux coordonnées passées en parametres
+     * @param $x
+     * @param $y
+     * @return array|bool
+     */
     public function getElementsByCoord($x, $y)
     {
         $tabElements = $this->getArenaElements();
-        foreach($tabElements as $element){
-            if(($element->coordinate_x == $x) && ($element->coordinate_y == $y))
+        foreach ($tabElements as $element) {
+            if (($element->coordinate_x == $x) && ($element->coordinate_y == $y))
                 $result[] = $element;
         }
-        if(isset($result))
+        if (isset($result))
             return $result;
         else
             return false;
     }
 
+    /**
+     * Retourne les types des éléments présents aux coordonnées passées en parametres
+     * @param $x
+     * @param $y
+     * @return array
+     */
     public function getElementTypeByCoord($x, $y)
     {
         $answer = [];
         $tabArenaFighters = $this->getArenaFighters();
-        foreach($tabArenaFighters as $arenaFighter){
-            if(($arenaFighter->coordinate_x == $x) && ($arenaFighter->coordinate_y == $y))
+        foreach ($tabArenaFighters as $arenaFighter) {
+            if (($arenaFighter->coordinate_x == $x) && ($arenaFighter->coordinate_y == $y))
                 $answer[] = 'Fighter';
         }
         $tabArenaTools = $this->getArenaTools();
-        foreach($tabArenaTools as $arenaTool){
-            if(($arenaTool->coordinate_x == $x) && ($arenaTool->coordinate_y == $y))
+        foreach ($tabArenaTools as $arenaTool) {
+            if (($arenaTool->coordinate_x == $x) && ($arenaTool->coordinate_y == $y))
                 $answer[] = 'Tool';
         }
         return $answer;
     }
 
-    public function getMatrice(){
-        for($i=0; $i<$this->ARENA_HEIGHT; $i++){
-            for($j=0; $j<$this->ARENA_WIDTH; $j++){
-                $matrice[$i][$j] = $this->getElementsByCoord($i, $j);
-            }
-        }
-        return $matrice;
+    /**
+     * Retourne un tableau contenant la liste de tous les Figjters du terrain
+     * @return array
+     */
+    public function getArenaFighters()
+    {
+        $fighters = $this->find('all', ['conditions' => 'current_health > 0']);
+        $tabFighters = $fighters->toArray();
+
+        return $tabFighters;
     }
 
-    public function getOutputMatrice(){
-        $matrice = $this->getMatrice();
-        for($i=0; $i<$this->ARENA_HEIGHT; $i++){
-            for($j=0; $j<$this->ARENA_WIDTH; $j++){
-                if($matrice[$i][$j] != false){
-                    foreach($matrice[$i][$j] as $caseElement){
-                        if(isset($caseElement->xp)){
-                            $outputMatrice[$i][$j][] = 'Fighter';
-                        }
-                        else
-                            $outputMatrice[$i][$j][] = 'Tool';
-                    }
-                }
-                else
-                    $outputMatrice[$i][$j][] = 'Empty';
-            }
-        }
-        return $outputMatrice;
+    /**
+     * Retourne un tableau contenant la liste de tous les Tools du terrain
+     * @return array
+     */
+    public function getArenaTools()
+    {
+        $tools = TableRegistry::get('Tools');
+        $tools = $tools->find('all', ['conditions' => 'fighter_id is null']);
+        $tabTools = $tools->toArray();
+
+        return $tabTools;
     }
 
+    /**
+     * Retourne une matrice contenant les éléments Fighters et tools du terrain
+     * @return array
+     */
     public function getArenaElements()
     {
         $tabFighters = $this->getArenaFighters();
@@ -297,13 +286,74 @@ class FightersTable extends Table
         return $tabElements;
     }
 
-    public function getMatriceVisible($x, $y, $view){
+    /**
+     * Retourne une matrice contenant les elements du terrains
+     * @return mixed
+     */
+    public function getMatrice()
+    {
+        for ($i = 0; $i < $this->ARENA_HEIGHT; $i++) {
+            for ($j = 0; $j < $this->ARENA_WIDTH; $j++) {
+                $matrice[$i][$j] = $this->getElementsByCoord($i, $j);
+            }
+        }
+        return $matrice;
+    }
+
+    /**
+     * Retourne une matrice contenant, pour chaque case, un tableau des types des éléments présents (String)
+     * @return mixed
+     */
+    public function getOutputMatrice()
+    {
+        $matrice = $this->getMatrice();
+        for ($i = 0; $i < $this->ARENA_HEIGHT; $i++) {
+            for ($j = 0; $j < $this->ARENA_WIDTH; $j++) {
+                if ($matrice[$i][$j] != false) {
+                    foreach ($matrice[$i][$j] as $caseElement) {
+                        if (isset($caseElement->xp)) {
+                            $outputMatrice[$i][$j][] = 'Fighter';
+                        } else
+                            $outputMatrice[$i][$j][] = 'Tool';
+                    }
+                } else
+                    $outputMatrice[$i][$j][] = 'Empty';
+            }
+        }
+        return $outputMatrice;
+    }
+
+    /**
+     * Retourne une matrice contenant, pour chaque case, un tableau des types des éléments présents visibles (String)
+     * Les cases non visibles contiennent un String 'Hidden'
+     * @return mixed
+     */
+    public function getOutputMatriceVisible($x, $y, $view)
+    {
         $fullMatrice = $this->getOutputMatrice();
 
-        for($i=0; $i<$this->ARENA_HEIGHT; $i++){
-            for($j=0; $j<$this->ARENA_WIDTH; $j++){
-                if( (abs($i-$x)+abs($j- $y)) > $view)
+        for ($i = 0; $i < $this->ARENA_HEIGHT; $i++) {
+            for ($j = 0; $j < $this->ARENA_WIDTH; $j++) {
+                if ((abs($i - $x) + abs($j - $y)) > $view)
                     $fullMatrice[$i][$j] = ['Hidden'];
+            }
+        }
+        return $fullMatrice;
+    }
+
+    /**
+     * Retourne une matrice contenant, pour chaque case, un tableau contenant les éléments présents visibles(String)
+     * Les cases non visibles sont des tableaux vides
+     * @return mixed
+     */
+    public function getMatriceVisible($x, $y, $view)
+    {
+        $fullMatrice = $this->getMatrice();
+
+        for ($i = 0; $i < $this->ARENA_HEIGHT; $i++) {
+            for ($j = 0; $j < $this->ARENA_WIDTH; $j++) {
+                if ((abs($i - $x) + abs($j - $y)) > $view)
+                    $fullMatrice[$i][$j] = [];
             }
         }
         return $fullMatrice;

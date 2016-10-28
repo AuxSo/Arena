@@ -63,10 +63,11 @@ class ArenasController extends AppController
         //$this->set('matrice', $this->Fighters->getMatrice());
         if($this->request->session()->check('myFighterId')){
             $myFighter = $this->Fighters->getFighterById($this->request->session()->read('myFighterId'));
+            $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible($myFighter->coordinate_x,$myFighter->coordinate_y,$myFighter->skill_sight));
             $this->set('matrice', $this->Fighters->getMatriceVisible($myFighter->coordinate_x,$myFighter->coordinate_y,$myFighter->skill_sight));
         }
         else
-            $this->set('matrice', $this->Fighters->getMatriceVisible(5,5,2));
+            $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible(5,5,2));
     }
 
     public function diary()
