@@ -1,6 +1,5 @@
 <?php
 namespace App\Controller;
-
 use App\Controller\AppController;
 use App\Model\Table\FightersTable;
 
@@ -34,6 +33,15 @@ class ArenasController extends AppController
         $this->set('bestFighter', $this->Fighters->getBestFighter());
         $this->set('myFighterById', $this->Fighters->getFighterById(2));
         $this->set('myFightersByPlayer', $this->Fighters->getFightersByPlayer('545f827c-576c-4dc5-ab6d-27c33186dc3e'));
+        // The tools owned by the fighter whose id is given in param (here 1 as test)
+        // The chosen fighter will be stored in a session variable
+        $this->set('sightTool',$this->Tools->getSightTool(1));
+        $this->set('strengthTool',$this->Tools->getStrengthTool(1));
+        $this->set('healthTool',$this->Tools->getHealthTool(1));
+
+        $this->set('bestFighter',$this->Fighters->getBestFighter());
+        $this->set('myFighterById',$this->Fighters->getFighterById(2));
+        $this->set('myFightersByPlayer',$this->Fighters->getFightersByPlayer('545f827c-576c-4dc5-ab6d-27c33186dc3e'));
 
         //$this->Fighters->moveFighter(2, 3, 5);
         //$this->Fighters->FighterTakeObject(1,1);
