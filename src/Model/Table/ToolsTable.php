@@ -44,7 +44,7 @@ class ToolsTable extends Table
      */
     public function getStrengthTool($idFighter)
     {
-        return $this->find('all', ['conditions' => 'fighter_id =' . $idFighter . ' and type = "sight"'])->toArray()[0];
+        return $this->find('all', ['conditions' => 'fighter_id =' . $idFighter . ' and type = "strength"'])->toArray()[0];
     }
 
     /**

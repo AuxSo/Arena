@@ -11,6 +11,8 @@
                 echo("F");
             if(in_array("Tool", $matrice[$i][$j]))
                 echo("T");
+            if(in_array("Hidden", $matrice[$i][$j]))
+                echo("X");
 
             ?> </td> <?php
         }

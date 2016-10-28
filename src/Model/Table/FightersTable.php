@@ -38,7 +38,7 @@ class FightersTable extends Table
         $fighterById=null;
         foreach ($tabFighters as $key => $myFighter) {
             if ($myFighter['id'] == $id) {
-                $fighterById[] = $myFighter;
+                $fighterById = $myFighter;
             }
         }
         return $fighterById;
@@ -83,7 +83,7 @@ class FightersTable extends Table
     {
         $fighter = $this->find('all')->order('id desc');
         $tabFighters = $fighter->toArray();
-
+        $i = 0;
         foreach ($tabFighters as $key => $myFighter) {
             if ($myFighter['id'] == $id) {
                 $i++;
@@ -230,15 +230,6 @@ class FightersTable extends Table
         return $tabTools;
     }
 
-    public function getArenaElements()
-    {
-        $tabFighters = $this->getArenaFighters();
-        $tabTools = $this->getArenaTools();
-        $tabElements = array_merge($tabFighters, $tabTools);
-
-        return $tabElements;
-    }
-
     public function getElementByCoord($x, $y)
     {
         $tabElements = $this->getArenaElements();
@@ -272,5 +263,26 @@ class FightersTable extends Table
             }
         }
         return $matrice;
+    }
+
+    public function getArenaElements()
+    {
+        $tabFighters = $this->getArenaFighters();
+        $tabTools = $this->getArenaTools();
+        $tabElements = array_merge($tabFighters, $tabTools);
+
+        return $tabElements;
+    }
+
+    public function getMatriceVisible($x, $y, $view){
+        $fullMatrice = $this->getMatrice();
+
+        for($i=0; $i<$this->ARENA_HEIGHT; $i++){
+            for($j=0; $j<$this->ARENA_WIDTH; $j++){
+                if( (abs($i-$x)+abs($j- $y)) > $view)
+                    $fullMatrice[$i][$j] = ['Hidden'];
+            }
+        }
+        return $fullMatrice;
     }
 }
