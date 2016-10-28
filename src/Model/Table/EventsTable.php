@@ -37,4 +37,20 @@ class EventsTable extends Table
 
         return $recentEvents;
     }
+
+    public function create_event($name, $coordinate_x, $coordinate_y)
+    {
+
+        $event = $this->newEntity();
+        $date = Time::now();
+        $event->name = $name;
+        $event->date=$date;
+        $event->coordinate_x= $coordinate_x;
+        $event->coordinate_y= $coordinate_y;
+
+        $this->save($event);
+
+
+    }
+
 }
