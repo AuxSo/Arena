@@ -17,8 +17,20 @@ class ArenasController extends AppController
 
     public function login()
     {
-        $this->request->session()->write('myFighterId', 1);
-        $this->request->session()->write('myPlayerId', '545f827c-576c-4dc5-ab6d-27c33186dc3e');
+        //$this->request->session()->write('myFighterId', 1);
+        //$this->request->session()->write('myPlayerId', '545f827c-576c-4dc5-ab6d-27c33186dc3e');
+        $this->loadModel('Players');
+        $player = $this->Players->newEntity();
+        if ($this->request->is('post')) {
+            $player = $this->Players->patchEntity($player, $this->request->data);
+            $player->id="1234-c"; //Mettre l'id random
+            if ($this->Players->save($player)) {
+                $this->Flash->success(__("L'utilisateur a été sauvegardé."));
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__("Impossible d'ajouter l'utilisateur."));
+        }
+        $this->set('user', $player);
     }
 
     public function fighter()
