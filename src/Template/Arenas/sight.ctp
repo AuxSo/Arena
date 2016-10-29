@@ -6,7 +6,7 @@
             for ($j = 0; $j < $arenaWidth; $j++) {
                 ?>
                 <td class="case<?php
-                if (in_array("Fighter", $outputMatrice[$i][$j]) || in_array("Tool", $outputMatrice[$i][$j])|| in_array("Adjacent", $outputMatrice[$i][$j])) {
+                if (in_array("Fighter", $outputMatrice[$i][$j]) || in_array("Tool", $outputMatrice[$i][$j]) || in_array("Adjacent", $outputMatrice[$i][$j])) {
                     ?> clickable<?php
                 } ?><?php
                 if (in_array("Adjacent", $outputMatrice[$i][$j])) {
@@ -32,11 +32,11 @@
 </table>
 
 <section id="actions">
-    <form>
+    <form method= "post">
         <input class="hidden" type="text" name="xSelected" id="xSelected">
         <input class="hidden" type="text" name="ySelected" id="ySelected">
-        <input class="hidden" type="submit" id ="attack" name="attack" value="attack">
-        <input class="hidden" type="submit" id ="move" name="move" value="move">
+        <input class="hidden" type="submit" id="attack" name="attack" value="attack">
+        <input class="hidden" type="submit" id="move" name="move" value="move">
     </form>
 </section>
 
@@ -46,33 +46,47 @@
     <?php
     foreach ($matrice as $i => $row) {
         foreach ($row as $j => $cell) {
-            if (isset($cell) && !empty($cell)) {
-                foreach ($cell as $element) {
-                    if (isset($element->xp)) { ?>
+            if ($cell!='toFarAway') {
+                if (!empty($cell)) {
+                    foreach ($cell as $element) {
+                        if (isset($element->xp)) { ?>
 
-                        <article class="infoBlock hidden" value="<?= $i . '-' . $j ?>">
-                            <h4> <?= $element->name ?> </h4>
-                            <dl>
-                                <dt>Level :</dt>
-                                <dd><?= $element->level ?></dd>
-                                <dt>Health :</dt>
-                                <dd><?= $element->current_health ?>/<?= $element->skill_health ?></dd>
-                            </dl>
-                        </article>
+                            <article class="infoBlock hidden" value="<?= $i . '-' . $j ?>">
+                                <h4> <?= $element->name ?> </h4>
+                                <dl>
+                                    <dt>Level :</dt>
+                                    <dd><?= $element->level ?></dd>
+                                    <dt>Health :</dt>
+                                    <dd><?= $element->current_health ?>/<?= $element->skill_health ?></dd>
+                                </dl>
+                            </article>
 
-                    <?php } else { ?>
-                        <article class="infoBlock hidden" value="<?= $i . '-' . $j ?>">
-                            <h4> Tool </h4>
-                            <dl>
-                                <dt>Type :</dt>
-                                <dd><?= $element->type ?></dd>
-                                <dt>Bonus :</dt>
-                                <dd><?= $element->bonus ?></dd>
-                            </dl>
-                        </article>
-                        <?php
+                        <?php } else { ?>
+                            <article class="infoBlock hidden" value="<?= $i . '-' . $j ?>">
+                                <h4> Tool </h4>
+                                <dl>
+                                    <dt>Type :</dt>
+                                    <dd><?= $element->type ?></dd>
+                                    <dt>Bonus :</dt>
+                                    <dd><?= $element->bonus ?></dd>
+                                </dl>
+                            </article>
+                            <?php
+                        }
                     }
+                } else {
+                    ?>
+                    <article class="infoBlock hidden" value="<?= $i . '-' . $j ?>">
+                        <p>Nothing to display</p>
+                    </article>
+                    <?php
                 }
+            } else {
+                ?>
+                <article class="infoBlock hidden" value="<?= $i . '-' . $j ?>">
+                    <p>This is too far away</p>
+                </article>
+                <?php
             }
         }
     }

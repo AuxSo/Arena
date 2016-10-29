@@ -382,7 +382,7 @@ class FightersTable extends Table
         for ($i = 0; $i < $this->ARENA_HEIGHT; $i++) {
             for ($j = 0; $j < $this->ARENA_WIDTH; $j++) {
                 if ((abs($i - $x) + abs($j - $y)) > $view)
-                    $fullMatrice[$i][$j] = [];
+                    $fullMatrice[$i][$j] = 'toFarAway';
             }
         }
         return $fullMatrice;

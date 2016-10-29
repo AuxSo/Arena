@@ -11,6 +11,7 @@ $(function () {
         $('#move').addClass('hidden');
         $('#attack').addClass('hidden');
         $(".selected").removeClass("selected");
+        $(this).addClass("selected");
 
 
         $('.infoBlock').each(function () {
