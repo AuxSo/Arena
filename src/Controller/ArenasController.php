@@ -20,6 +20,9 @@ class ArenasController extends AppController
     public function login()
     {
 
+        $this->request->session()->write('myFighterId', 1);
+        $this->request->session()->write('myPlayerId', '8mm12z2j-3rqe-zil1-vz6r-i81gz4o8qa9t');
+
         $this->loadModel('Players');
 
         $data_post = $this->request->is('post');
