@@ -41,7 +41,7 @@ class PlayersTable extends Table
         $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
         $id = '';
         do {
-            for ($i = 0; $i < (strlen($characters) + 4); $i++) {
+            for ($i = 0; $i < 36; $i++) {
                 $id .= $characters[rand(0, strlen($characters) - 1)];
             }
             $id[8] = '-';
