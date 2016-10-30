@@ -25,11 +25,21 @@ class ArenasController extends AppController
         $data_post = $this->request->is('post');
         if ($this->request->data('inscription')) {
             $data_inscription = $this->request->data;
-            $inscrit = $this->Players->inscription($data_post, $data_inscription);
-            $this->Flash->success('Votre compte a bien été créé');
-            if ($inscrit) {
 
-                return $this->redirect(['action' => 'index']);
+            if (!filter_var($data_inscription['email'], FILTER_VALIDATE_EMAIL)) {
+                $this->Flash->set('Veuillez entrer un email valide');
+            }
+            else{
+                if(!$this->Players->isEmailUnique($data_inscription['email'])){
+                    $this->Flash->set('Cet email est déjà lié à un joueur');
+                }
+                else{
+                    $inscrit = $this->Players->inscription($data_post, $data_inscription);
+                    if ($inscrit) {
+                        $this->Flash->success('Votre compte a bien été créé');
+                        return $this->redirect(['action' => 'index']);
+                    }
+                }
             }
         }
 
