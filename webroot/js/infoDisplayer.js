@@ -10,6 +10,7 @@ $(function () {
         $('.infoBlock').addClass('hidden');
         $('#move').addClass('hidden');
         $('#attack').addClass('hidden');
+        $('#take').addClass('hidden');
         $(".selected").removeClass("selected");
         $(this).addClass("selected");
 
@@ -26,7 +27,6 @@ $(function () {
     });
 
     $('.adjacent').click(function(){
-        $(this).addClass("selected");
 
         var coord = $(this).attr('value').split('-');
         var x = coord[0];
@@ -41,6 +41,17 @@ $(function () {
         }
         else
             $('#attack').removeClass('hidden');
+    })
+
+    $('.takable').click(function(){
+        var coord = $(this).attr('value').split('-');
+        var x = coord[0];
+        var y = coord[1];
+
+        $("#xSelected").attr('value',x);
+        $("#ySelected").attr('value',y);
+
+        $('#take').removeClass('hidden');
     })
 
 

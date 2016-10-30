@@ -100,7 +100,9 @@ class FightersTable extends Table
 
     }
 
-    public function FighterTakeObject($idFighter, $idTool)
+
+    // TODO Retirer l'id du fighter quand un objet est "écrasé"
+    public function takeTool($idFighter, $idTool)
     {
         $fighter = $this->get($idFighter);
         $tools = TableRegistry::get('Tools');
@@ -120,16 +122,16 @@ class FightersTable extends Table
 
 
         switch ($ToolType) {
-            case 'Health':
+            case 'health':
                 $fighter->skill_health += $ToolBonus;
                 $events->create_event("$fighterName augmente Skill_Health de $ToolBonus", $fighter_x, $fighter_y);
                 break;
-            case 'Strength':
+            case 'strength':
                 $fighter->skill_strength += $ToolBonus;
                 $events->create_event("$fighterName augmente Skill_Strength de $ToolBonus", $fighter_x, $fighter_y);
 
                 break;
-            case 'Sight':
+            case 'sight':
                 $fighter->skill_sight += $ToolBonus;
                 $events->create_event("$fighterName augmente Skill_Sight de $ToolBonus", $fighter_x, $fighter_y);
                 break;
@@ -364,6 +366,9 @@ class FightersTable extends Table
                 }
                 if ((abs($i - $x) + abs($j - $y)) == 1) {
                     $fullMatrice[$i][$j][] = 'Adjacent';
+                }
+                if(($i==$x)&&($j==$y)){
+                    $fullMatrice[$i][$j][] = 'Self';
                 }
             }
         }

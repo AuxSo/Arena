@@ -19,6 +19,8 @@ class ArenasController extends AppController
 
     public function login()
     {
+        $this->request->session()->write('myFighterId', 1);
+        $this->request->session()->write('myPlayerId', '8mm12z2j-3rqe-zil1-vz6r-i81gz4o8qa9t');
 
         $this->loadModel('Players');
 
@@ -61,11 +63,11 @@ class ArenasController extends AppController
 
         $this->set('bestFighter', $this->Fighters->getBestFighter());
         $this->set('myFighterById', $this->Fighters->getFighterById(2));
-        $this->set('myFightersByPlayer', $this->Fighters->getFightersByPlayer('545f827c-576c-4dc5-ab6d-27c33186dc3e'));
+        $this->set('myFightersByPlayer', $this->Fighters->getFightersByPlayer($this->request->session()->read('myPlayerId')));
 
 //        $this->Fighters->moveFighter(2, 3, 5);
-        $this->Fighters->FighterTakeObject(1, 1);
-        $this->Fighters->attack(1, 2);
+//        $this->Fighters->FighterTakeObject(1, 1);
+//        $this->Fighters->attack(1, 2);
         //$this->Fighters->fighterDead(2);
         //$this->Fighters->fighterProgression(1,1);
 
@@ -76,23 +78,40 @@ class ArenasController extends AppController
     {
 
         $this->loadModel('Fighters');
+        $this->loadModel('Tools');
 
-
+        // Traitement des actions
         if ($this->request->is('post')) {
+            // En cas de mouvement du combattant
             if ($this->request->data('move')) {
                 $this->Fighters->moveFighter($this->request->session()->read('myFighterId'), $this->request->data('xSelected'), $this->request->data('ySelected'));
             }
+            // En cas d'attaque du combattant
             if ($this->request->data('attack')) {
                 $this->Fighters->attack($this->request->session()->read('myFighterId'),
                     $this->Fighters->getFighterByCoord($this->request->data('xSelected'),
                         $this->request->data('ySelected'))->id);
             }
+            // En cas de ramassage d'un objet
+            if($this->request->data('take')){
+                $this->Fighters->takeTool($this->request->session()->read('myFighterId'),
+                    $this->Tools->getToolByCoord($this->request->data('xSelected'),
+                        $this->request->data('ySelected'))->id);
+            }
         }
 
+        // Le combattant actuellement sélectionné
+        $this->set('myFighter', $this->Fighters->get($this->request->session()->read('myFighterId')));
 
         //récupère les constantes de taille du terrain$this->Fighters->ARENA_HEIGHT
         $this->set('arenaWidth', 15);
         $this->set('arenaHeight', 10);
+
+        // The tools owned by the fighter whose id is given in param (here 1 as test)
+        // The chosen fighter will be stored in a session variable
+        $this->set('sightTool', $this->Tools->getSightTool($this->request->session()->read('myFighterId')));
+        $this->set('strengthTool', $this->Tools->getStrengthTool($this->request->session()->read('myFighterId')));
+        $this->set('healthTool', $this->Tools->getHealthTool($this->request->session()->read('myFighterId')));
 
         //stock tous les elements à afficher dans la variable tabArenaElements (DEBUG)
         $this->set('tabArenaElements', $this->Fighters->getArenaElements());

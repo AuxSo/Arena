@@ -24,6 +24,20 @@ class ToolsTable extends Table
         return $tabTools;
     }
 
+    /**
+     *
+     */
+    public function getToolByCoord($x, $y)
+    {
+        $tabTools = $this->getTools();
+        foreach($tabTools as $tool){
+            if(($x==$tool->coordinate_x)&&($y==$tool->coordinate_y)){
+                return $tool;
+            }
+        }
+        return $tool;
+    }
+
 
     /**
      * Returns the tool owned by the fighter that increases his/her sight

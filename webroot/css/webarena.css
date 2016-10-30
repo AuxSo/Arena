@@ -2,7 +2,6 @@
 
 table {
     width: auto;
-    margin: 40px auto;
 }
 
 tr {
@@ -47,9 +46,34 @@ dt, dd {
     display: none;
 }
 
+/* Sight */
 .infoBlock {
 }
 
 .clickable {
     cursor: pointer;
+}
+
+#sightMain {
+    display: flex;
+}
+
+#myInfos {
+    flex-grow: 1;
+}
+
+#arena {
+    flex-shrink: 0;
+}
+
+#otherInfo {
+    flex-grow: 1;
+}
+
+#midColumn {
+    display : flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border : none;
 }
