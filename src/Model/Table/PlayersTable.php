@@ -41,6 +41,7 @@ class PlayersTable extends Table
                 return false;
             }
         }
+        return true;
 
     }
 
