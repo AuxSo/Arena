@@ -18,18 +18,29 @@ class ArenasController extends AppController
 
     public function login()
     {
-        $this->request->session()->write('myFighterId', 1);
-        $this->request->session()->write('myPlayerId', '8mm12z2j-3rqe-zil1-vz6r-i81gz4o8qa9t');
+
         $this->loadModel('Players');
 
         $data_post = $this->request->is('post');
-        $data = $this->request->data;
+        if ($this->request->data('inscription')) {
+            $data_inscription = $this->request->data;
+            $inscrit = $this->Players->inscription($data_post, $data_inscription);
+            if ($inscrit) {
 
-        $inscrit = $this->Players->inscription($data_post, $data);
-        if ($inscrit) {
-
-            return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'index']);
+            }
         }
+
+        if ($this->request->data('connexion')) {
+            $data_connexion = $this->request->data;
+            $this->Players->connexion($data_post, $data_connexion);
+            // A MODIFIER
+            $this->request->session()->write('myFighterId', 1);
+            $this->request->session()->write('myPlayerId', '8mm12z2j-3rqe-zil1-vz6r-i81gz4o8qa9t');
+        }
+
+
+
     }
 
     public function fighter()
