@@ -20,19 +20,28 @@ class PlayersTable extends Table
 
     public function inscription($data_post, $request_data)
     {
-
-
         $player = $this->newEntity();
         if ($data_post) {
             $player = $this->patchEntity($player, $request_data);
             $player->id = $this->getRandomPlayerId(); //Mettre l'id random
 
             if ($this->save($player)) {
-
                 return true;
             }
 
         }
+
+    }
+
+    public function isEmailUnique($email){
+        $players = $this->find('all');
+        $tabPlayers = $players->toArray();
+        foreach($tabPlayers as $thisPlayer){
+            if($email == $thisPlayer->email){
+                return false;
+            }
+        }
+        return true;
 
     }
 
