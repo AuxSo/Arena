@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use App\Model\Table\FightersTable;
+use App\Model\Table\PlayersTable;
 
 /**
  * Personal Controller
@@ -18,6 +19,7 @@ class ArenasController extends AppController
 
     public function login()
     {
+        $this->loadModel('Players');
         $this->request->session()->write('myFighterId', 1);
         $this->request->session()->write('myPlayerId', '8mm12z2j-3rqe-zil1-vz6r-i81gz4o8qa9t');
         $this->loadModel('Players');
@@ -30,6 +32,8 @@ class ArenasController extends AppController
 
             return $this->redirect(['action' => 'index']);
         }
+        $this->request->session()->write('myPlayerId', '545f827c-576c-4dc5-ab6d-27c33186dc3e');
+        $this->set('playerByEmail', $this->Players->getPlayerByEmail('rajaTest@gmail.com'));
     }
 
     public function fighter()

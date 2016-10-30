@@ -1,8 +1,11 @@
 <?php
+
 // src/Model/Table/UsersTable.php
 namespace App\Model\Table;
 
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
+use PhpParser\Node\Expr\Cast\Array_;
 use Cake\Validation\Validator;
 
 class PlayersTable extends Table
@@ -58,7 +61,29 @@ class PlayersTable extends Table
                 return false;
         }
         return true;
+
     }
+
+    /**
+     * Fonction qui retourne le player qui a pour Id la variable récupérée en paramètre
+     * @param $email
+     * @return array
+     */
+    public function getPlayerByEmail($email)
+    {
+        $player= $this->find('all')->order('email desc');
+        $tabPlayer = $player->toArray();
+        $playerByEmail=null;
+        foreach ($tabPlayer as $key => $myPlayer) {
+            if ($myPlayer['email'] == $email) {
+                $playerByEmail[] = $myPlayer;
+            }
+        }
+        return $playerByEmail;
+    }
+
+
+
 
 }
 ?>

@@ -1,3 +1,4 @@
+
 connexion
 <section id="actions">
     <form method= "post">
@@ -8,3 +9,8 @@ connexion
         <input  type="submit" id="inscription" name="inscription" value="inscription">
     </form>
 </section>
+
+<header> Connexion / Inscription </header>
+
+<?php pr($playerByEmail); ?>
+
