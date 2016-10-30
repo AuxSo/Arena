@@ -1,5 +1,6 @@
 <?php
 namespace App\Controller;
+
 use App\Controller\AppController;
 use App\Model\Table\FightersTable;
 
@@ -17,8 +18,8 @@ class ArenasController extends AppController
 
     public function login()
     {
-        //$this->request->session()->write('myFighterId', 1);
-        //$this->request->session()->write('myPlayerId', '545f827c-576c-4dc5-ab6d-27c33186dc3e');
+        $this->request->session()->write('myFighterId', 1);
+        $this->request->session()->write('myPlayerId', '8mm12z2j-3rqe-zil1-vz6r-i81gz4o8qa9t');
         $this->loadModel('Players');
 
         $data_post = $this->request->is('post');
@@ -42,17 +43,17 @@ class ArenasController extends AppController
 
         // The tools owned by the fighter whose id is given in param (here 1 as test)
         // The chosen fighter will be stored in a session variable
-        $this->set('sightTool',$this->Tools->getSightTool(1));
-        $this->set('strengthTool',$this->Tools->getStrengthTool(1));
-        $this->set('healthTool',$this->Tools->getHealthTool(1));
+        $this->set('sightTool', $this->Tools->getSightTool($this->request->session()->read('myFighterId')));
+        $this->set('strengthTool', $this->Tools->getStrengthTool($this->request->session()->read('myFighterId')));
+        $this->set('healthTool', $this->Tools->getHealthTool($this->request->session()->read('myFighterId')));
 
-        $this->set('bestFighter',$this->Fighters->getBestFighter());
-        $this->set('myFighterById',$this->Fighters->getFighterById(2));
-        $this->set('myFightersByPlayer',$this->Fighters->getFightersByPlayer('545f827c-576c-4dc5-ab6d-27c33186dc3e'));
+        $this->set('bestFighter', $this->Fighters->getBestFighter());
+        $this->set('myFighterById', $this->Fighters->getFighterById(2));
+        $this->set('myFightersByPlayer', $this->Fighters->getFightersByPlayer('545f827c-576c-4dc5-ab6d-27c33186dc3e'));
 
 //        $this->Fighters->moveFighter(2, 3, 5);
-        $this->Fighters->FighterTakeObject(1,1);
-        $this->Fighters->attack(1,2);
+        $this->Fighters->FighterTakeObject(1, 1);
+        $this->Fighters->attack(1, 2);
         //$this->Fighters->fighterDead(2);
         //$this->Fighters->fighterProgression(1,1);
 
@@ -65,10 +66,16 @@ class ArenasController extends AppController
         $this->loadModel('Fighters');
 
 
-        if($this->request->is('post')){
-            $this->Fighters->moveFighter($this->request->session()->read('myFighterId'),$this->request->data('xSelected'),$this->request->data('ySelected'));
+        if ($this->request->is('post')) {
+            if ($this->request->data('move')) {
+                $this->Fighters->moveFighter($this->request->session()->read('myFighterId'), $this->request->data('xSelected'), $this->request->data('ySelected'));
+            }
+            if ($this->request->data('attack')) {
+                $this->Fighters->attack($this->request->session()->read('myFighterId'),
+                    $this->Fighters->getFighterByCoord($this->request->data('xSelected'),
+                        $this->request->data('ySelected'))->id);
+            }
         }
-
 
 
         //récupère les constantes de taille du terrain$this->Fighters->ARENA_HEIGHT
@@ -79,13 +86,12 @@ class ArenasController extends AppController
         $this->set('tabArenaElements', $this->Fighters->getArenaElements());
         //stock dans une matrice les elements à afficher dans la vue
         //$this->set('matrice', $this->Fighters->getMatrice());
-        if($this->request->session()->check('myFighterId')){
+        if ($this->request->session()->check('myFighterId')) {
             $myFighter = $this->Fighters->getFighterById($this->request->session()->read('myFighterId'));
-            $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible($myFighter->coordinate_x,$myFighter->coordinate_y,$myFighter->skill_sight));
-            $this->set('matrice', $this->Fighters->getMatriceVisible($myFighter->coordinate_x,$myFighter->coordinate_y,$myFighter->skill_sight));
-        }
-        else
-            $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible(5,5,2));
+            $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible($myFighter->coordinate_x, $myFighter->coordinate_y, $myFighter->skill_sight));
+            $this->set('matrice', $this->Fighters->getMatriceVisible($myFighter->coordinate_x, $myFighter->coordinate_y, $myFighter->skill_sight));
+        } else
+            $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible(5, 5, 2));
     }
 
     public function diary()

@@ -33,8 +33,9 @@
 
 <section id="actions">
     <form method= "post">
-        <input class="hidden" type="text" name="xSelected" id="xSelected">
-        <input class="hidden" type="text" name="ySelected" id="ySelected">
+        <input type="hidden" name="xSelected" id="xSelected">
+        <input type="hidden" name="ySelected" id="ySelected">
+        <input type="hidden" name="enemy" id="enemy">
         <input class="hidden" type="submit" id="attack" name="attack" value="attack">
         <input class="hidden" type="submit" id="move" name="move" value="move">
     </form>

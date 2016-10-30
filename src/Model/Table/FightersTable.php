@@ -387,4 +387,15 @@ class FightersTable extends Table
         }
         return $fullMatrice;
     }
+
+    public function getFighterByCoord($x, $y)
+    {
+        $temp = $this->getElementsByCoord($x, $y);
+        foreach ($temp as $element) {
+            if ($element->xp) {
+                $fighter = $element;
+            }
+        }
+        return $fighter;
+    }
 }
