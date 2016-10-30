@@ -27,11 +27,11 @@ class ArenasController extends AppController
             $data_inscription = $this->request->data;
 
             if (!filter_var($data_inscription['email'], FILTER_VALIDATE_EMAIL)) {
-                $this->Flash->set('Veuillez entrer un email valide');
+                $this->Flash->error('Veuillez entrer un email valide');
             }
             else{
                 if(!$this->Players->isEmailUnique($data_inscription['email'])){
-                    $this->Flash->set('Cet email est déjà lié à un joueur');
+                    $this->Flash->error('Cet email est déjà lié à un joueur');
                 }
                 else{
                     $inscrit = $this->Players->inscription($data_post, $data_inscription);
