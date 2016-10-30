@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use App\Model\Table\FightersTable;
+use App\Model\Table\PlayersTable;
 
 /**
  * Personal Controller
