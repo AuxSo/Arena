@@ -26,6 +26,7 @@ class ArenasController extends AppController
         if ($this->request->data('inscription')) {
             $data_inscription = $this->request->data;
             $inscrit = $this->Players->inscription($data_post, $data_inscription);
+            $this->Flash->success('Votre compte a bien été créé');
             if ($inscrit) {
 
                 return $this->redirect(['action' => 'index']);
