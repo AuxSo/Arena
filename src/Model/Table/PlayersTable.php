@@ -33,17 +33,61 @@ class PlayersTable extends Table
 
     }
 
-    public function isEmailUnique($email){
+    public function isEmailUnique($email)
+    {
         $players = $this->find('all');
         $tabPlayers = $players->toArray();
-        foreach($tabPlayers as $thisPlayer){
-            if($email == $thisPlayer->email){
+        foreach ($tabPlayers as $thisPlayer) {
+            if ($email == $thisPlayer->email) {
                 return false;
             }
         }
+
         return true;
+    }
+
+    public function connexion($data_post, $request_data)
+    {
+
+        $player = $this->newEntity();
+        if ($data_post) {
+
+            return $player['email'];
+
+        }
+        else return "test";
+
 
     }
+
+
+    /**
+     * Fonction qui retourne le player qui a pour Id la variable récupérée en paramètre
+     * @param $email
+     * @return array
+     */
+    public function getPlayerByEmail($email)
+    {
+        $player= $this->find('all')->order('email desc');
+        $tabPlayer = $player->toArray();
+        $playerByEmail=null;
+        foreach ($tabPlayer as $key => $myPlayer) {
+            if ($myPlayer['email'] == $email) {
+                $playerByEmail = $myPlayer;
+            }
+        }
+        return $playerByEmail;
+    }
+
+    public function checkConnexion($email, $password) {
+        $myplayer = $this->getPlayerByEmail($email);
+
+        if (!empty($myplayer) && (!strcmp($myplayer->password, $password))) {
+            return true;
+        }
+        else return false;
+    }
+
 
     public function getRandomPlayerId()
     {
@@ -73,22 +117,38 @@ class PlayersTable extends Table
 
     }
 
+
     /**
-     * Fonction qui retourne le player qui a pour Id la variable récupérée en paramètre
+     * Fonction qui retourne le mot de passe correspondant a lemail récupérée en paramètre
      * @param $email
-     * @return array
+     * @return null
      */
-    public function getPlayerByEmail($email)
+    public function getPasswordByEmail($email)
     {
+        $player= $this->find('all')->order('email desc');
+        $tabPlayer = $player->toArray();
+        $passwordByEmail=null;
+        foreach ($tabPlayer as $key => $myPlayer) {
+            if ($myPlayer['email'] == $email) {
+
+                $passwordByEmail= $myPlayer->password;
+            }
+        }
+        return $passwordByEmail;
+    }
+
+    public function getPlayerIdbyEmail($email) {
+
         $player= $this->find('all')->order('email desc');
         $tabPlayer = $player->toArray();
         $playerByEmail=null;
         foreach ($tabPlayer as $key => $myPlayer) {
             if ($myPlayer['email'] == $email) {
-                $playerByEmail[] = $myPlayer;
+
+                $idByEmail= $myPlayer->id;
             }
         }
-        return $playerByEmail;
+        return $idByEmail;
     }
 
 

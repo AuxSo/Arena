@@ -30,31 +30,45 @@ class ArenasController extends AppController
 
             if (!filter_var($data_inscription['email'], FILTER_VALIDATE_EMAIL)) {
                 $this->Flash->error('Veuillez entrer un email valide');
-            }
-            else{
-                if(!$this->Players->isEmailUnique($data_inscription['email'])){
+            } else {
+                if (!$this->Players->isEmailUnique($data_inscription['email'])) {
                     $this->Flash->error('Cet email est déjà lié à un joueur');
-                }
-                else{
+                } else {
                     $inscrit = $this->Players->inscription($data_post, $data_inscription);
                     if ($inscrit) {
                         $this->Flash->success('Votre compte a bien été créé');
                         return $this->redirect(['action' => 'index']);
                     }
                 }
+                $inscrit = $this->Players->inscription($data_post, $data_inscription);
+
+                if ($inscrit) {
+
+                    return $this->redirect(['action' => 'index']);
+                    $this->Flash->success('Votre compte a bien été créé');
+
+                }
+            }
+
+            // A MODIFIER
+            //$this->request->session()->write('myFighterId', 1);
+            //$this->request->session()->write('myPlayerId', '8mm12z2j-3rqe-zil1-vz6r-i81gz4o8qa9t');
+        } else if ($this->request->data('connexion')) {
+
+            $data_connexion = $this->request;
+            //= $this->Players->connexion($data_post, $data_connexion);
+
+            if ($data_connexion->data('email') && $data_connexion->data('password')) {
+
+                if ($this->Players->checkConnexion($this->request->data['email'], $this->request->data['password'])) {
+                    $this->Flash->success('Vous etes bien connectée');
+                    return $this->redirect(['action' => 'index']);
+                } else {
+                    $this->Flash->error('Erreur demail ou password');
+                    return $this->redirect(['action' => 'index']);
+                }
             }
         }
-
-        if ($this->request->data('connexion')) {
-            $data_connexion = $this->request->data;
-            $this->Players->connexion($data_post, $data_connexion);
-            // A MODIFIER
-            $this->request->session()->write('myFighterId', 1);
-            $this->request->session()->write('myPlayerId', '8mm12z2j-3rqe-zil1-vz6r-i81gz4o8qa9t');
-        }
-
-
-
     }
 
     public function fighter()
