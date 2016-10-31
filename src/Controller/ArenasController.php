@@ -117,7 +117,6 @@ class ArenasController extends AppController
     {
         //Redirection vers la connexion si l'utilisateur n'est pas connecté (c'est qu'il a voulu accéder à la page via l'url)
         if(!$this->request->session()->check('myPlayerId')){
-            pr("coucou");
             $this->redirect(['action' => 'login']);
         }
         //Si l'utilisateur est connecté...
