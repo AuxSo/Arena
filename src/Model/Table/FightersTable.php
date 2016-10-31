@@ -128,7 +128,7 @@ class FightersTable extends Table
                         $tool->fighter_id = $idFighter; // On assigne à l'objet l'id du fighter qui le prend.
                         $fighter->skill_health += $toolBonus;
                         $events->create_event("$fighterName takes a $toolType tool", $fighter_x, $fighter_y);
-                        $diff = $toolBonus-$oldTool->bonus;
+                        $diff = $toolBonus - $oldTool->bonus;
                         $events->create_event("$fighterName increases $toolType skill by $diff", $fighter_x, $fighter_y);
                     } else {
                         return false;
@@ -153,7 +153,7 @@ class FightersTable extends Table
                         $tool->fighter_id = $idFighter; // On assigne à l'objet l'id du fighter qui le prend.
                         $fighter->skill_strength += $toolBonus;
                         $events->create_event("$fighterName takes a $toolType tool", $fighter_x, $fighter_y);
-                        $diff = $toolBonus-$oldTool->bonus;
+                        $diff = $toolBonus - $oldTool->bonus;
                         $events->create_event("$fighterName increases $toolType skill by $diff", $fighter_x, $fighter_y);
                     } else {
                         return false;
@@ -210,8 +210,6 @@ class FightersTable extends Table
 
         $fighterattackedLevel = $fighterattacked->level;
         $fighterattackedName = $fighterattacked->name;
-        $fighterattacked_x = $fighterattacked->coordinate_x;
-        $fighterattacked_y = $fighterattacked->coordinate_y;
         $fighterattackedHealth = $fighterattacked->current_health;
 
         $randomNumber = rand(1, 20);
@@ -223,25 +221,27 @@ class FightersTable extends Table
             $fighterattacked->current_health -= $myfighterStrength; //L'attaqué perd de la vie
 
 
-            $eventName = "Attaque réussie de $myfighterName sur $fighterattackedName";
+            $eventName = "$myfighterName attacks $fighterattackedName";
             $events->create_event($eventName, $myfighter_x, $myfighter_y);
-
+            $result = 1;
             //Si l'attaqué meurt
             if ($fighterattackedHealth - $myfighterStrength = 0) {
                 $myfighter->xp += $fighterattackedLevel;
                 $this->fighterDead($fighterAttackedId);
-
+                $eventName = "$myfighterName kills $fighterattackedName";
+                $events->create_event($eventName, $myfighter_x, $myfighter_y);
+                $result = 2;
             }
         } else {
-
-
-            $eventName = "Attaque raté de $myfighterName sur $fighterattackedName";
+            $eventName = "$myfighterName fails to attack $fighterattackedName";
             $events->create_event($eventName, $myfighter_x, $myfighter_y);
+            $result = 0;
         }
 
         $this->save($myfighter);
         $this->save($fighterattacked);
 
+        return $result;
 
     }
 
@@ -255,11 +255,34 @@ class FightersTable extends Table
         $myfighter_x = $myfighter->coordinate_x;
         $myfighter_y = $myfighter->coordinate_y;
 
-        if ($myFighterHealth == 0) {
-            $this->delete($myfighter);
-            $eventName = "Mort de $myfighterName";
-            $events->create_event($eventName, $myfighter_x, $myfighter_y);
+        $eventName = "Death of $myfighterName";
+        $events->create_event($eventName, $myfighter_x, $myfighter_y);
+        $this->reset($idFighter);
+
+        $this->save($myfighter);
+
+    }
+
+    public function reset($idFighter)
+    {
+        $Tools = TableRegistry::get('Tools');
+
+        $myfighter = $this->get($idFighter);
+        $fighterTools = $Tools->getFighterTools($idFighter);
+        foreach ($fighterTools as $tool) {
+            $tool->fighter_id = null;
         }
+        $myfighter->level = 1;
+        $myfighter->xp = 0;
+        $myfighter->skill_sight = 0;
+        $myfighter->skill_strength = 1;
+        $myfighter->skill_health = 3;
+        $myfighter->current_health = 0;
+
+        while ($this->getElementsByCoord($myfighter->coordinate_x = rand(0, $this->ARENA_WIDTH), $myfighter->coordinate_y = rand(0, $this->ARENA_HEIGHT)) != null) ;
+
+        $this->save($myfighter);
+
     }
 
     public function fighterProgression($idFighter, $choice)
@@ -371,8 +394,8 @@ class FightersTable extends Table
      */
     public function getMatrice()
     {
-        for ($i = 0; $i < $this->ARENA_HEIGHT; $i++) {
-            for ($j = 0; $j < $this->ARENA_WIDTH; $j++) {
+        for ($j = 0; $j < $this->ARENA_HEIGHT; $j++) {
+            for ($i = 0; $i < $this->ARENA_WIDTH; $i++) {
                 $matrice[$i][$j] = $this->getElementsByCoord($i, $j);
             }
         }
@@ -386,8 +409,8 @@ class FightersTable extends Table
     public function getOutputMatrice()
     {
         $matrice = $this->getMatrice();
-        for ($i = 0; $i < $this->ARENA_HEIGHT; $i++) {
-            for ($j = 0; $j < $this->ARENA_WIDTH; $j++) {
+        for ($j = 0; $j < $this->ARENA_HEIGHT; $j++) {
+            for ($i = 0; $i < $this->ARENA_WIDTH; $i++) {
                 if ($matrice[$i][$j] != false) {
                     foreach ($matrice[$i][$j] as $caseElement) {
                         if (isset($caseElement->xp)) {
@@ -412,8 +435,8 @@ class FightersTable extends Table
     {
         $fullMatrice = $this->getOutputMatrice();
 
-        for ($i = 0; $i < $this->ARENA_HEIGHT; $i++) {
-            for ($j = 0; $j < $this->ARENA_WIDTH; $j++) {
+        for ($j = 0; $j < $this->ARENA_HEIGHT; $j++) {
+            for ($i = 0; $i < $this->ARENA_WIDTH; $i++) {
                 if ((abs($i - $x) + abs($j - $y)) > $view) {
                     $fullMatrice[$i][$j] = ['Hidden'];
                 }
@@ -437,8 +460,8 @@ class FightersTable extends Table
     {
         $fullMatrice = $this->getMatrice();
 
-        for ($i = 0; $i < $this->ARENA_HEIGHT; $i++) {
-            for ($j = 0; $j < $this->ARENA_WIDTH; $j++) {
+        for ($j = 0; $j < $this->ARENA_HEIGHT; $j++) {
+            for ($i = 0; $i < $this->ARENA_WIDTH; $i++) {
                 if ((abs($i - $x) + abs($j - $y)) > $view)
                     $fullMatrice[$i][$j] = 'toFarAway';
             }
@@ -449,11 +472,13 @@ class FightersTable extends Table
     public function getFighterByCoord($x, $y)
     {
         $temp = $this->getElementsByCoord($x, $y);
+        $fighter = null;
         foreach ($temp as $element) {
-            if ($element->xp) {
+            if ($element->player_id) {
                 $fighter = $element;
             }
         }
+
         return $fighter;
     }
 }

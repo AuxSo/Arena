@@ -132,15 +132,26 @@ class ArenasController extends AppController
             }
             // En cas d'attaque du combattant
             if ($this->request->data('attack')) {
-                $this->Fighters->attack($this->request->session()->read('myFighterId'),
+                switch ($this->Fighters->attack($this->request->session()->read('myFighterId'),
                     $this->Fighters->getFighterByCoord($this->request->data('xSelected'),
-                        $this->request->data('ySelected'))->id);
+                        $this->request->data('ySelected'))->id)) {
+                    case 0 :
+                        $this->Flash->error('Your attack failed.');
+                        break;
+                    case 1 :
+                        $this->Flash->success('Your attack succeeded.');
+                        break;
+                    case 2 :
+                        $this->Flash->success('You killed the fighter.');
+                        break;
+                }
             }
             // En cas de ramassage d'un objet
-            if($this->request->data('take')){
-                if(!($this->Fighters->takeTool($this->request->session()->read('myFighterId'),
+            if ($this->request->data('take')) {
+                if (!($this->Fighters->takeTool($this->request->session()->read('myFighterId'),
                     $this->Tools->getToolByCoord($this->request->data('xSelected'),
-                        $this->request->data('ySelected'))->id))) {
+                        $this->request->data('ySelected'))->id))
+                ) {
                     $this->Flash->error('This tool will not improve your current skills.');
                 };
             }
@@ -155,8 +166,8 @@ class ArenasController extends AppController
                 $this->set('myFighter', $this->Fighters->get($this->request->session()->read('myFighterId')));
 
                 //récupère les constantes de taille du terrain$this->Fighters->ARENA_HEIGHT
-                $this->set('arenaWidth', 15);
-                $this->set('arenaHeight', 10);
+                $this->set('arenaWidth', $this->Fighters->ARENA_WIDTH);
+                $this->set('arenaHeight', $this->Fighters->ARENA_HEIGHT);
 
                 // The tools owned by the fighter whose id is given in param (here 1 as test)
                 // The chosen fighter will be stored in a session variable
