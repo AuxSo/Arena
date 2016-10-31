@@ -19,10 +19,14 @@ class ArenasController extends AppController
 
     public function login()
     {
-        $this->request->session()->write('myFighterId', 1);
-        $this->request->session()->write('myPlayerId', '8mm12z2j-3rqe-zil1-vz6r-i81gz4o8qa9t');
+        //Si on est connecté, on se déconnecte
+        if($this->request->session()->read('myPlayerId')){
+            $this->request->session()->write('myFighterId', null);
+            $this->request->session()->write('myPlayerId', null);
+        }
 
         $this->loadModel('Players');
+        $this->loadModel('Fighters');
 
         $data_post = $this->request->is('post');
         if ($this->request->data('inscription')) {
@@ -62,8 +66,17 @@ class ArenasController extends AppController
 
                 if ($this->Players->checkConnexion($this->request->data['email'], $this->request->data['password'])) {
                     $this->Flash->success('Vous etes bien connectée');
+
+                    //enregistrement des variables des variables de session
+                    $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($this->request->data['email'])->id);
+                    if($this->Fighters->getFightersByPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id))
+                        $this->request->session()->write('myFighterId', $this->Fighters->getFightersByPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id)[0]->id);
+                    else
+                        $this->request->session()->write('myFighterId', null);
+
                     return $this->redirect(['action' => 'index']);
-                } else {
+                }
+                else {
                     $this->Flash->error('Erreur demail ou password');
                     return $this->redirect(['action' => 'index']);
                 }

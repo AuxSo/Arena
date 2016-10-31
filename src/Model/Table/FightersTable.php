@@ -97,9 +97,7 @@ class FightersTable extends Table
         $eventName = "Déplacement de $fighterName";
 
         $events->create_event($eventName, $fighter_x, $fighter_y);
-
     }
-
 
     // TODO Retirer l'id du fighter quand un objet est "écrasé"
     public function takeTool($idFighter, $idTool)
