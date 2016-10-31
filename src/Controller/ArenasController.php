@@ -125,25 +125,27 @@ class ArenasController extends AppController
             $this->loadModel('Fighters');
             $this->loadModel('Tools');
 
-            // Traitement des actions
-            if ($this->request->is('post')) {
-                // En cas de mouvement du combattant
-                if ($this->request->data('move')) {
-                    $this->Fighters->moveFighter($this->request->session()->read('myFighterId'), $this->request->data('xSelected'), $this->request->data('ySelected'));
-                }
-                // En cas d'attaque du combattant
-                if ($this->request->data('attack')) {
-                    $this->Fighters->attack($this->request->session()->read('myFighterId'),
-                        $this->Fighters->getFighterByCoord($this->request->data('xSelected'),
-                            $this->request->data('ySelected'))->id);
-                }
-                // En cas de ramassage d'un objet
-                if($this->request->data('take')){
-                    $this->Fighters->takeTool($this->request->session()->read('myFighterId'),
-                        $this->Tools->getToolByCoord($this->request->data('xSelected'),
-                            $this->request->data('ySelected'))->id);
-                }
+        // Traitement des actions
+        if ($this->request->is('post')) {
+            // En cas de mouvement du combattant
+            if ($this->request->data('move')) {
+                $this->Fighters->moveFighter($this->request->session()->read('myFighterId'), $this->request->data('xSelected'), $this->request->data('ySelected'));
             }
+            // En cas d'attaque du combattant
+            if ($this->request->data('attack')) {
+                $this->Fighters->attack($this->request->session()->read('myFighterId'),
+                    $this->Fighters->getFighterByCoord($this->request->data('xSelected'),
+                        $this->request->data('ySelected'))->id);
+            }
+            // En cas de ramassage d'un objet
+            if($this->request->data('take')){
+                if(!($this->Fighters->takeTool($this->request->session()->read('myFighterId'),
+                    $this->Tools->getToolByCoord($this->request->data('xSelected'),
+                        $this->request->data('ySelected'))->id))) {
+                    $this->Flash->error('This tool will not improve your current skills.');
+                };
+            }
+        }
 
             //Si le joueur possède au moins un fighter...
             if($this->request->session()->check('myFighterId')){
