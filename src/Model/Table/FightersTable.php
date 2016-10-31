@@ -114,32 +114,87 @@ class FightersTable extends Table
 
         $tool = $tools->get($idTool);
 
-        $tool->fighter_id = $idFighter; // On assigne à l'objet l'id du fighter qui le prend.
-        $ToolType = $tool->type;
-        $ToolBonus = $tool->bonus;
+        $toolType = $tool->type;
+        $toolBonus = $tool->bonus;
 
-        $events->create_event("$fighterName prend l'objet $ToolType", $fighter_x, $fighter_y);
-
-
-        switch ($ToolType) {
+        switch ($toolType) {
             case 'health':
-                $fighter->skill_health += $ToolBonus;
-                $events->create_event("$fighterName augmente Skill_Health de $ToolBonus", $fighter_x, $fighter_y);
+                if ($oldTool = $tools->getHealthTool($idFighter)) {
+                    if ($oldTool->bonus <= $toolBonus) {
+
+                        $oldTool->fighter_id = null;
+                        $fighter->skill_health -= $oldTool->bonus;
+                        $tools->save($oldTool);
+                        $events->create_event("$fighterName releases a $toolType tool", $fighter_x, $fighter_y);
+
+                        $tool->fighter_id = $idFighter; // On assigne à l'objet l'id du fighter qui le prend.
+                        $fighter->skill_health += $toolBonus;
+                        $events->create_event("$fighterName takes a $toolType tool", $fighter_x, $fighter_y);
+                        $diff = $toolBonus-$oldTool->bonus;
+                        $events->create_event("$fighterName increases $toolType skill by $diff", $fighter_x, $fighter_y);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    $tool->fighter_id = $idFighter; // On assigne à l'objet l'id du fighter qui le prend.
+                    $fighter->skill_health += $toolBonus;
+                    $events->create_event("$fighterName takes a $toolType tool", $fighter_x, $fighter_y);
+                    $events->create_event("$fighterName increases $toolType skill by $toolBonus", $fighter_x, $fighter_y);
+                }
+
                 break;
             case 'strength':
-                $fighter->skill_strength += $ToolBonus;
-                $events->create_event("$fighterName augmente Skill_Strength de $ToolBonus", $fighter_x, $fighter_y);
+                if ($oldTool = $tools->getStrengthTool($idFighter)) {
+                    if ($oldTool->bonus <= $toolBonus) {
 
+                        $oldTool->fighter_id = null;
+                        $fighter->skill_strength -= $oldTool->bonus;
+                        $tools->save($oldTool);
+                        $events->create_event("$fighterName releases a $toolType tool", $fighter_x, $fighter_y);
+
+                        $tool->fighter_id = $idFighter; // On assigne à l'objet l'id du fighter qui le prend.
+                        $fighter->skill_strength += $toolBonus;
+                        $events->create_event("$fighterName takes a $toolType tool", $fighter_x, $fighter_y);
+                        $diff = $toolBonus-$oldTool->bonus;
+                        $events->create_event("$fighterName increases $toolType skill by $diff", $fighter_x, $fighter_y);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    $tool->fighter_id = $idFighter; // On assigne à l'objet l'id du fighter qui le prend.
+                    $fighter->skill_strength += $toolBonus;
+                    $events->create_event("$fighterName takes a $toolType tool", $fighter_x, $fighter_y);
+                    $events->create_event("$fighterName increases $toolType skill by $toolBonus", $fighter_x, $fighter_y);
+                }
                 break;
             case 'sight':
-                $fighter->skill_sight += $ToolBonus;
-                $events->create_event("$fighterName augmente Skill_Sight de $ToolBonus", $fighter_x, $fighter_y);
+                if ($oldTool = $tools->getSightTool($idFighter)) {
+                    if ($oldTool->bonus <= $toolBonus) {
+
+                        $oldTool->fighter_id = null;
+                        $fighter->skill_sight -= $oldTool->bonus;
+                        $tools->save($oldTool);
+                        $events->create_event("$fighterName releases a $toolType tool", $fighter_x, $fighter_y);
+
+                        $tool->fighter_id = $idFighter; // On assigne à l'objet l'id du fighter qui le prend.
+                        $fighter->skill_sight += $toolBonus;
+                        $events->create_event("$fighterName takes a $toolType tool", $fighter_x, $fighter_y);
+                        $events->create_event("$fighterName increases $toolType skill by $toolBonus", $fighter_x, $fighter_y);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    $tool->fighter_id = $idFighter; // On assigne à l'objet l'id du fighter qui le prend.
+                    $fighter->skill_sight += $toolBonus;
+                    $events->create_event("$fighterName takes a $toolType tool", $fighter_x, $fighter_y);
+                    $events->create_event("$fighterName increases $toolType skill by $toolBonus", $fighter_x, $fighter_y);
+                }
                 break;
         }
 
         $tools->save($tool);
         $this->save($fighter);
-
+        return true;
     }
 
 
@@ -367,7 +422,7 @@ class FightersTable extends Table
                 if ((abs($i - $x) + abs($j - $y)) == 1) {
                     $fullMatrice[$i][$j][] = 'Adjacent';
                 }
-                if(($i==$x)&&($j==$y)){
+                if (($i == $x) && ($j == $y)) {
                     $fullMatrice[$i][$j][] = 'Self';
                 }
             }

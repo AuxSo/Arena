@@ -119,9 +119,11 @@ class ArenasController extends AppController
             }
             // En cas de ramassage d'un objet
             if($this->request->data('take')){
-                $this->Fighters->takeTool($this->request->session()->read('myFighterId'),
+                if(!($this->Fighters->takeTool($this->request->session()->read('myFighterId'),
                     $this->Tools->getToolByCoord($this->request->data('xSelected'),
-                        $this->request->data('ySelected'))->id);
+                        $this->request->data('ySelected'))->id))) {
+                    $this->Flash->error('This tool will not improve your current skills.');
+                };
             }
         }
 
