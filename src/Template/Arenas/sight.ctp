@@ -39,10 +39,10 @@
     <section id="midColumn">
         <table id="arena">
             <?php
-            for ($i = 0; $i < $arenaHeight; $i++) {
+            for ($j = 0; $j < $arenaHeight; $j++) {
                 ?>
                 <tr> <?php
-                    for ($j = 0; $j < $arenaWidth; $j++) {
+                    for ($i = 0; $i < $arenaWidth; $i++) {
                         ?>
                         <td class="case<?php
                         if (in_array("Fighter", $outputMatrice[$i][$j]) || in_array("Tool", $outputMatrice[$i][$j]) || in_array("Adjacent", $outputMatrice[$i][$j])) {

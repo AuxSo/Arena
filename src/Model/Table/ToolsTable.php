@@ -30,8 +30,8 @@ class ToolsTable extends Table
     public function getToolByCoord($x, $y)
     {
         $tabTools = $this->getTools();
-        foreach($tabTools as $tool){
-            if(($x==$tool->coordinate_x)&&($y==$tool->coordinate_y)){
+        foreach ($tabTools as $tool) {
+            if (($x == $tool->coordinate_x) && ($y == $tool->coordinate_y)) {
                 return $tool;
             }
         }
@@ -79,5 +79,10 @@ class ToolsTable extends Table
             return $tab[0];
         else
             return null;
+    }
+
+    public function getFighterTools($fighterId)
+    {
+        return $this->find('all', ['conditions' => 'fighter_id =' . $fighterId])->toArray();
     }
 }
