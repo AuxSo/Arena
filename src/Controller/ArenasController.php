@@ -14,15 +14,18 @@ class ArenasController extends AppController
 {
     public function index()
     {
-        $this->set('myname', "Romain Baticle");
+
     }
 
     public function login()
     {
-        $this->request->session()->write('myFighterId', 1);
-        $this->request->session()->write('myPlayerId', '8mm12z2j-3rqe-zil1-vz6r-i81gz4o8qa9t');
+        //Si on est connecté, on se déconnecte
+        if($this->request->session()->check('myPlayerId')){
+            $this->request->session()->destroy();
+        }
 
         $this->loadModel('Players');
+        $this->loadModel('Fighters');
 
         $data_post = $this->request->is('post');
         if ($this->request->data('inscription')) {
@@ -62,8 +65,17 @@ class ArenasController extends AppController
 
                 if ($this->Players->checkConnexion($this->request->data['email'], $this->request->data['password'])) {
                     $this->Flash->success('Vous etes bien connectée');
+
+                    //enregistrement des variables des variables de session
+                    $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($this->request->data['email'])->id);
+                    if($this->Fighters->getFightersByPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id))
+                        $this->request->session()->write('myFighterId', $this->Fighters->getFightersByPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id)[0]->id);
+                    else
+                        $this->request->session()->write('myFighterId', null);
+
                     return $this->redirect(['action' => 'index']);
-                } else {
+                }
+                else {
                     $this->Flash->error('Erreur demail ou password');
                     return $this->redirect(['action' => 'index']);
                 }
@@ -73,37 +85,45 @@ class ArenasController extends AppController
 
     public function fighter()
     {
-        $this->loadModel('Fighters');
-        $fighterlist = $this->Fighters->find('all');
+        //Redirection vers la connexion si l'utilisateur n'est pas connecté (c'est qu'il a voulu accéder à la page via l'url)
+        if(!$this->request->session()->check('myPlayerId')){
+            $this->redirect(['action' => 'login']);
+        }
+        //Si l'utilisateur est connecté...
+        else{
+            $this->loadModel('Fighters');
 
+            $this->loadModel('Tools');
+            $this->set('tools', $this->Tools->getTools());
 
-        $this->loadModel('Tools');
-        $this->set('tools', $this->Tools->getTools());
+            //Si le joueur possède au moins un fighter...
+            if($this->request->session()->check('myFighterId')){
 
-        // The tools owned by the fighter whose id is given in param (here 1 as test)
-        // The chosen fighter will be stored in a session variable
-        $this->set('sightTool', $this->Tools->getSightTool($this->request->session()->read('myFighterId')));
-        $this->set('strengthTool', $this->Tools->getStrengthTool($this->request->session()->read('myFighterId')));
-        $this->set('healthTool', $this->Tools->getHealthTool($this->request->session()->read('myFighterId')));
+                // The tools owned by the fighter whose id is given in param (here 1 as test)
+                // The chosen fighter will be stored in a session variable
+                $this->set('sightTool', $this->Tools->getSightTool($this->request->session()->read('myFighterId')));
+                $this->set('strengthTool', $this->Tools->getStrengthTool($this->request->session()->read('myFighterId')));
+                $this->set('healthTool', $this->Tools->getHealthTool($this->request->session()->read('myFighterId')));
 
-        $this->set('bestFighter', $this->Fighters->getBestFighter());
-        $this->set('myFighterById', $this->Fighters->getFighterById(2));
-        $this->set('myFightersByPlayer', $this->Fighters->getFightersByPlayer($this->request->session()->read('myPlayerId')));
-
-//        $this->Fighters->moveFighter(2, 3, 5);
-//        $this->Fighters->FighterTakeObject(1, 1);
-//        $this->Fighters->attack(1, 2);
-        //$this->Fighters->fighterDead(2);
-        //$this->Fighters->fighterProgression(1,1);
-
-
+                $this->set('myFightersByPlayer', $this->Fighters->getFightersByPlayer($this->request->session()->read('myPlayerId')));
+            }
+            else{
+                $this->set('myFightersByPlayer', []);
+            }
+        }
     }
 
     public function sight()
     {
-
-        $this->loadModel('Fighters');
-        $this->loadModel('Tools');
+        //Redirection vers la connexion si l'utilisateur n'est pas connecté (c'est qu'il a voulu accéder à la page via l'url)
+        if(!$this->request->session()->check('myPlayerId')){
+            pr("coucou");
+            $this->redirect(['action' => 'login']);
+        }
+        //Si l'utilisateur est connecté...
+        else{
+            $this->loadModel('Fighters');
+            $this->loadModel('Tools');
 
         // Traitement des actions
         if ($this->request->is('post')) {
@@ -138,36 +158,63 @@ class ArenasController extends AppController
             }
         }
 
-        // Le combattant actuellement sélectionné
-        $this->set('myFighter', $this->Fighters->get($this->request->session()->read('myFighterId')));
+            //Si le joueur possède au moins un fighter...
+            if($this->request->session()->check('myFighterId')){
 
-        //récupère les constantes de taille du terrain$this->Fighters->ARENA_HEIGHT
-        $this->set('arenaWidth', $this->Fighters->ARENA_WIDTH);
-        $this->set('arenaHeight', $this->Fighters->ARENA_HEIGHT);
+                $this->set('fighterExists', true);
 
-        // The tools owned by the fighter whose id is given in param (here 1 as test)
-        // The chosen fighter will be stored in a session variable
-        $this->set('sightTool', $this->Tools->getSightTool($this->request->session()->read('myFighterId')));
-        $this->set('strengthTool', $this->Tools->getStrengthTool($this->request->session()->read('myFighterId')));
-        $this->set('healthTool', $this->Tools->getHealthTool($this->request->session()->read('myFighterId')));
+                // Le combattant actuellement sélectionné
+                $this->set('myFighter', $this->Fighters->get($this->request->session()->read('myFighterId')));
 
-        //stock tous les elements à afficher dans la variable tabArenaElements (DEBUG)
-        $this->set('tabArenaElements', $this->Fighters->getArenaElements());
-        //stock dans une matrice les elements à afficher dans la vue
-        //$this->set('matrice', $this->Fighters->getMatrice());
-        if ($this->request->session()->check('myFighterId')) {
-            $myFighter = $this->Fighters->getFighterById($this->request->session()->read('myFighterId'));
-            $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible($myFighter->coordinate_x, $myFighter->coordinate_y, $myFighter->skill_sight));
-            $this->set('matrice', $this->Fighters->getMatriceVisible($myFighter->coordinate_x, $myFighter->coordinate_y, $myFighter->skill_sight));
-        } else
-            $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible(5, 5, 2));
+                //récupère les constantes de taille du terrain$this->Fighters->ARENA_HEIGHT
+                $this->set('arenaWidth', $this->Fighters->ARENA_WIDTH);
+                $this->set('arenaHeight', $this->Fighters->ARENA_HEIGHT);
+
+                // The tools owned by the fighter whose id is given in param (here 1 as test)
+                // The chosen fighter will be stored in a session variable
+                $this->set('sightTool', $this->Tools->getSightTool($this->request->session()->read('myFighterId')));
+                $this->set('strengthTool', $this->Tools->getStrengthTool($this->request->session()->read('myFighterId')));
+                $this->set('healthTool', $this->Tools->getHealthTool($this->request->session()->read('myFighterId')));
+
+                //stock tous les elements à afficher dans la variable tabArenaElements (DEBUG)
+                $this->set('tabArenaElements', $this->Fighters->getArenaElements());
+                //stock dans une matrice les elements à afficher dans la vue
+                if ($this->request->session()->check('myFighterId')) {
+                    $myFighter = $this->Fighters->getFighterById($this->request->session()->read('myFighterId'));
+                    $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible($myFighter->coordinate_x, $myFighter->coordinate_y, $myFighter->skill_sight));
+                    $this->set('matrice', $this->Fighters->getMatriceVisible($myFighter->coordinate_x, $myFighter->coordinate_y, $myFighter->skill_sight));
+                } else
+                    $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible(5, 5, 2));
+
+            }
+            else{
+                $this->set('fighterExists', false);
+            }
+        }
     }
 
     public function diary()
     {
-        $this->loadModel('Events');
 
-        $this->set('Event', $this->Events->getRecentEvents());
+        //Redirection vers la connexion si l'utilisateur n'est pas connecté (c'est qu'il a voulu accéder à la page via l'url)
+        if(!$this->request->session()->check('myPlayerId')){
+            $this->redirect(['action' => 'login']);
+        }
+        //Si l'utilisateur est connecté...
+        else {
 
+            //Si le joueur possède au moins un fighter...
+            if($this->request->session()->check('myFighterId')){
+                $this->set('fighterExists', true);
+
+                $this->loadModel('Events');
+
+                $this->set('Event', $this->Events->getRecentEvents());
+
+            }
+            else{
+                $this->set('fighterExists', false);
+            }
+        }
     }
 }

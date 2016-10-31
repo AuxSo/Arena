@@ -79,6 +79,8 @@ class PlayersTable extends Table
         return $playerByEmail;
     }
 
+
+
     public function checkConnexion($email, $password) {
         $myplayer = $this->getPlayerByEmail($email);
 

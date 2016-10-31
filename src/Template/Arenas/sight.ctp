@@ -1,4 +1,7 @@
 <main id="sightMain">
+    <h1> Sight</h1>
+    <?php //Si l'utilisateur n'a pas de fighter
+    if($fighterExists){ ?>
     <section id="myInfos">
         <h3>Fighter : <?= $myFighter->name ?></h3>
         <article>
@@ -141,6 +144,11 @@
         }
         ?>
     </section>
+    <?php }
+    else{?>
+        <p> You don't have any fighter... <?= $this->Html->link('Click here to create one right away !', ['controller' => 'Arenas', 'action' => 'fighter']) ?> </p>
+
+    <?php } ?>
 </main>
 
 
