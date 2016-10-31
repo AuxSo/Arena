@@ -20,7 +20,7 @@ class ArenasController extends AppController
     public function login()
     {
         //Si on est connecté, on se déconnecte
-        if($this->request->session()->check('myPlayerId')){
+        if ($this->request->session()->check('myPlayerId')) {
             $this->request->session()->destroy();
         }
 
@@ -68,14 +68,13 @@ class ArenasController extends AppController
 
                     //enregistrement des variables des variables de session
                     $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($this->request->data['email'])->id);
-                    if($this->Fighters->getFightersByPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id))
+                    if ($this->Fighters->getFightersByPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id))
                         $this->request->session()->write('myFighterId', $this->Fighters->getFightersByPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id)[0]->id);
                     else
                         $this->request->session()->write('myFighterId', null);
 
                     return $this->redirect(['action' => 'index']);
-                }
-                else {
+                } else {
                     $this->Flash->error('Erreur demail ou password');
                     return $this->redirect(['action' => 'index']);
                 }
@@ -86,18 +85,17 @@ class ArenasController extends AppController
     public function fighter()
     {
         //Redirection vers la connexion si l'utilisateur n'est pas connecté (c'est qu'il a voulu accéder à la page via l'url)
-        if(!$this->request->session()->check('myPlayerId')){
+        if (!$this->request->session()->check('myPlayerId')) {
             $this->redirect(['action' => 'login']);
-        }
-        //Si l'utilisateur est connecté...
-        else{
+        } //Si l'utilisateur est connecté...
+        else {
             $this->loadModel('Fighters');
 
             $this->loadModel('Tools');
             $this->set('tools', $this->Tools->getTools());
 
             //Si le joueur possède au moins un fighter...
-            if($this->request->session()->check('myFighterId')){
+            if ($this->request->session()->check('myFighterId')) {
 
                 // The tools owned by the fighter whose id is given in param (here 1 as test)
                 // The chosen fighter will be stored in a session variable
@@ -106,8 +104,7 @@ class ArenasController extends AppController
                 $this->set('healthTool', $this->Tools->getHealthTool($this->request->session()->read('myFighterId')));
 
                 $this->set('myFightersByPlayer', $this->Fighters->getFightersByPlayer($this->request->session()->read('myPlayerId')));
-            }
-            else{
+            } else {
                 $this->set('myFightersByPlayer', []);
             }
         }
@@ -116,49 +113,48 @@ class ArenasController extends AppController
     public function sight()
     {
         //Redirection vers la connexion si l'utilisateur n'est pas connecté (c'est qu'il a voulu accéder à la page via l'url)
-        if(!$this->request->session()->check('myPlayerId')){
+        if (!$this->request->session()->check('myPlayerId')) {
             $this->redirect(['action' => 'login']);
-        }
-        //Si l'utilisateur est connecté...
-        else{
+        } //Si l'utilisateur est connecté...
+        else {
             $this->loadModel('Fighters');
             $this->loadModel('Tools');
 
-        // Traitement des actions
-        if ($this->request->is('post')) {
-            // En cas de mouvement du combattant
-            if ($this->request->data('move')) {
-                $this->Fighters->moveFighter($this->request->session()->read('myFighterId'), $this->request->data('xSelected'), $this->request->data('ySelected'));
-            }
-            // En cas d'attaque du combattant
-            if ($this->request->data('attack')) {
-                switch ($this->Fighters->attack($this->request->session()->read('myFighterId'),
-                    $this->Fighters->getFighterByCoord($this->request->data('xSelected'),
-                        $this->request->data('ySelected'))->id)) {
-                    case 0 :
-                        $this->Flash->error('Your attack failed.');
-                        break;
-                    case 1 :
-                        $this->Flash->success('Your attack succeeded.');
-                        break;
-                    case 2 :
-                        $this->Flash->success('You killed the fighter.');
-                        break;
+            // Traitement des actions
+            if ($this->request->is('post')) {
+                // En cas de mouvement du combattant
+                if ($this->request->data('move')) {
+                    $this->Fighters->moveFighter($this->request->session()->read('myFighterId'), $this->request->data('xSelected'), $this->request->data('ySelected'));
+                }
+                // En cas d'attaque du combattant
+                if ($this->request->data('attack')) {
+                    switch ($this->Fighters->attack($this->request->session()->read('myFighterId'),
+                        $this->Fighters->getFighterByCoord($this->request->data('xSelected'),
+                            $this->request->data('ySelected'))->id)) {
+                        case 0 :
+                            $this->Flash->error('Your attack failed.');
+                            break;
+                        case 1 :
+                            $this->Flash->success('Your attack succeeded.');
+                            break;
+                        case 2 :
+                            $this->Flash->success('You killed the fighter.');
+                            break;
+                    }
+                }
+                // En cas de ramassage d'un objet
+                if ($this->request->data('take')) {
+                    if (!($this->Fighters->takeTool($this->request->session()->read('myFighterId'),
+                        $this->Tools->getToolByCoord($this->request->data('xSelected'),
+                            $this->request->data('ySelected'))->id))
+                    ) {
+                        $this->Flash->error('This tool will not improve your current skills.');
+                    };
                 }
             }
-            // En cas de ramassage d'un objet
-            if ($this->request->data('take')) {
-                if (!($this->Fighters->takeTool($this->request->session()->read('myFighterId'),
-                    $this->Tools->getToolByCoord($this->request->data('xSelected'),
-                        $this->request->data('ySelected'))->id))
-                ) {
-                    $this->Flash->error('This tool will not improve your current skills.');
-                };
-            }
-        }
 
             //Si le joueur possède au moins un fighter...
-            if($this->request->session()->check('myFighterId')){
+            if ($this->request->session()->check('myFighterId')) {
 
                 $this->set('fighterExists', true);
 
@@ -185,8 +181,7 @@ class ArenasController extends AppController
                 } else
                     $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible(5, 5, 2));
 
-            }
-            else{
+            } else {
                 $this->set('fighterExists', false);
             }
         }
@@ -196,22 +191,20 @@ class ArenasController extends AppController
     {
 
         //Redirection vers la connexion si l'utilisateur n'est pas connecté (c'est qu'il a voulu accéder à la page via l'url)
-        if(!$this->request->session()->check('myPlayerId')){
+        if (!$this->request->session()->check('myPlayerId')) {
             $this->redirect(['action' => 'login']);
-        }
-        //Si l'utilisateur est connecté...
+        } //Si l'utilisateur est connecté...
         else {
 
             //Si le joueur possède au moins un fighter...
-            if($this->request->session()->check('myFighterId')){
+            if ($this->request->session()->check('myFighterId')) {
                 $this->set('fighterExists', true);
 
                 $this->loadModel('Events');
 
                 $this->set('Event', $this->Events->getRecentEvents());
 
-            }
-            else{
+            } else {
                 $this->set('fighterExists', false);
             }
         }
