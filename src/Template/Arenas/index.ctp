@@ -9,7 +9,7 @@
     <section>
         <article>
 
-                <h1>Bienvenue <?php echo $myname;?> dans WebArena</h1>
+                <h1>Bienvenue dans WebArena</h1>
 
             <p>Bienvenue sur notre jeu Web Arena. </p>
         </article>

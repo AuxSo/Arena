@@ -46,10 +46,10 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <div class="top-bar-section">
         <ul class="right">
             <li> <?= $this->Html->link('Accueil', ['controller' => 'Arenas', 'action' => 'index']) ?></li>
-            <li> <?= $this->Html->link('Fighters', ['controller' => 'Arenas', 'action' => 'fighter']) ?></li>
-            <li> <?= $this->Html->link('Sight', ['controller' => 'Arenas', 'action' => 'sight']) ?></li>
-            <li> <?= $this->Html->link('Diary', ['controller' => 'Arenas', 'action' => 'diary']) ?></li>
-            <?php if($this->request->session()->read('myPlayerId')){ ?>
+            <?php if($this->request->session()->check('myPlayerId')) { ?>
+                <li> <?= $this->Html->link('Fighters', ['controller' => 'Arenas', 'action' => 'fighter']) ?></li>
+                <li> <?= $this->Html->link('Sight', ['controller' => 'Arenas', 'action' => 'sight']) ?></li>
+                <li> <?= $this->Html->link('Diary', ['controller' => 'Arenas', 'action' => 'diary']) ?></li>
                 <li> <?= $this->Html->link('Log out', ['controller' => 'Arenas', 'action' => 'login']) ?></li>
             <?php }
             else {?>
