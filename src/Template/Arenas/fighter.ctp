@@ -1,3 +1,4 @@
+
 <header> Your fighters</header>
 <nav id="fightersNav">
     <ul>
@@ -22,7 +23,16 @@
 foreach ($myFightersByPlayer as $index => $fighter) {
     ?>
     <section class="fighterCard <?= $addedClass ?>" id="<?= $index ?>">
-        <h3>Fighter : <?= $fighter->name ?></h3>
+        <h3><?= $fighter->name ?></h3>
+        <?php if(file_exists(WWW_ROOT . 'img' . DS . 'avatars' . DS . $fighter->id . '.png')){
+            $extension = ".png";
+        } else if (file_exists(WWW_ROOT . 'img' . DS . 'avatars' . DS . $fighter->id . '.jpg')){
+            $extension = ".jpg";
+        } else if (file_exists(WWW_ROOT . 'img' . DS . 'avatars' . DS . $fighter->id . '.jpeg')){
+            $extension = ".jpeg";
+        } else
+            $extension="";?>
+        <?=$this->Html->image("avatars/$fighter->id$extension", ['alt' => 'avatar', 'class' => 'avatar'])?>
         <article>
             <h4>Infos :</h4>
             <dl>
