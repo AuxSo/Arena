@@ -28,18 +28,22 @@ dt, dd {
 }
 
 #fightersNav li {
+}
+
+.tab {
     display: inline-block;
     margin: 5px;
     padding: 0 10px;
     border: solid 1px #000000;
-}
-
-.tab {
-    cursor: pointer;
+    cursor:pointer;
 }
 
 .selected {
     background-color: #80e7ff;
+}
+
+.chosen {
+    border: solid 2px #000000;
 }
 
 .hidden {
@@ -75,13 +79,13 @@ dt, dd {
 }
 
 #midColumn {
-    display : flex;
+    display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    border : none;
+    border: none;
 }
 
 .avatar {
-    height : 200px;
+    height: 200px;
 }

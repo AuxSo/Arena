@@ -72,9 +72,9 @@ class ArenasController extends AppController
                     return $this->redirect(['action' => 'index']);
                 }
             }
-        } else if($this->request->data('lostMdp')){
+        } else if ($this->request->data('lostMdp')) {
             $this->Players->sendPasswordByMail($this->request->data['email']);
-            $this->Flash->succes('Your password has been sent to '.$this->request->data['email']);
+            $this->Flash->succes('Your password has been sent to ' . $this->request->data['email']);
         }
     }
 
@@ -91,11 +91,15 @@ class ArenasController extends AppController
             $this->set('tools', $this->Tools->getTools());
 
             if ($this->request->is('post')) {
-                if(!$this->Fighters->createFighter($this->request->data('name'),$this->request->data('avatar'),$this->request->session()->read('myPlayerId'))){
-                    $this->Flash->error('Could not upload your avatar. Check the extension.');
+                if ($this->request->data('select')) {
+                    $this->request->session()->write('myFighterId',$this->request->data('fighterId'));
                 }
-                else{
-                    $this->Flash->success('Your fighter has been created.');
+                if ($this->request->data('newFighter')) {
+                    if (!$this->Fighters->createFighter($this->request->data('name'), $this->request->data('avatar'), $this->request->session()->read('myPlayerId'))) {
+                        $this->Flash->error('Could not upload your avatar. Check the extension.');
+                    } else {
+                        $this->Flash->success('Your fighter has been created.');
+                    }
                 }
             }
 
@@ -107,6 +111,7 @@ class ArenasController extends AppController
                 $this->set('sightTool', $this->Tools->getSightTool($this->request->session()->read('myFighterId')));
                 $this->set('strengthTool', $this->Tools->getStrengthTool($this->request->session()->read('myFighterId')));
                 $this->set('healthTool', $this->Tools->getHealthTool($this->request->session()->read('myFighterId')));
+                $this->set('myFighter', $this->Fighters->get($this->request->session()->read('myFighterId')));
 
                 $this->set('myFightersByPlayer', $this->Fighters->getFightersByPlayer($this->request->session()->read('myPlayerId')));
             } else {
@@ -208,7 +213,7 @@ class ArenasController extends AppController
                 $this->loadModel('Events');
                 $this->loadModel('Fighters');
                 $myFigter = $this->Fighters->getFighterById($this->request->session()->read('myFighterId'));
-                $this->set('Event', $this->Events->getRecentEventsVisible($myFigter->coordinate_x,$myFigter->coordinate_y,$myFigter->skill_sight));
+                $this->set('Event', $this->Events->getRecentEventsVisible($myFigter->coordinate_x, $myFigter->coordinate_y, $myFigter->skill_sight));
 
             } else {
                 $this->set('fighterExists', false);

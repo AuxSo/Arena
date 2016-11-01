@@ -67,7 +67,7 @@ class FightersTable extends Table
         $tabFighters = $fighter->toArray();
         $fighterById = null;
         foreach ($tabFighters as $key => $myFighter) {
-            if ($fighter['id'] == $id) {
+            if ($myFighter['id'] == $id) {
                 $fighterById = $myFighter;
             }
         }

@@ -1,3 +1,4 @@
+
 <main id="sightMain">
     <h1> Sight</h1>
     <?php //Si l'utilisateur n'a pas de fighter
