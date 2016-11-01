@@ -291,13 +291,25 @@ class FightersTable extends Table
         $myfighter_x = $myfighter->coordinate_x;
         $myfighter_y = $myfighter->coordinate_y;
 
-        $eventName = "Death of $myfighterName";
-        $events->create_event($eventName, $myfighter_x, $myfighter_y);
-        $this->reset($idFighter);
-        $this->delete($myfighter);
-        $this->save($myfighter);
+        if($myFighterHealth==0)
+        {
+            $eventName = "Death of $myfighterName";
+            $events->create_event($eventName, $myfighter_x, $myfighter_y);
+            $this->reset($idFighter);
+            $this->delete($myfighter);
+            $this->save($myfighter);
+
+            return true;
+        }
+        else
+            return false;
+
 
     }
+
+
+
+
 
     public function reset($idFighter)
     {
