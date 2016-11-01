@@ -281,7 +281,7 @@ class FightersTable extends Table
         $eventName = "Death of $myfighterName";
         $events->create_event($eventName, $myfighter_x, $myfighter_y);
         $this->reset($idFighter);
-
+        $this->delete($myfighter);
         $this->save($myfighter);
 
     }
@@ -294,8 +294,11 @@ class FightersTable extends Table
         $fighterTools = $Tools->getFighterTools($idFighter);
         foreach ($fighterTools as $tool) {
             $tool->fighter_id = null;
+            $Tools->save($tool);
         }
-        $myfighter->level = 1;
+
+
+        /*$myfighter->level = 1;
         $myfighter->xp = 0;
         $myfighter->skill_sight = 2;
         $myfighter->skill_strength = 1;
@@ -304,7 +307,7 @@ class FightersTable extends Table
 
         while ($this->getElementsByCoord($myfighter->coordinate_x = rand(0, $this->ARENA_WIDTH), $myfighter->coordinate_y = rand(0, $this->ARENA_HEIGHT)) != null) ;
 
-        $this->save($myfighter);
+        $this->save($myfighter);*/
 
     }
 
