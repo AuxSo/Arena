@@ -102,6 +102,19 @@ class FightersTable extends Table
         return $bestFighters;
     }
 
+    public function getBestFighterbyPlayer($playerId)
+    {
+        $fighter = $this->find('all')->order('level desc');
+        $tabFighters = $fighter->toArray();
+        $fightersByPlayer = null;
+        foreach ($tabFighters as $key => $myFighter) {
+            if ($myFighter['player_id'] == $playerId) {
+                $fightersByPlayer[] = $myFighter;
+            }
+        }
+        return $fightersByPlayer;
+    }
+
 
     //FAIRE FONCTION GET_INDEX pour récupérer l'index du fighter en fonction de son id dans le tableau
     public function moveFighter($id, $coord_x, $coord_y)
