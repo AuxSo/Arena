@@ -198,8 +198,9 @@ class ArenasController extends AppController
                 $this->set('fighterExists', true);
 
                 $this->loadModel('Events');
-
-                $this->set('Event', $this->Events->getRecentEvents());
+                $this->loadModel('Fighters');
+                $myFigter = $this->Fighters->getFighterById($this->request->session()->read('myFighterId'));
+                $this->set('Event', $this->Events->getRecentEventsVisible($myFigter->coordinate_x,$myFigter->coordinate_y,$myFigter->skill_sight));
 
             } else {
                 $this->set('fighterExists', false);

@@ -274,7 +274,7 @@ class FightersTable extends Table
         }
         $myfighter->level = 1;
         $myfighter->xp = 0;
-        $myfighter->skill_sight = 0;
+        $myfighter->skill_sight = 2;
         $myfighter->skill_strength = 1;
         $myfighter->skill_health = 3;
         $myfighter->current_health = 0;

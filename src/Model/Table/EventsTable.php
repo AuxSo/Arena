@@ -24,7 +24,7 @@ class EventsTable extends Table
      */
     public function getRecentEvents()
     {
-        $event = $this->find('all');
+        $event = $this->find('all', ['order' => ['date' => 'DESC']]);
         $tabEvents = $event->toArray();
         $recentDate = Time::yesterday();
         $recentEvents=null;
@@ -36,6 +36,20 @@ class EventsTable extends Table
         }
 
         return $recentEvents;
+    }
+
+    public function getRecentEventsVisible($x, $y, $view)
+    {
+        $recentEvents = $this->getRecentEvents();
+        $recentEventsVisible = null;
+        if($recentEvents){
+            foreach($recentEvents as $myRecentEvent){
+                if( (abs($myRecentEvent['coordinate_x']-$x) + abs($myRecentEvent['coordinate_y']-$y)) <= $view){
+                    $recentEventsVisible[] = $myRecentEvent;
+                }
+            }
+        }
+        return $recentEventsVisible;
     }
 
     public function create_event($name, $coordinate_x, $coordinate_y)
