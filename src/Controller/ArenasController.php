@@ -30,6 +30,7 @@ class ArenasController extends AppController
         $data_post = $this->request->is('post');
         if ($this->request->data('inscription')) {
             $data_inscription = $this->request->data;
+            $this->set('mail', $this->request->data('email'));
 
             if (!filter_var($data_inscription['email'], FILTER_VALIDATE_EMAIL)) {
                 $this->Flash->error('Veuillez entrer un email valide');
@@ -53,11 +54,12 @@ class ArenasController extends AppController
         } else if ($this->request->data('connexion')) {
 
             $data_connexion = $this->request;
+            $this->set('mailCo', $this->request->data('email'));
 
             if ($data_connexion->data('email') && $data_connexion->data('password')) {
 
                 if ($this->Players->checkConnexion($this->request->data['email'], $this->request->data['password'])) {
-                    $this->Flash->success('Vous etes bien connectée');
+                    $this->Flash->success('You are now logged in.');
 
                     //enregistrement des variables des variables de session
                     $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($this->request->data['email'])->id);
@@ -68,7 +70,7 @@ class ArenasController extends AppController
 
                     return $this->redirect(['action' => 'index']);
                 } else {
-                    $this->Flash->error('Erreur demail ou password');
+                    $this->Flash->error('Wrong email - password combination.');
                     return $this->redirect(['action' => 'index']);
                 }
             }

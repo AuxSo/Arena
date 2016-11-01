@@ -110,16 +110,4 @@ if (!empty($myFightersByPlayer)) {
         <input type="submit" name="newFighter" value="create">
     </form>
 </section>
-<!--<h3> Liste des objets :
-</h3>
-<dl>
-    <?php
-/*    foreach ($tools as $tool) {
-        foreach ($tool->toArray() as $key => $info) {
-            */ ?>
-            <dt><?php /*echo $key */ ?></dt>
-            <dd><?php /*echo $info */ ?></dd>
-            <?php
-/*        }
-    } */ ?>
-</dl>-->
+<?php $this->assign('title','My fighters');?>

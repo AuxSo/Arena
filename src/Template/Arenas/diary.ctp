@@ -28,3 +28,4 @@ if ($fighterExists) {
 } else { ?>
     <p> You don't have any fighter... <?= $this->Html->link('Click here to create one right away !', ['controller' => 'Arenas', 'action' => 'fighter']) ?> </p>
 <?php } ?>
+<?php $this->assign('title','Diary');?>

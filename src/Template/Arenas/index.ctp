@@ -9,9 +9,9 @@
     <section>
         <article>
 
-                <h1>Bienvenue dans WebArena</h1>
+                <h1>Welcome to Web Arena</h1>
 
-            <p>Bienvenue sur notre jeu Web Arena. </p>
+            <p>Welcome to our game: Web Arena.</p>
         </article>
 
     </section>
@@ -19,8 +19,6 @@
 
     <footer>
         <p>Copyright </p>
-       <!--<p> Meilleur combattant : <?php pr($bestFighter);?></p>-->
-       <!-- <p> Event : <?php pr($Event);?></p>-->
     </footer>
 
     </body>
