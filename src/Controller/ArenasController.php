@@ -91,6 +91,15 @@ class ArenasController extends AppController
             $this->loadModel('Tools');
             $this->set('tools', $this->Tools->getTools());
 
+            if ($this->request->is('post')) {
+                if(!$this->Fighters->createFighter($this->request->data('name'),$this->request->data('avatar'),$this->request->session()->read('myPlayerId'))){
+                    $this->Flash->error('Could not upload your avatar. Check the extension.');
+                }
+                else{
+                    $this->Flash->success('Your fighter has been created.');
+                }
+            }
+
             //Si le joueur possède au moins un fighter...
             if ($this->request->session()->check('myFighterId')) {
 

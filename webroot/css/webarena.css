@@ -39,7 +39,7 @@ dt, dd {
 }
 
 .selected {
-    background-color: #1cc7ff;
+    background-color: #80e7ff;
 }
 
 .hidden {
@@ -52,6 +52,10 @@ dt, dd {
 
 .clickable {
     cursor: pointer;
+}
+
+.center {
+    background-color: #a1ff87;
 }
 
 #sightMain {

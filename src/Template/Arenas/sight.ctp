@@ -60,6 +60,9 @@
                             } ?><?php
                             if ((in_array("Tool", $outputMatrice[$i][$j])) && (in_array("Self", $outputMatrice[$i][$j]))) {
                                 ?> takable<?php
+                            } ?><?php
+                            if ((in_array("Self", $outputMatrice[$i][$j]))) {
+                                ?> center<?php
                             } ?>"
                                 value="<?= $i . '-' . $j ?>"> <?php
 
