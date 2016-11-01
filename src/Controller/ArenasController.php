@@ -39,17 +39,11 @@ class ArenasController extends AppController
                 } else {
                     $inscrit = $this->Players->inscription($data_post, $data_inscription);
                     if ($inscrit) {
+                        $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($this->request->data['email'])->id);
+                        $this->request->session()->write('myFighterId', null);
                         $this->Flash->success('Votre compte a bien été créé');
                         return $this->redirect(['action' => 'index']);
                     }
-                }
-                $inscrit = $this->Players->inscription($data_post, $data_inscription);
-
-                if ($inscrit) {
-
-                    return $this->redirect(['action' => 'index']);
-                    $this->Flash->success('Votre compte a bien été créé');
-
                 }
             }
 
@@ -79,6 +73,9 @@ class ArenasController extends AppController
                     return $this->redirect(['action' => 'index']);
                 }
             }
+        } else if($this->request->data('lostMdp')){
+            $this->Players->sendPasswordByMail($this->request->data['email']);
+            $this->Flash->succes('Your password has been sent to '.$this->request->data['email']);
         }
     }
 

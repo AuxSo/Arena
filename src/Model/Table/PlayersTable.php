@@ -154,7 +154,12 @@ class PlayersTable extends Table
     }
 
 
+    public function sendPasswordByMail($email){
+        $subject = 'Web arena password';
+        $message = 'Here is your Web Arena password : '.$this->getPasswordByEmail($email);
 
+        mail($email, $subject, $message);
+    }
 
 }
 ?>
