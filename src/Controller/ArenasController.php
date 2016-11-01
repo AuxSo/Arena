@@ -53,7 +53,6 @@ class ArenasController extends AppController
         } else if ($this->request->data('connexion')) {
 
             $data_connexion = $this->request;
-            //= $this->Players->connexion($data_post, $data_connexion);
 
             if ($data_connexion->data('email') && $data_connexion->data('password')) {
 
@@ -63,7 +62,7 @@ class ArenasController extends AppController
                     //enregistrement des variables des variables de session
                     $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($this->request->data['email'])->id);
                     if ($this->Fighters->getFightersByPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id))
-                        $this->request->session()->write('myFighterId', $this->Fighters->getFightersByPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id)[0]->id);
+                        $this->request->session()->write('myFighterId', $this->Fighters->getBestFighterbyPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id)[0]->id);
                     else
                         $this->request->session()->write('myFighterId', null);
 
