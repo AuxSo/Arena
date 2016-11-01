@@ -14,9 +14,9 @@ $(function () {
         $(this).addClass('selected')
 
         // On cache les infos du combattant anciennement sélectionné (on passe par l'id qui est stocké dans "name" de l'onglet
-        $('#' + lastSelected.attr('name')).addClass('hidden');
+        $('#' + lastSelected.attr('id').split("tab")[1]).addClass('hidden');
         // On affiche l'onglet actuellement sélectionné (idem)
-        $('#' + $(this).attr('name')).removeClass('hidden');
+        $('#' + $(this).attr('id').split("tab")[1]).removeClass('hidden');
 
         //TODO Changer le fighter sélectionné dans les variables de session
     })

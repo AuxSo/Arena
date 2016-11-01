@@ -25,6 +25,29 @@ class FightersTable extends Table
         return "ok";
     }
 
+    public function createFighter($name, $avatar, $player)
+    {
+        $fighter = $this->newEntity();
+        $fighter->name = $name;
+        $fighter->player_id = $player;
+        $this->save($fighter);
+
+        $extension = strtolower(pathinfo($avatar['name'], PATHINFO_EXTENSION));
+
+        if(!empty($avatar['tmp_name'])&&(in_array($extension, array('jpg','jpeg','png')))){
+            move_uploaded_file($avatar['tmp_name'],'img/avatars/' . $fighter->id . '.' . $extension);
+            return 1;
+        }
+        else{
+            $this->delete($fighter);
+            return 0;
+        }
+
+
+
+
+    }
+
     /**
      * Fonction qui retourne le fighter qui a pour ID la variable récupérée en paramètre
      * @param $id

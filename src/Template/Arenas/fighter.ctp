@@ -5,13 +5,16 @@
         $addedClass = 'selected';
         foreach ($myFightersByPlayer as $index => $fighter) {
             ?>
-            <li class="tab <?= $addedClass ?>" name="<?= $index ?>">
+            <li class="tab <?= $addedClass ?>" id="tab<?= $index ?>">
                 <?= $fighter->name ?>
             </li>
             <?php
             $addedClass = '';
         }
         ?>
+        <li class="tab <?= $addedClass ?>" id="tabnew">
+            +
+        </li>
 
     </ul>
 </nav>
@@ -58,7 +61,16 @@ foreach ($myFightersByPlayer as $index => $fighter) {
     $addedClass = "hidden";
 }
 ?>
-
+<section class=" <?= $addedClass ?>" id="new">
+    <h3>Create a new fighter</h3>
+    <form method="post" enctype="multipart/form-data">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name">
+        <label for="avatar">Avatar (.jpg or .png)</label>
+        <input type="file" name="avatar">
+        <input  type="submit" name="new_fighter" value="create">
+    </form>
+</section>
 <!--<h3> Liste des objets :
 </h3>
 <dl>
