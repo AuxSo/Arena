@@ -268,7 +268,7 @@ class FightersTable extends Table
             $events->create_event($eventName, $myfighter_x, $myfighter_y);
             $result = 1;
             //Si l'attaqué meurt
-            if ($fighterattackedHealth - $myfighterStrength = 0) {
+            if ($fighterattackedHealth - $myfighterStrength == 0) {
                 $myfighter->xp += $fighterattackedLevel;
                 $this->fighterDead($fighterAttackedId);
                 $eventName = "$myfighterName kills $fighterattackedName";
