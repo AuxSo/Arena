@@ -45,7 +45,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     </ul>
     <div class="top-bar-section">
         <ul class="right">
-            <li> <?= $this->Html->link('Accueil', ['controller' => 'Arenas', 'action' => 'index']) ?></li>
+            <li> <?= $this->Html->link('Home', ['controller' => 'Arenas', 'action' => 'index']) ?></li>
             <?php if($this->request->session()->check('myPlayerId')) { ?>
                 <li> <?= $this->Html->link('Fighters', ['controller' => 'Arenas', 'action' => 'fighter']) ?></li>
                 <li> <?= $this->Html->link('Sight', ['controller' => 'Arenas', 'action' => 'sight']) ?></li>

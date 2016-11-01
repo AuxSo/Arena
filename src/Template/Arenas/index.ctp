@@ -1,30 +1,17 @@
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>Web Arena</title>
-    </head>
 
-    <body>
+<section>
+    <article>
 
-    <section>
-        <article>
+        <h1>Welcome in WebArena</h1>
 
-                <h1>Bienvenue dans WebArena</h1>
+            <p>Web Arena is a RPG. You can create your own fighters, play online with other players on the arena.
+                You can take tools which will help you to improve your level and be the best fighter.
+                Create an account and play now!
+            </p>
 
-            <p>Bienvenue sur notre jeu Web Arena. </p>
-        </article>
+    </article>
 
-    </section>
+</section>
 
 
-    <footer>
-        <p>Copyright </p>
-       <!--<p> Meilleur combattant : <?php pr($bestFighter);?></p>-->
-       <!-- <p> Event : <?php pr($Event);?></p>-->
-    </footer>
-
-    </body>
-
-</html>
-
-<?php $this->assign('title','Accueil');?>
+<?php $this->assign('title','Home');?>
