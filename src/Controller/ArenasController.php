@@ -117,6 +117,8 @@ class ArenasController extends AppController
             } else {
                 $this->set('myFightersByPlayer', []);
             }
+
+
         }
     }
 
@@ -163,10 +165,11 @@ class ArenasController extends AppController
                 }
             }
 
-            //Si le joueur possède au moins un fighter...
-            if ($this->request->session()->check('myFighterId')) {
+            //Si le joueur possède au moins un fighter et vivant...
+            if (($this->request->session()->check('myFighterId')) && ($this->Fighters->fighterDead($this->request->session()->read('myFighterId'))==false)){
 
                 $this->set('fighterExists', true);
+                $this->set('fighterAlive', true);
 
                 // Le combattant actuellement sélectionné
                 $this->set('myFighter', $this->Fighters->get($this->request->session()->read('myFighterId')));
@@ -193,6 +196,14 @@ class ArenasController extends AppController
 
             } else {
                 $this->set('fighterExists', false);
+                $this->set('fighterAlive', false);
+            }
+
+            //Si le fighter meurt
+           if($this->Fighters->fighterDead($this->request->session()->read('myFighterId'))){
+
+                $this->Flash->error('Your fighter is dead');
+                return $this->redirect(['action' => 'fighter']);
             }
         }
     }

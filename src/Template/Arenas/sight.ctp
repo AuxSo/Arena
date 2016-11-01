@@ -2,7 +2,7 @@
 <main id="sightMain">
     <h1> Sight</h1>
     <?php //Si l'utilisateur n'a pas de fighter
-    if ($fighterExists) { ?>
+    if (($fighterExists)&&($fighterAlive)) { ?>
         <section id="myInfos">
             <h3>Fighter : <?= $myFighter->name ?></h3>
             <article>
