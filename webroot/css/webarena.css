@@ -81,3 +81,7 @@ dt, dd {
     align-items: center;
     border : none;
 }
+
+.avatar {
+    height : 200px;
+}

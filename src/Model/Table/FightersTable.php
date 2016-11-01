@@ -36,15 +36,22 @@ class FightersTable extends Table
 
         if(!empty($avatar['tmp_name'])&&(in_array($extension, array('jpg','jpeg','png')))){
             move_uploaded_file($avatar['tmp_name'],'img/avatars/' . $fighter->id . '.' . $extension);
+            $fighter->level = 1;
+            $fighter->xp = 0;
+            $fighter->skill_sight = 2;
+            $fighter->skill_strength = 1;
+            $fighter->skill_health = 3;
+            $fighter->current_health = 0;
+
+            while ($this->getElementsByCoord($fighter->coordinate_x = rand(0, $this->ARENA_WIDTH), $fighter->coordinate_y = rand(0, $this->ARENA_HEIGHT)) != null) ;
+
+            $this->save($fighter);
             return 1;
         }
         else{
             $this->delete($fighter);
             return 0;
         }
-
-
-
 
     }
 
@@ -60,7 +67,7 @@ class FightersTable extends Table
         $tabFighters = $fighter->toArray();
         $fighterById = null;
         foreach ($tabFighters as $key => $myFighter) {
-            if ($myFighter['id'] == $id) {
+            if ($fighter['id'] == $id) {
                 $fighterById = $myFighter;
             }
         }
