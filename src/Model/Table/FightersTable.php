@@ -30,18 +30,20 @@ class FightersTable extends Table
         $fighter = $this->newEntity();
         $fighter->name = $name;
         $fighter->player_id = $player;
+        $fighter->coordinate_x = 0;
+        $fighter->coordinate_y = 0;
+        $fighter->level = 1;
+        $fighter->xp = 0;
+        $fighter->skill_sight = 2;
+        $fighter->skill_strength = 1;
+        $fighter->skill_health = 3;
+        $fighter->current_health = 3;
         $this->save($fighter);
 
         $extension = strtolower(pathinfo($avatar['name'], PATHINFO_EXTENSION));
 
         if (!empty($avatar['tmp_name']) && (in_array($extension, array('jpg', 'jpeg', 'png')))) {
             move_uploaded_file($avatar['tmp_name'], 'img/avatars/' . $fighter->id . '.' . $extension);
-            $fighter->level = 1;
-            $fighter->xp = 0;
-            $fighter->skill_sight = 2;
-            $fighter->skill_strength = 1;
-            $fighter->skill_health = 3;
-            $fighter->current_health = 3;
 
             while ($this->getElementsByCoord($fighter->coordinate_x = rand(0, $this->ARENA_WIDTH - 1), $fighter->coordinate_y = rand(0, $this->ARENA_HEIGHT - 1)) != null) ;
 
