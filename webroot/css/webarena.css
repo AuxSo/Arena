@@ -18,11 +18,6 @@ td {
     border: solid 1px #000000;
 }
 
-section {
-    border: solid 1px #000000;
-    margin: 10px;
-}
-
 dt, dd {
     margin-left: 20px;
     display: inline-block;
@@ -65,7 +60,7 @@ dd {
 }
 
 .chosen {
-    border: solid 2px #000000;
+    border: solid 3px #000000;
 }
 
 /* Sight */
@@ -81,14 +76,6 @@ dd {
 
 .center {
     background-color: #FFCECD;
-}
-
-.selected {
-    background-color: #FFAAA8;
-}
-
-.greyed {
-    background-color: #999999;
 }
 
 #sightMain {
@@ -157,10 +144,6 @@ dd {
     justify-content: flex-start;
     align-items: center;
     border: none;
-}
-
-.avatar {
-    height: 200px;
 }
 
 .noBorder {
@@ -259,10 +242,96 @@ footer {
 }
 
 /* Fighters */
-#fightersTitle {
-    text-align: center;
+#fightersMain {
+    width: 900px;
+    background: #AF3F3C;
+    margin: 0 auto;
+    color: #FFFFFF;
+    box-sizing: border-box;
+    display : flex;
+    flex-direction: column;
 }
 
+.tab{
+    background-color: #AF3F3C;
+}
+
+#fightersTitle {
+    text-align: center;
+    color: #FFFFFF;
+    padding: 10px;
+}
+#fightersNav {
+    background: #FFAAA8;
+}
+
+#fightersNav ul {
+    margin : 10px 30px;
+}
+
+.fighterCard {
+    width: 900px;
+    background: #AF3F3C;
+    margin: 0 auto;
+    color: #FFFFFF;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    display : flex;
+    flex-direction: column;
+}
+
+.fighterCard h3 {
+    color: #FFFFFF;
+}
+
+.fighterCard label {
+    font-size : 16px;
+    color: #FFFFFF;
+}
+
+.infoWrapper{
+    display : flex;
+}
+
+.infoWrapper h4{
+    color: #FFFFFF;
+}
+
+.infoWrapper article {
+}
+
+.chooseButton {
+    border: 0;
+    width: auto;
+    height: 30px;
+    background: #FFCECD;
+    font-size: 16px;
+    line-height: 16px;
+    color: #AF3F3C;
+    padding: 5px 15px;
+    box-sizing: border-box;
+    margin: 10px 0;
+}
+
+.chooseButton:hover {
+    background : #FFAAA8 ;
+}
+
+.avatar {
+    width: 200px;
+    margin : 10px;
+}
+
+
+
+.selected {
+    background-color: #FFAAA8;
+    color: #000000;
+}
+
+.greyed {
+    background-color: #999999;
+}
 
 .hidden {
     display: none;
