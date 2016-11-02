@@ -353,18 +353,6 @@ footer {
     padding: 10px;
 }
 
-.selected {
-    background-color: #FFAAA8;
-    color: #000000;
-}
-
-.greyed {
-    background-color: #999999;
-}
-
-.hidden {
-    display: none;
-}
 
 /*Index*/
 #indexTitle {
@@ -377,4 +365,17 @@ footer {
 #index{
     text-align: center;
     margin:2%;
+}
+
+.selected {
+    background-color: #FFAAA8;
+    color: #000000;
+}
+
+.greyed {
+    background-color: #999999;
+}
+
+.hidden {
+    display: none;
 }
