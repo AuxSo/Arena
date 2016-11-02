@@ -18,7 +18,11 @@ $(function () {
         // On affiche l'onglet actuellement sélectionné (idem)
         $('#' + $(this).attr('id').split("tab")[1]).removeClass('hidden');
 
-        //TODO Changer le fighter sélectionné dans les variables de session
+    })
+
+    // Quand on clique sur "I forgot my password
+    $('#forgot').click(function () {
+        $('#lostMdp').slideDown();
     })
 
 })

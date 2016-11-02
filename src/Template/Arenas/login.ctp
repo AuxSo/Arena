@@ -18,9 +18,10 @@
         <input type="password" name="password" id="password">
         <input type="submit" id="connexion" name="connexion" value="connexion">
     </form>
+    <p id="forgot">I've forgotten my password</p>
 </section>
 
-<section id="lostMdp">
+<section id="lostMdp" class="hidden">
     <form method="post">
         <label>Email</label>
         <input type="text" name="email" id="email">
