@@ -14,11 +14,40 @@ class ArenasController extends AppController
 {
     public function index()
     {
+        $this->loadModel('Players');
 
+        //Si l'utilisateur est connecté, afficher le changement de mot de passe
+        if ($this->request->session()->check('myPlayerId')) {
+            $this->set('isConnected', true);
+
+            if($this->request->data('changePassword')){
+
+                $oldPassword = $this->request->data['oldPassword'];
+                $newPassword1 = $this->request->data['newPassword1'];
+                $newPassword2 = $this->request->data['newPassword2'];
+                if($oldPassword == $this->Players->getPasswordById($this->request->session()->read('myPlayerId'))) {
+                    if($newPassword1 == $newPassword2){
+                        $this->Players->setPasswordById($this->request->session()->read('myPlayerId'), $newPassword1);
+                        $this->Flash->success('Your password has been changed');
+                    }
+                    else{
+                        $this->Flash->error('You can\'t enter two different new passwords!');
+                    }
+                }
+                else{
+                    $this->Flash->error('This is not your old password!');
+                }
+            }
+        } //Si l'utilisateur est connecté...
+        else {
+            $this->set('isConnected', false);
+        }
     }
 
     public function login()
     {
+        $this->set('emailContent', false);
+
         //Si on est connecté, on se déconnecte
         if ($this->request->session()->check('myPlayerId')) {
             $this->request->session()->destroy();
@@ -47,10 +76,6 @@ class ArenasController extends AppController
                     }
                 }
             }
-
-            // A MODIFIER
-            //$this->request->session()->write('myFighterId', 1);
-            //$this->request->session()->write('myPlayerId', '8mm12z2j-3rqe-zil1-vz6r-i81gz4o8qa9t');
         } else if ($this->request->data('connexion')) {
 
             $data_connexion = $this->request;
@@ -75,12 +100,16 @@ class ArenasController extends AppController
                     return $this->redirect(['action' => 'index']);
                 } else {
                     $this->Flash->error('Wrong email - password combination.');
-                    return $this->redirect(['action' => 'index']);
                 }
             }
         } else if ($this->request->data('lostMdp')) {
-            $this->Players->sendPasswordByMail($this->request->data['email']);
-            $this->Flash->succes('Your password has been sent to ' . $this->request->data['email']);
+            if($this->Players->emailExists($this->request->data['email'])){
+                $this->set('emailContent', $this->Players->getPasswordMail($this->Players->getPlayerByEmail($this->request->data['email'])->id));
+                $this->Flash->success('Your new password has been sent to '.$this->request->data['email']);
+            }
+            else{
+                $this->Flash->error('This email doesn\'t match any account !');
+            }
         }
     }
 
