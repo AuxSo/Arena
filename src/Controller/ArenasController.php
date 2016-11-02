@@ -121,6 +121,7 @@ class ArenasController extends AppController
             $this->loadModel('Tools');
             $this->set('tools', $this->Tools->getTools());
 
+            //si on a envoyé un formulaire...
             if ($this->request->is('post')) {
                 if ($this->request->data('select')) {
                     $this->request->session()->write('myFighterId',$this->request->data('fighterId'));
@@ -142,16 +143,24 @@ class ArenasController extends AppController
 
             //Si le joueur possède au moins un fighter...
             if ($this->request->session()->check('myFighterId')) {
+                if (!$this->Fighters->isFighterDead($this->request->session()->read('myFighterId'))) {
+                    $this->set('fighterAlive', true);
 
-                // The tools owned by the fighter whose id is given in param (here 1 as test)
-                // The chosen fighter will be stored in a session variable
-                $this->set('sightTool', $this->Tools->getSightTool($this->request->session()->read('myFighterId')));
-                $this->set('strengthTool', $this->Tools->getStrengthTool($this->request->session()->read('myFighterId')));
-                $this->set('healthTool', $this->Tools->getHealthTool($this->request->session()->read('myFighterId')));
-                $this->set('myFighter', $this->Fighters->get($this->request->session()->read('myFighterId')));
+                    // The tools owned by the fighter whose id is given in param (here 1 as test)
+                    // The chosen fighter will be stored in a session variable
+                    $this->set('sightTool', $this->Tools->getSightTool($this->request->session()->read('myFighterId')));
+                    $this->set('strengthTool', $this->Tools->getStrengthTool($this->request->session()->read('myFighterId')));
+                    $this->set('healthTool', $this->Tools->getHealthTool($this->request->session()->read('myFighterId')));
+                    $this->set('myFighter', $this->Fighters->get($this->request->session()->read('myFighterId')));
 
-                $this->set('myFightersByPlayer', $this->Fighters->getFightersByPlayer($this->request->session()->read('myPlayerId')));
-            } else {
+                    $this->set('myFightersByPlayer', $this->Fighters->getFightersByPlayer($this->request->session()->read('myPlayerId')));
+                }
+                else {
+                    $this->set('fighterAlive', false);
+                    $this->Flash->error('Your fighter is dead!');
+                }
+            }
+            else{
                 $this->set('myFightersByPlayer', []);
             }
 
@@ -171,8 +180,7 @@ class ArenasController extends AppController
 
             // Traitement des actions
             if ($this->request->is('post')) {
-                if($this->Fighters->fighterDead($this->request->session()->read('myFighterId'))==false) {
-
+                if(!$this->Fighters->isFighterDead($this->request->session()->read('myFighterId'))) {
                     $this->set('fighterAlive', true);
                     // En cas de mouvement du combattant
                     if ($this->request->data('move')) {
@@ -220,7 +228,6 @@ class ArenasController extends AppController
                 }
                 else{
                     $this->set('fighterAlive', false);
-                    $this->Flash->error('Your fighter is dead');
                     return $this->redirect(['action' => 'fighter']);
                 }
 
@@ -228,7 +235,7 @@ class ArenasController extends AppController
 
             //Si le joueur possède au moins un fighter et vivant...
             if($this->request->session()->check('myFighterId')) {
-                if($this->Fighters->fighterDead($this->request->session()->read('myFighterId'))==false){
+                if(!$this->Fighters->isFighterDead($this->request->session()->read('myFighterId'))){
 
                     $this->set('fighterExists', true);
                     $this->set('fighterAlive', true);
@@ -262,7 +269,6 @@ class ArenasController extends AppController
                 }
                 else {
                     $this->set('fighterAlive', false);
-                    $this->Flash->error('Your fighter is dead');
                     return $this->redirect(['action' => 'fighter']);
                 }
             }

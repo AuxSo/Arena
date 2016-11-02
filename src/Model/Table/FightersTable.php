@@ -335,6 +335,17 @@ class FightersTable extends Table
 
     }
 
+    public function isFighterDead($myfighterId){
+        $fighter = $this->find()->extract('id');
+        foreach ($fighter as $thisFighter) {
+            if ($thisFighter == $myfighterId)
+                return false;
+        }
+        return true;
+
+    }
+
+
     public function reset($idFighter)
     {
         $Tools = TableRegistry::get('Tools');
