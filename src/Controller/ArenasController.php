@@ -171,6 +171,7 @@ class ArenasController extends AppController
         $this->loadModel('Fighters');
         $this->loadModel('Tools');
 
+
         $data_post = $this->request->is('post');
         if ($this->request->data('inscription')) {
             $data_inscription = $this->request->data;
@@ -186,6 +187,20 @@ class ArenasController extends AppController
                     if ($inscrit) {
                         $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($this->request->data['email'])->id);
                         $this->request->session()->write('myFighterId', null);
+
+                        //Création des objets
+                        $this->Tools->createTool('health', 1);
+                        $this->Tools->createTool('health', 3);
+                        $this->Tools->createTool('health', 6);
+
+                        $this->Tools->createTool('strength', 1);
+                        $this->Tools->createTool('strength', 3);
+                        $this->Tools->createTool('strength', 6);
+
+                        $this->Tools->createTool('sight', 1);
+                        $this->Tools->createTool('sight', 3);
+                        $this->Tools->createTool('sight', 6);
+
                         $this->Flash->success('Votre compte a bien été créé');
                         return $this->redirect(['action' => 'index']);
 
@@ -295,12 +310,6 @@ class ArenasController extends AppController
             $this->loadModel('Fighters');
             $this->loadModel('Tools');
 
-            //Création des objets
-            $this->Tools->createTool('health', 2);
-            $this->Tools->createTool('strength', 2);
-            $this->Tools->createTool('sight', 2);
-            $this->Tools->createTool('health', 4);
-            $this->Tools->createTool('sight', 6);
 
             // Traitement des actions
             if ($this->request->is('post')) {
