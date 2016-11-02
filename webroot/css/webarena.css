@@ -192,3 +192,20 @@ footer {
     color: #AF3F3C;
     padding: 5px 20px;
 }
+
+/* Login */
+#inscription {
+    width : 500px;
+    background: #AF3F3C;
+    flex-grow: 0;
+    margin: 0;
+    border-width: 0;
+    color: #FFFFFF;
+    padding: 10px 20px;
+    height: 600px;
+    box-sizing: border-box;
+}
+
+#inscription label {
+    color: #FFFFFF;
+}

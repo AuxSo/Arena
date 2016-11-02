@@ -65,7 +65,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->fetch('content') ?>
 </div>
 <footer>
-    Groupe : Gr1-03-AG | Membres : Baticle, Bourhim, Gauthier, Thouary | DB Login: root | DB Password: root | DB name: webarena | Option authentification google : Please Do composer update
+    Groupe : Gr1-03-AG | Membres : Baticle, Bourhim, Gauthier, Thouary | DB Login: root | DB Password: root | DB name: webarena | For Google Authentication : in ArenasController.php, line 16, check if the server name matches yours.
 </footer>
 </body>
 </html>
