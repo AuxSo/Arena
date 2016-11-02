@@ -26,6 +26,15 @@ class ToolsTable extends Table
         return $tabTools;
     }
 
+    public function getNbTools()
+    {
+        $tools = $this->find('all');
+        $tabTools = $tools->toArray();
+        $size=sizeof($tabTools);
+
+        return $size;
+    }
+
     /**
      *
      */
