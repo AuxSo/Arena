@@ -43,7 +43,7 @@ class FightersTable extends Table
             $fighter->skill_health = 3;
             $fighter->current_health = 3;
 
-            while ($this->getElementsByCoord($fighter->coordinate_x = rand(0, $this->ARENA_WIDTH), $fighter->coordinate_y = rand(0, $this->ARENA_HEIGHT)) != null) ;
+            while ($this->getElementsByCoord($fighter->coordinate_x = rand(0, $this->ARENA_WIDTH-1), $fighter->coordinate_y = rand(0, $this->ARENA_HEIGHT-1)) != null) ;
 
             $this->save($fighter);
             return $fighter->id;

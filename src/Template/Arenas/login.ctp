@@ -6,19 +6,8 @@
         <label>Password</label>
         <input type="password" name="password" id="password">
         <input type="submit" id="inscription" name="inscription" value="inscription">
-    </form>
-</section>
-
-<section id="connexion">
-    <form method="post">
-        <label>Email</label>
-        <?php if (!isset($mailCo)) $mailCo = "" ?>
-        <input type="text" name="email" id="email" value="<?= $mail ?>">
-        <label>Password</label>
-        <input type="password" name="password" id="password">
         <input type="submit" id="connexion" name="connexion" value="connexion">
     </form>
-    <p id="forgot">I've forgotten my password</p>
 </section>
 
 <section id="lostMdp" class="hidden">

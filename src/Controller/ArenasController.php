@@ -127,11 +127,12 @@ class ArenasController extends AppController
 
                 }
                 if ($this->request->data('newFighter')) {
-                    if ($this->Fighters->createFighter($this->request->data('name'), $this->request->data('avatar'), $this->request->session()->read('myPlayerId'))==-1) {
+                    $testCreation = $this->Fighters->createFighter($this->request->data('name'), $this->request->data('avatar'), $this->request->session()->read('myPlayerId'));
+                    if ($testCreation==-1) {
                         $this->Flash->error('Could not upload your avatar. Check the extension.');
                     } else {
                         $this->Flash->success('Your fighter has been created.');
-                        $this->request->session()->write('myFighterId', $this->Fighters->createFighter($this->request->data('name'), $this->request->data('avatar'), $this->request->session()->read('myPlayerId')));
+                        $this->request->session()->write('myFighterId', $testCreation);
                     }
                 }
             }
@@ -170,50 +171,58 @@ class ArenasController extends AppController
 
             // Traitement des actions
             if ($this->request->is('post')) {
-                // En cas de mouvement du combattant
-                if ($this->request->data('move')) {
-                    $this->Fighters->moveFighter($this->request->session()->read('myFighterId'), $this->request->data('xSelected'), $this->request->data('ySelected'));
-                }
-                // En cas d'attaque du combattant
-                if ($this->request->data('attack')) {
-                    switch ($this->Fighters->attack($this->request->session()->read('myFighterId'),
-                        $this->Fighters->getFighterByCoord($this->request->data('xSelected'),
-                            $this->request->data('ySelected'))->id)) {
-                        case 0 :
-                            $this->Flash->error('Your attack failed.');
-                            break;
-                        case 1 :
-                            $this->Flash->success('Your attack succeeded.');
-                            break;
-                        case 2 :
-                            $this->Flash->success('You killed the fighter.');
-                            break;
+                if($this->Fighters->fighterDead($this->request->session()->read('myFighterId'))==false) {
+
+                    $this->set('fighterAlive', true);
+                    // En cas de mouvement du combattant
+                    if ($this->request->data('move')) {
+                        $this->Fighters->moveFighter($this->request->session()->read('myFighterId'), $this->request->data('xSelected'), $this->request->data('ySelected'));
                     }
-                }
-                // En cas de ramassage d'un objet
-                if ($this->request->data('take')) {
-                    if (!($this->Fighters->takeTool($this->request->session()->read('myFighterId'),
-                        $this->Tools->getToolByCoord($this->request->data('xSelected'),
-                            $this->request->data('ySelected'))->id))
-                    ) {
-                        $this->Flash->error('This tool will not improve your current skills.');
-                    };
-                }
-                //Si fighter montre d'un niveau
-                if ($this->request->data('health')) {
-                    $choice=3;
-                    $this->Fighters->fighterProgression($this->request->session()->read('myFighterId'),  $choice);
-                }
-                if ($this->request->data('strength')) {
-                    $choice=2;
-                    $this->Fighters->fighterProgression($this->request->session()->read('myFighterId'),  $choice);
-                }
-                if ($this->request->data('sight')) {
-                    $choice=1;
-                    $this->Fighters->fighterProgression($this->request->session()->read('myFighterId'),  $choice);
-                }
+                    // En cas d'attaque du combattant
+                    if ($this->request->data('attack')) {
+                        switch ($this->Fighters->attack($this->request->session()->read('myFighterId'),
+                            $this->Fighters->getFighterByCoord($this->request->data('xSelected'),
+                                $this->request->data('ySelected'))->id)) {
+                            case 0 :
+                                $this->Flash->error('Your attack failed.');
+                                break;
+                            case 1 :
+                                $this->Flash->success('Your attack succeeded.');
+                                break;
+                            case 2 :
+                                $this->Flash->success('You killed the fighter.');
+                                break;
+                        }
+                    }
+                    // En cas de ramassage d'un objet
+                    if ($this->request->data('take')) {
+                        if (!($this->Fighters->takeTool($this->request->session()->read('myFighterId'),
+                            $this->Tools->getToolByCoord($this->request->data('xSelected'),
+                                $this->request->data('ySelected'))->id))
+                        ) {
+                            $this->Flash->error('This tool will not improve your current skills.');
+                        };
+                    }
+                    //Si fighter montre d'un niveau
+                    if ($this->request->data('health')) {
+                        $choice = 3;
+                        $this->Fighters->fighterProgression($this->request->session()->read('myFighterId'), $choice);
+                    }
+                    if ($this->request->data('strength')) {
+                        $choice = 2;
+                        $this->Fighters->fighterProgression($this->request->session()->read('myFighterId'), $choice);
+                    }
+                    if ($this->request->data('sight')) {
+                        $choice = 1;
+                        $this->Fighters->fighterProgression($this->request->session()->read('myFighterId'), $choice);
+                    }
 
-
+                }
+                else{
+                    $this->set('fighterAlive', false);
+                    $this->Flash->error('Your fighter is dead');
+                    return $this->redirect(['action' => 'fighter']);
+                }
 
             }
 
