@@ -3,9 +3,9 @@
     <article>
         <h3 id="indexTitle">Welcome in WebArena</h3>
 
-            <p>Web Arena is a RPG. You can create your own fighters, play online with other players on the arena.
-                You can take tools which will help you to improve your level and be the best fighter.
-                Create an account and play now!
+            <p id="index">Web Arena is a RPG. You can create your own fighters, play online with other players on the arena.<br>
+                You can take tools which will help you to improve your level and be the best fighter.<br>
+                Create an account and play now!<br>
             </p>
     </article>
 </section>
@@ -21,10 +21,9 @@
         <input type="password" name="newPassword2" id="password">
         <input class="loginButton"type="submit" id="changePassword" name="changePassword" value="Change my password">
     </form>
-    </section>
 
-        <div id="showBloc" style="margin-top:50px">I forgot my password</div>
-    </section>
+    <div id="showBloc" style="margin-top:50px">I forgot my password</div>
+</section>
 <?php } ?>
 
 <?php $this->assign('title','Home');?>
