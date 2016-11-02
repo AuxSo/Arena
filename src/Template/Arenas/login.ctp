@@ -28,4 +28,23 @@
         <input  type="submit" id="lostMdp" name="lostMdp" value="Send me my password">
     </form>
 </section>
+
 <?php $this->assign('title','Log in');?>
+<?php
+$myTemplates = [
+    'inputContainer' => '{{content}}',
+    'input'          => '<input type="{{type}}" name="{{name}}" {{attrs}}>',
+
+];
+$this->Form->templates($myTemplates);
+?>
+
+<?= $this->Form->create('user', [
+    'role'  => 'form-role',
+    'class' => 'form-login'
+]);
+?>
+    <a class="btn btn-block google btn-danger" href="<?= $this->Url->build(['action' => 'googlelogin']); ?>"> <i
+            class="fa fa-google-plus modal-icons"></i> Se connecter avec Google+ </a>
+</div>
+<?= $this->Form->end(); ?>

@@ -4,6 +4,16 @@ namespace App\Controller;
 use App\Controller\AppController;
 use App\Model\Table\FightersTable;
 use App\Model\Table\PlayersTable;
+use \Cake\Network\Exception;
+use Cake\Event\Event;
+use Cake\Utility\Text;
+use Google_Client;
+use Google_Service_Oauth2;
+
+
+define('GOOGLE_OAUTH_CLIENT_ID', '454279630539-sg4a02pjdu33noimuamaaa61fst83t7m.apps.googleusercontent.com');
+define('GOOGLE_OAUTH_CLIENT_SECRET', 'Lyfrmfu9XPtkrNSkSRy4RCHQ');
+define('GOOGLE_OAUTH_REDIRECT_URI', 'http://localhost/arena/arenas/googlecallback');
 
 /**
  * Personal Controller
@@ -12,9 +22,114 @@ use App\Model\Table\PlayersTable;
  */
 class ArenasController extends AppController
 {
+
     public function index()
     {
 
+    }
+
+
+    public function googlelogin()
+    {
+
+        $this->loadModel('Players');
+        $client = new Google_Client();
+        $client->setClientId(GOOGLE_OAUTH_CLIENT_ID);
+        $client->setClientSecret(GOOGLE_OAUTH_CLIENT_SECRET);
+        $client->setRedirectUri(GOOGLE_OAUTH_REDIRECT_URI);
+
+        $client->setScopes(array(
+            "https://www.googleapis.com/auth/userinfo.profile",
+            'https://www.googleapis.com/auth/userinfo.email'
+        ));
+        $url = $client->createAuthUrl();
+        $this->redirect($url);
+
+    }
+
+    public function googlecallback()
+    {
+
+        $this->loadModel('Players');
+        $this->loadModel('Fighters');
+        $client = new Google_Client();
+        /* Création de notre client Google */
+        $client->setClientId(GOOGLE_OAUTH_CLIENT_ID);
+        $client->setClientSecret(GOOGLE_OAUTH_CLIENT_SECRET);
+        $client->setRedirectUri(GOOGLE_OAUTH_REDIRECT_URI);
+
+        $client->setScopes(array(
+            "https://www.googleapis.com/auth/userinfo.profile",
+            'https://www.googleapis.com/auth/userinfo.email'
+        ));
+        $client->setApprovalPrompt('auto');
+
+        /* si dans l'url le paramètre de retour Google contient 'code' */
+        if (isset($this->request->query['code'])) {
+            // Alors nous authentifions le client Google avec le code reçu
+            $client->authenticate($this->request->query['code']);
+            // et nous plaçons le jeton généré en session
+            $this->request->Session()->write('access_token', $client->getAccessToken());
+        }
+
+        /* si un jeton est en session, alors nous le plaçons dans notre client Google */
+        if ($this->request->Session()->check('access_token') && ($this->request->Session()->read('access_token'))) {
+            $client->setAccessToken($this->request->Session()->read('access_token'));
+        }
+
+        /* Si le client Google a bien un jeton d'accès valide */
+        if ($client->getAccessToken()) {
+        // alors nous écrivons le jeton d'accès valide en session
+            $this->request->Session()->write('access_token', $client->getAccessToken());
+        // nous créons une requête OAuth2 avec le client Google paramétré
+            $oauth2 = new Google_Service_Oauth2($client);
+        // et nous récupérons les informations de l'utilisateur connecté
+            $user = $oauth2->userinfo->get();
+            try {
+
+                if (!empty($user)) {
+                    // si l'utilisateur est bien déclaré, nous vérifions si dans notre table Users il existe l'email de
+                    // l'utilisateur déclaré ou pas
+                    $result = $this->Players->find('all')
+                        ->where(['email' => $user['email']])
+                        ->first();
+                    if ($result) {
+                    // si l'email existe alors nous déclarons l'utilisateur comme authentifié sur CakePHP
+                        $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($result->toArray()['email'])->id);
+                        $this->Flash->success('CONNECTED');
+                        $this->redirect(['action' => 'index']);
+
+
+                    } else {
+                    // si l'utilisateur n'est pas dans notre utilisateur, alors nous le créons avec les informations
+                        // récupérées par Google+
+                        $data = array();
+                        $data['email'] = $user['email'];
+                        $data['password'] = $user['id'];
+                        //$data['uuid'] = Text::uuid();
+                        $entity = $this->Players->newEntity($data);
+
+                        if ($this->Players->save($entity)) {
+                    // et ensuite nous déclarons l'utilisateur comme authentifié sur CakePHP
+                            $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($result->toArray()['email'])->id);
+                            $this->Flash->success('NEW PLAYER');
+                            $this->redirect(['action' => 'index']);
+                        } else {
+                            $this->Flash->error('ERROR connection');
+                    // et nous redirigeons vers la page de succès de connexion
+                            $this->redirect(['action' => 'index']);
+                        }
+                    }
+                } else {
+                // si l'utilisateur n'est pas valide alors nous affichons une erreur
+                    $this->Flash->error('Erreur les informations Google n\'ont pas été trouvée');
+                    $this->redirect(['action' => 'login']);
+                }
+            } catch (\Exception $e) {
+                $this->Flash->error('error FROM Google');
+                return $this->redirect(['action' => 'login']);
+            }
+        }
     }
 
     public function login()
@@ -47,10 +162,6 @@ class ArenasController extends AppController
                     }
                 }
             }
-
-            // A MODIFIER
-            //$this->request->session()->write('myFighterId', 1);
-            //$this->request->session()->write('myPlayerId', '8mm12z2j-3rqe-zil1-vz6r-i81gz4o8qa9t');
         } else if ($this->request->data('connexion')) {
 
             $data_connexion = $this->request;
@@ -65,13 +176,14 @@ class ArenasController extends AppController
                     $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($this->request->data['email'])->id);
                     if ($this->Fighters->getFightersByPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id))
                         $this->request->session()->write('myFighterId', $this->Fighters->getBestFighterbyPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id)[0]->id);
+
                     else
                         $this->request->session()->write('myFighterId', null);
 
                     return $this->redirect(['action' => 'index']);
                 } else {
                     $this->Flash->error('Wrong email - password combination.');
-                    return $this->redirect(['action' => 'index']);
+                    return $this->redirect(['action' => 'login']);
                 }
             }
         } else if ($this->request->data('lostMdp')) {
@@ -94,7 +206,7 @@ class ArenasController extends AppController
 
             if ($this->request->is('post')) {
                 if ($this->request->data('select')) {
-                    $this->request->session()->write('myFighterId',$this->request->data('fighterId'));
+                    $this->request->session()->write('myFighterId', $this->request->data('fighterId'));
                 }
                 if ($this->request->data('newFighter')) {
                     if (!$this->Fighters->createFighter($this->request->data('name'), $this->request->data('avatar'), $this->request->session()->read('myPlayerId'))) {
@@ -168,7 +280,7 @@ class ArenasController extends AppController
             }
 
             //Si le joueur possède au moins un fighter et vivant...
-            if (($this->request->session()->check('myFighterId')) && ($this->Fighters->fighterDead($this->request->session()->read('myFighterId'))==false)){
+            if (($this->request->session()->check('myFighterId')) && ($this->Fighters->fighterDead($this->request->session()->read('myFighterId')) == false)) {
 
                 $this->set('fighterExists', true);
                 $this->set('fighterAlive', true);
@@ -202,7 +314,7 @@ class ArenasController extends AppController
             }
 
             //Si le fighter meurt
-           if($this->Fighters->fighterDead($this->request->session()->read('myFighterId'))){
+            if ($this->Fighters->fighterDead($this->request->session()->read('myFighterId'))) {
 
                 $this->Flash->error('Your fighter is dead');
                 return $this->redirect(['action' => 'fighter']);
