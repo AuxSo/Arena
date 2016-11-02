@@ -94,10 +94,6 @@ if (!empty($myFightersByPlayer)) {
             <form method="post">
                 <input type="hidden" name="fighterId" id="fighterID" value="<?= $fighter->id ?>">
                 <input type="submit" name="select" value="Use <?= $fighter->name ?> to fight">
-                <?php if($levelUp) { ?>
-                    <input type="submit" name="levelUp" value="Improve my fighter">
-                    <?php
-                } ?>
             </form>
         </section>
         <?php

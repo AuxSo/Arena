@@ -120,6 +120,7 @@ class PlayersTable extends Table
     }
 
 
+
     /**
      * Fonction qui retourne le mot de passe correspondant a lemail récupérée en paramètre
      * @param $email
