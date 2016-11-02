@@ -78,6 +78,10 @@ dd {
     cursor: pointer;
 }
 
+.clickable:hover {
+    background-color: #FFAAA8;
+}
+
 .center {
     background-color: #FFCECD;
 }
