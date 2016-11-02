@@ -14,11 +14,40 @@ class ArenasController extends AppController
 {
     public function index()
     {
+        $this->loadModel('Players');
 
+        //Si l'utilisateur est connecté, afficher le changement de mot de passe
+        if ($this->request->session()->check('myPlayerId')) {
+            $this->set('isConnected', true);
+
+            if($this->request->data('changePassword')){
+
+                $oldPassword = $this->request->data['oldPassword'];
+                $newPassword1 = $this->request->data['newPassword1'];
+                $newPassword2 = $this->request->data['newPassword2'];
+                if($oldPassword == $this->Players->getPasswordById($this->request->session()->read('myPlayerId'))) {
+                    if($newPassword1 == $newPassword2){
+                        $this->Players->setPasswordById($this->request->session()->read('myPlayerId'), $newPassword1);
+                        $this->Flash->success('Your password has been changed');
+                    }
+                    else{
+                        $this->Flash->error('You can\'t enter two different new passwords!');
+                    }
+                }
+                else{
+                    $this->Flash->error('This is not your old password!');
+                }
+            }
+        } //Si l'utilisateur est connecté...
+        else {
+            $this->set('isConnected', false);
+        }
     }
 
     public function login()
     {
+        $this->set('emailContent', false);
+
         //Si on est connecté, on se déconnecte
         if ($this->request->session()->check('myPlayerId')) {
             $this->request->session()->destroy();
@@ -47,10 +76,6 @@ class ArenasController extends AppController
                     }
                 }
             }
-
-            // A MODIFIER
-            //$this->request->session()->write('myFighterId', 1);
-            //$this->request->session()->write('myPlayerId', '8mm12z2j-3rqe-zil1-vz6r-i81gz4o8qa9t');
         } else if ($this->request->data('connexion')) {
 
             $data_connexion = $this->request;
@@ -62,21 +87,25 @@ class ArenasController extends AppController
                     $this->Flash->success('You are now logged in.');
 
                     //enregistrement des variables des variables de session
+
                     $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($this->request->data['email'])->id);
-                    if ($this->Fighters->getFightersByPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id))
+                    if ($this->Fighters->getFightersByPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id)) {
                         $this->request->session()->write('myFighterId', $this->Fighters->getBestFighterbyPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id)[0]->id);
-                    else
-                        $this->request->session()->write('myFighterId', null);
+                    }
 
                     return $this->redirect(['action' => 'index']);
                 } else {
                     $this->Flash->error('Wrong email - password combination.');
-                    return $this->redirect(['action' => 'index']);
                 }
             }
         } else if ($this->request->data('lostMdp')) {
-            $this->Players->sendPasswordByMail($this->request->data['email']);
-            $this->Flash->succes('Your password has been sent to ' . $this->request->data['email']);
+            if($this->Players->emailExists($this->request->data['email'])){
+                $this->set('emailContent', $this->Players->getPasswordMail($this->Players->getPlayerByEmail($this->request->data['email'])->id));
+                $this->Flash->success('Your new password has been sent to '.$this->request->data['email']);
+            }
+            else{
+                $this->Flash->error('This email doesn\'t match any account !');
+            }
         }
     }
 
@@ -95,14 +124,19 @@ class ArenasController extends AppController
             if ($this->request->is('post')) {
                 if ($this->request->data('select')) {
                     $this->request->session()->write('myFighterId',$this->request->data('fighterId'));
+
                 }
                 if ($this->request->data('newFighter')) {
-                    if (!$this->Fighters->createFighter($this->request->data('name'), $this->request->data('avatar'), $this->request->session()->read('myPlayerId'))) {
+                    if ($this->Fighters->createFighter($this->request->data('name'), $this->request->data('avatar'), $this->request->session()->read('myPlayerId'))==-1) {
                         $this->Flash->error('Could not upload your avatar. Check the extension.');
                     } else {
                         $this->Flash->success('Your fighter has been created.');
+                        $this->request->session()->write('myFighterId', $this->Fighters->createFighter($this->request->data('name'), $this->request->data('avatar'), $this->request->session()->read('myPlayerId')));
                     }
                 }
+            }
+
+
             }
 
             //Si le joueur possède au moins un fighter...
@@ -122,7 +156,7 @@ class ArenasController extends AppController
 
 
         }
-    }
+
 
     public function sight()
     {
@@ -184,47 +218,47 @@ class ArenasController extends AppController
             }
 
             //Si le joueur possède au moins un fighter et vivant...
-            if (($this->request->session()->check('myFighterId')) && ($this->Fighters->fighterDead($this->request->session()->read('myFighterId'))==false)){
+            if($this->request->session()->check('myFighterId')) {
+                if($this->Fighters->fighterDead($this->request->session()->read('myFighterId'))==false){
 
-                $this->set('fighterExists', true);
-                $this->set('fighterAlive', true);
+                    $this->set('fighterExists', true);
+                    $this->set('fighterAlive', true);
 
-                // Le combattant actuellement sélectionné
-                $this->set('myFighter', $this->Fighters->get($this->request->session()->read('myFighterId')));
+                    // Le combattant actuellement sélectionné
+                    $this->set('myFighter', $this->Fighters->get($this->request->session()->read('myFighterId')));
 
-                //récupère les constantes de taille du terrain$this->Fighters->ARENA_HEIGHT
-                $this->set('arenaWidth', $this->Fighters->ARENA_WIDTH);
-                $this->set('arenaHeight', $this->Fighters->ARENA_HEIGHT);
+                    //récupère les constantes de taille du terrain$this->Fighters->ARENA_HEIGHT
+                    $this->set('arenaWidth', $this->Fighters->ARENA_WIDTH);
+                    $this->set('arenaHeight', $this->Fighters->ARENA_HEIGHT);
 
-                //check si le combattant est pret a monter de niveau
-                $this->set('isReadyToLvlUp', $this->Fighters->isFighterReadyToLvlUp($this->request->session()->read('myFighterId')));
+                    //check si le combattant est pret a monter de niveau
+                    $this->set('isReadyToLvlUp', $this->Fighters->isFighterReadyToLvlUp($this->request->session()->read('myFighterId')));
 
-                // The tools owned by the fighter whose id is given in param (here 1 as test)
-                // The chosen fighter will be stored in a session variable
-                $this->set('sightTool', $this->Tools->getSightTool($this->request->session()->read('myFighterId')));
-                $this->set('strengthTool', $this->Tools->getStrengthTool($this->request->session()->read('myFighterId')));
-                $this->set('healthTool', $this->Tools->getHealthTool($this->request->session()->read('myFighterId')));
+                    // The tools owned by the fighter whose id is given in param (here 1 as test)
+                    // The chosen fighter will be stored in a session variable
+                    $this->set('sightTool', $this->Tools->getSightTool($this->request->session()->read('myFighterId')));
+                    $this->set('strengthTool', $this->Tools->getStrengthTool($this->request->session()->read('myFighterId')));
+                    $this->set('healthTool', $this->Tools->getHealthTool($this->request->session()->read('myFighterId')));
 
-                //stock tous les elements à afficher dans la variable tabArenaElements (DEBUG)
-                $this->set('tabArenaElements', $this->Fighters->getArenaElements());
-                //stock dans une matrice les elements à afficher dans la vue
-                if ($this->request->session()->check('myFighterId')) {
-                    $myFighter = $this->Fighters->getFighterById($this->request->session()->read('myFighterId'));
-                    $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible($myFighter->coordinate_x, $myFighter->coordinate_y, $myFighter->skill_sight));
-                    $this->set('matrice', $this->Fighters->getMatriceVisible($myFighter->coordinate_x, $myFighter->coordinate_y, $myFighter->skill_sight));
-                } else
-                    $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible(5, 5, 2));
+                    //stock tous les elements à afficher dans la variable tabArenaElements (DEBUG)
+                    $this->set('tabArenaElements', $this->Fighters->getArenaElements());
+                    //stock dans une matrice les elements à afficher dans la vue
+                    if ($this->request->session()->check('myFighterId')) {
+                        $myFighter = $this->Fighters->getFighterById($this->request->session()->read('myFighterId'));
+                        $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible($myFighter->coordinate_x, $myFighter->coordinate_y, $myFighter->skill_sight));
+                        $this->set('matrice', $this->Fighters->getMatriceVisible($myFighter->coordinate_x, $myFighter->coordinate_y, $myFighter->skill_sight));
+                    } else
+                        $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible(5, 5, 2));
 
-            } else {
-                $this->set('fighterExists', false);
-                $this->set('fighterAlive', false);
+                }
+                else {
+                    $this->set('fighterAlive', false);
+                    $this->Flash->error('Your fighter is dead');
+                    return $this->redirect(['action' => 'fighter']);
+                }
             }
-
-            //Si le fighter meurt
-           if($this->Fighters->fighterDead($this->request->session()->read('myFighterId'))){
-
-                $this->Flash->error('Your fighter is dead');
-                return $this->redirect(['action' => 'fighter']);
+            else {
+                $this->set('fighterExists', false);
             }
 
 

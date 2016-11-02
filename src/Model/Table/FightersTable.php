@@ -46,11 +46,11 @@ class FightersTable extends Table
             while ($this->getElementsByCoord($fighter->coordinate_x = rand(0, $this->ARENA_WIDTH), $fighter->coordinate_y = rand(0, $this->ARENA_HEIGHT)) != null) ;
 
             $this->save($fighter);
-            return 1;
+            return $fighter->id;
         }
         else{
             $this->delete($fighter);
-            return 0;
+            return -1;
         }
 
     }
