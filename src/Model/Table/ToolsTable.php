@@ -2,6 +2,7 @@
 namespace App\Model\Table;
 
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 
 /**
  * Created by PhpStorm.
@@ -11,7 +12,8 @@ use Cake\ORM\Table;
  */
 class ToolsTable extends Table
 {
-
+    public $ARENA_WIDTH = 15;
+    public $ARENA_HEIGHT = 10;
     /**
      *
      */
@@ -22,6 +24,15 @@ class ToolsTable extends Table
 
 
         return $tabTools;
+    }
+
+    public function getNbTools()
+    {
+        $tools = $this->find('all');
+        $tabTools = $tools->toArray();
+        $size=sizeof($tabTools);
+
+        return $size;
     }
 
     /**
@@ -85,4 +96,17 @@ class ToolsTable extends Table
     {
         return $this->find('all', ['conditions' => 'fighter_id =' . $fighterId])->toArray();
     }
+
+    public function createTool($type, $bonus)
+    {
+        $tool = $this->newEntity();
+        $tool->type = $type;
+        $tool->bonus = $bonus;
+        $tool->coordinate_x = rand(0, $this->ARENA_WIDTH - 1);
+        $tool->coordinate_y = rand(0, $this->ARENA_HEIGHT - 1);
+        $this->save($tool);
+
+    }
+
+
 }

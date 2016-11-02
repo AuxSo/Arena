@@ -13,7 +13,7 @@ use Google_Service_Oauth2;
 
 define('GOOGLE_OAUTH_CLIENT_ID', '454279630539-sg4a02pjdu33noimuamaaa61fst83t7m.apps.googleusercontent.com');
 define('GOOGLE_OAUTH_CLIENT_SECRET', 'Lyfrmfu9XPtkrNSkSRy4RCHQ');
-define('GOOGLE_OAUTH_REDIRECT_URI', 'http://localhost:8888/webarena_group_siGr1-03-AG/arenas/googlecallback');
+define('GOOGLE_OAUTH_REDIRECT_URI', 'http://localhost/arena/arenas/googlecallback');
 
 /**
  * Personal Controller
@@ -137,7 +137,7 @@ class ArenasController extends AppController
 
                         if ($this->Players->save($entity)) {
                     // et ensuite nous déclarons l'utilisateur comme authentifié sur CakePHP
-                            $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($result->toArray()['email'])->id);
+                            $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($result->toArray()->email)->id);
                             $this->Flash->success('NEW PLAYER');
                             $this->redirect(['action' => 'index']);
                         } else {
@@ -169,6 +169,24 @@ class ArenasController extends AppController
 
         $this->loadModel('Players');
         $this->loadModel('Fighters');
+        $this->loadModel('Tools');
+
+        //Si le nb de tools inférieur à 9
+        if($this->Tools->getNbTools()<9)
+        {
+            //Création d'objets
+            $this->Tools->createTool('health',1);
+            $this->Tools->createTool('health',3);
+            $this->Tools->createTool('health',6);
+
+            $this->Tools->createTool('strength',1);
+            $this->Tools->createTool('strength',3);
+            $this->Tools->createTool('strength',6);
+
+            $this->Tools->createTool('sight',1);
+            $this->Tools->createTool('sight',3);
+            $this->Tools->createTool('sight',6);
+        }
 
         $data_post = $this->request->is('post');
         if ($this->request->data('inscription')) {
@@ -185,6 +203,7 @@ class ArenasController extends AppController
                     if ($inscrit) {
                         $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($this->request->data['email'])->id);
                         $this->request->session()->write('myFighterId', null);
+
                         $this->Flash->success('Votre compte a bien été créé');
                         return $this->redirect(['action' => 'index']);
                     }
