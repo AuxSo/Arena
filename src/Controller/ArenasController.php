@@ -90,12 +90,8 @@ class ArenasController extends AppController
 
                     $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($this->request->data['email'])->id);
                     if ($this->Fighters->getFightersByPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id)) {
-
-
                         $this->request->session()->write('myFighterId', $this->Fighters->getBestFighterbyPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id)[0]->id);
                     }
-                    else
-                        $this->request->session()->write('myFighterId', null);
 
                     return $this->redirect(['action' => 'index']);
                 } else {
@@ -222,47 +218,47 @@ class ArenasController extends AppController
             }
 
             //Si le joueur possède au moins un fighter et vivant...
-            if (($this->request->session()->check('myFighterId')) && ($this->Fighters->fighterDead($this->request->session()->read('myFighterId'))==false)){
+            if($this->request->session()->check('myFighterId')) {
+                if($this->Fighters->fighterDead($this->request->session()->read('myFighterId'))==false){
 
-                $this->set('fighterExists', true);
-                $this->set('fighterAlive', true);
+                    $this->set('fighterExists', true);
+                    $this->set('fighterAlive', true);
 
-                // Le combattant actuellement sélectionné
-                $this->set('myFighter', $this->Fighters->get($this->request->session()->read('myFighterId')));
+                    // Le combattant actuellement sélectionné
+                    $this->set('myFighter', $this->Fighters->get($this->request->session()->read('myFighterId')));
 
-                //récupère les constantes de taille du terrain$this->Fighters->ARENA_HEIGHT
-                $this->set('arenaWidth', $this->Fighters->ARENA_WIDTH);
-                $this->set('arenaHeight', $this->Fighters->ARENA_HEIGHT);
+                    //récupère les constantes de taille du terrain$this->Fighters->ARENA_HEIGHT
+                    $this->set('arenaWidth', $this->Fighters->ARENA_WIDTH);
+                    $this->set('arenaHeight', $this->Fighters->ARENA_HEIGHT);
 
-                //check si le combattant est pret a monter de niveau
-                $this->set('isReadyToLvlUp', $this->Fighters->isFighterReadyToLvlUp($this->request->session()->read('myFighterId')));
+                    //check si le combattant est pret a monter de niveau
+                    $this->set('isReadyToLvlUp', $this->Fighters->isFighterReadyToLvlUp($this->request->session()->read('myFighterId')));
 
-                // The tools owned by the fighter whose id is given in param (here 1 as test)
-                // The chosen fighter will be stored in a session variable
-                $this->set('sightTool', $this->Tools->getSightTool($this->request->session()->read('myFighterId')));
-                $this->set('strengthTool', $this->Tools->getStrengthTool($this->request->session()->read('myFighterId')));
-                $this->set('healthTool', $this->Tools->getHealthTool($this->request->session()->read('myFighterId')));
+                    // The tools owned by the fighter whose id is given in param (here 1 as test)
+                    // The chosen fighter will be stored in a session variable
+                    $this->set('sightTool', $this->Tools->getSightTool($this->request->session()->read('myFighterId')));
+                    $this->set('strengthTool', $this->Tools->getStrengthTool($this->request->session()->read('myFighterId')));
+                    $this->set('healthTool', $this->Tools->getHealthTool($this->request->session()->read('myFighterId')));
 
-                //stock tous les elements à afficher dans la variable tabArenaElements (DEBUG)
-                $this->set('tabArenaElements', $this->Fighters->getArenaElements());
-                //stock dans une matrice les elements à afficher dans la vue
-                if ($this->request->session()->check('myFighterId')) {
-                    $myFighter = $this->Fighters->getFighterById($this->request->session()->read('myFighterId'));
-                    $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible($myFighter->coordinate_x, $myFighter->coordinate_y, $myFighter->skill_sight));
-                    $this->set('matrice', $this->Fighters->getMatriceVisible($myFighter->coordinate_x, $myFighter->coordinate_y, $myFighter->skill_sight));
-                } else
-                    $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible(5, 5, 2));
+                    //stock tous les elements à afficher dans la variable tabArenaElements (DEBUG)
+                    $this->set('tabArenaElements', $this->Fighters->getArenaElements());
+                    //stock dans une matrice les elements à afficher dans la vue
+                    if ($this->request->session()->check('myFighterId')) {
+                        $myFighter = $this->Fighters->getFighterById($this->request->session()->read('myFighterId'));
+                        $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible($myFighter->coordinate_x, $myFighter->coordinate_y, $myFighter->skill_sight));
+                        $this->set('matrice', $this->Fighters->getMatriceVisible($myFighter->coordinate_x, $myFighter->coordinate_y, $myFighter->skill_sight));
+                    } else
+                        $this->set('outputMatrice', $this->Fighters->getOutputMatriceVisible(5, 5, 2));
 
-            } else {
-                $this->set('fighterExists', false);
-                $this->set('fighterAlive', false);
+                }
+                else {
+                    $this->set('fighterAlive', false);
+                    $this->Flash->error('Your fighter is dead');
+                    return $this->redirect(['action' => 'fighter']);
+                }
             }
-
-            //Si le fighter meurt
-           if($this->Fighters->fighterDead($this->request->session()->read('myFighterId'))){
-
-                $this->Flash->error('Your fighter is dead');
-                return $this->redirect(['action' => 'fighter']);
+            else {
+                $this->set('fighterExists', false);
             }
 
 
