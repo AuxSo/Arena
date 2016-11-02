@@ -65,7 +65,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->fetch('content') ?>
 </div>
 <footer>
-    Groupe : Gr1-03-AG | Membres : Baticle, Bourhim, Gauthier, Thouary | DB Login: root | DB Password: root | DB name: webarena
+    Groupe : Gr1-03-AG | Membres : Baticle, Bourhim, Gauthier, Thouary | DB Login: root | DB Password: root | DB name: webarena | Option authentification google : Please Do composer update
 </footer>
 </body>
 </html>
