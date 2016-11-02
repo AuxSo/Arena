@@ -1,4 +1,5 @@
 <header> Your fighters</header>
+
 <nav id="fightersNav">
     <ul>
         <?php
@@ -45,7 +46,7 @@ $addedClass = '';
 if (!empty($myFightersByPlayer)) {
     foreach ($myFightersByPlayer as $index => $fighter) {
         ?>
-        <section class="fighterCard" id="<?= $index ?>">
+        <section class="fighterCard <?=$addedClass?>" id="<?= $index ?>">
             <h3><?= $fighter->name ?></h3>
             <?php if (file_exists(WWW_ROOT . 'img' . DS . 'avatars' . DS . $fighter->id . '.png')) {
                 $extension = ".png";
