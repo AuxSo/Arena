@@ -97,7 +97,7 @@
                             if ((in_array("Hidden", $outputMatrice[$i][$j]))) {
                                 ?> greyed<?php
                             } ?>"
-                                value="<?= $i . '-' . $j ?>"> <?php
+                                id="<?= $i . '-' . $j ?>"> <?php
 
                                 if (in_array("Fighter", $outputMatrice[$i][$j]))
                                     echo("F");

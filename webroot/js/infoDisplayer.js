@@ -3,7 +3,7 @@
  */
 $(function () {
     $('.case').click(function () {
-        var coord = $(this).attr('value').split('-');
+        var coord = $(this).attr('id').split('-');
         var x = coord[0];
         var y = coord[1];
 
@@ -28,7 +28,7 @@ $(function () {
 
     $('.adjacent').click(function(){
 
-        var coord = $(this).attr('value').split('-');
+        var coord = $(this).attr('id').split('-');
         var x = coord[0];
         var y = coord[1];
 
@@ -44,7 +44,7 @@ $(function () {
     })
 
     $('.takable').click(function(){
-        var coord = $(this).attr('value').split('-');
+        var coord = $(this).attr('id').split('-');
         var x = coord[0];
         var y = coord[1];
 
