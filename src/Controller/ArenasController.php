@@ -165,6 +165,22 @@ class ArenasController extends AppController
                         $this->Flash->error('This tool will not improve your current skills.');
                     };
                 }
+                //Si fighter montre d'un niveau
+                if ($this->request->data('health')) {
+                    $choice=3;
+                    $this->Fighters->fighterProgression($this->request->session()->read('myFighterId'),  $choice);
+                }
+                if ($this->request->data('strength')) {
+                    $choice=2;
+                    $this->Fighters->fighterProgression($this->request->session()->read('myFighterId'),  $choice);
+                }
+                if ($this->request->data('sight')) {
+                    $choice=1;
+                    $this->Fighters->fighterProgression($this->request->session()->read('myFighterId'),  $choice);
+                }
+
+
+
             }
 
             //Si le joueur possède au moins un fighter et vivant...
@@ -179,6 +195,9 @@ class ArenasController extends AppController
                 //récupère les constantes de taille du terrain$this->Fighters->ARENA_HEIGHT
                 $this->set('arenaWidth', $this->Fighters->ARENA_WIDTH);
                 $this->set('arenaHeight', $this->Fighters->ARENA_HEIGHT);
+
+                //check si le combattant est pret a monter de niveau
+                $this->set('isReadyToLvlUp', $this->Fighters->isFighterReadyToLvlUp($this->request->session()->read('myFighterId')));
 
                 // The tools owned by the fighter whose id is given in param (here 1 as test)
                 // The chosen fighter will be stored in a session variable
@@ -207,6 +226,9 @@ class ArenasController extends AppController
                 $this->Flash->error('Your fighter is dead');
                 return $this->redirect(['action' => 'fighter']);
             }
+
+
+
         }
     }
 
