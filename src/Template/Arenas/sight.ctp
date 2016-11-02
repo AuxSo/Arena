@@ -1,23 +1,22 @@
-
 <main id="sightMain">
-    <h1> Sight</h1>
+    <h1 class="hidden">Sight</h1>
     <?php //Si l'utilisateur n'a pas de fighter
-    if (($fighterExists)&&($fighterAlive)) { ?>
+    if (($fighterExists) && ($fighterAlive)) { ?>
         <section id="myInfos">
-            <h3>Fighter : <?= $myFighter->name ?></h3>
+            <h3><?= $myFighter->name ?></h3>
             <article>
-                <h4>Infos :</h4>
+                <h4>Infos</h4>
                 <dl>
                     <dt>Level :</dt>
                     <dd><?= $myFighter->level ?></dd>
                     <dt>Experience :</dt>
-                    <dd><?= $myFighter->xp ?> (you need <strong><?= 4 - ($myFighter->xp % 4) ?></strong> more to level
+                    <dd><?= $myFighter->xp ?> (+<strong><?= 4 - ($myFighter->xp % 4) ?></strong> to level
                         up)
                     </dd>
                 </dl>
             </article>
             <article>
-                <h4>Stats :</h4>
+                <h4>Stats</h4>
                 <dl>
                     <dt>Health :</dt>
                     <dd><?= $myFighter->current_health ?>/<?= $myFighter->skill_health ?>
@@ -35,7 +34,7 @@
                     <dt>Sight :</dt>
                     <dd><?= $myFighter->skill_sight ?>
                         <?php if (isset($sightTool)) { ?>
-                            (including <strong>+<?= $sightTool->bonus ?></strong> tool bonus)
+                            (<strong><?= $sightTool->bonus ?></strong> tool bonus)
                             <?php
                         } ?></dd>
                 </dl>
@@ -43,10 +42,21 @@
         </section>
         <section id="midColumn">
             <table id="arena">
+                <tr>
+                    <td class="case noBorder"></td>
+                    <?php
+                    for ($i = 0; $i < $arenaWidth; $i++) {
+                        ?>
+                        <td class="case noBorder"><?= $i ?></td>
+                        <?php
+                    }
+                    ?>
+                </tr>
                 <?php
                 for ($j = 0; $j < $arenaHeight; $j++) {
                     ?>
-                    <tr> <?php
+                    <tr>
+                        <td class="case noBorder"><?= $j ?></td> <?php
                         for ($i = 0; $i < $arenaWidth; $i++) {
                             ?>
                             <td class="case<?php
@@ -64,6 +74,9 @@
                             } ?><?php
                             if ((in_array("Self", $outputMatrice[$i][$j]))) {
                                 ?> center<?php
+                            } ?><?php
+                            if ((in_array("Hidden", $outputMatrice[$i][$j]))) {
+                                ?> greyed<?php
                             } ?>"
                                 value="<?= $i . '-' . $j ?>"> <?php
 
@@ -71,14 +84,25 @@
                                     echo("F");
                                 if (in_array("Tool", $outputMatrice[$i][$j]))
                                     echo("T");
-                                if (in_array("Hidden", $outputMatrice[$i][$j]))
-                                    echo("X");
 
                                 ?> </td> <?php
                         }
-                        ?> </tr> <?php
+
+                        ?>
+                        <td class="case noBorder"><?= $j ?></td>
+                    </tr> <?php
                 }
                 ?>
+                <tr>
+                    <td class="case noBorder"></td>
+                    <?php
+                    for ($i = 0; $i < $arenaWidth; $i++) {
+                        ?>
+                        <td class="case noBorder"><?= $i ?></td>
+                        <?php
+                    }
+                    ?>
+                </tr>
             </table>
 
             <article id="actions">
@@ -86,9 +110,9 @@
                     <input type="hidden" name="xSelected" id="xSelected">
                     <input type="hidden" name="ySelected" id="ySelected">
                     <input type="hidden" name="enemy" id="enemy">
-                    <input class="hidden" type="submit" id="attack" name="attack" value="attack">
-                    <input class="hidden" type="submit" id="move" name="move" value="move">
-                    <input class="hidden" type="submit" id="take" name="take" value="take">
+                    <input class="hidden actionButton" type="submit" id="attack" name="attack" value="Attack">
+                    <input class="hidden actionButton" type="submit" id="move" name="move" value="Move">
+                    <input class="hidden actionButton" type="submit" id="take" name="take" value="Take">
                 </form>
             </article>
 
@@ -157,7 +181,7 @@
     <?php } ?>
 </main>
 
-<?php $this->assign('title','Sight');?>
+<?php $this->assign('title', 'Sight'); ?>
 
 
 
