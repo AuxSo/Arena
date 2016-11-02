@@ -92,6 +92,9 @@
                             } ?><?php
                             if ((in_array("Self", $outputMatrice[$i][$j]))) {
                                 ?> center<?php
+                            } ?><?php
+                            if ((in_array("Hidden", $outputMatrice[$i][$j]))) {
+                                ?> greyed<?php
                             } ?>"
                                 value="<?= $i . '-' . $j ?>"> <?php
 
