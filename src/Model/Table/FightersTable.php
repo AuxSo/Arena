@@ -572,6 +572,7 @@ class FightersTable extends Table
 
     public function getFighterByCoord($x, $y)
     {
+        $fighter = null;
         $temp = $this->getElementsByCoord($x, $y);
         if ($temp == false)
             return null;

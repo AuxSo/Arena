@@ -68,10 +68,6 @@ dd {
     border: solid 2px #000000;
 }
 
-.hidden {
-    display: none;
-}
-
 /* Sight */
 .case {
     text-align: center;
@@ -126,7 +122,6 @@ dd {
     padding: 0 10px;
 }
 
-
 #otherInfo {
     background: #AF3F3C;
     flex-grow: 0;
@@ -138,7 +133,6 @@ dd {
     width: 17.5%;
     box-sizing: border-box;
 }
-
 
 #otherInfo h3 {
     color: #FFCECD;
@@ -154,7 +148,6 @@ dd {
     color: #AF3F3C;
     padding: 0 10px;
 }
-
 
 #midColumn {
     flex-shrink: 0;
@@ -187,6 +180,10 @@ dd {
     box-sizing: border-box;
 }
 
+.actionButton:hover {
+    opacity:0.8;
+}
+
 footer {
     background: #FFCECD;
     color: #AF3F3C;
@@ -194,18 +191,79 @@ footer {
 }
 
 /* Login */
-#inscription {
-    width : 500px;
+.inscriptionSection {
+    width: 500px;
     background: #AF3F3C;
-    flex-grow: 0;
-    margin: 0;
+    margin: 0 auto;
     border-width: 0;
     color: #FFFFFF;
     padding: 10px 20px;
-    height: 600px;
+    height: 430px;
     box-sizing: border-box;
+    display : flex;
+    flex-direction: column;
 }
 
-#inscription label {
+#lostMdp {
+    height: 200px;
+}
+
+.inscriptionSection > * {
+    margin : 20px 0;
+}
+
+.inscriptionSection label, .inscriptionSection h3, #forgot {
     color: #FFFFFF;
+}
+
+.inscriptionSection h3 {
+    text-align: center;
+}
+
+.inscriptionSection form {
+    display : flex;
+    flex-direction: column;
+}
+
+#buttons{
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.loginButton {
+    border: 0;
+    width: auto;
+    height: 40px;
+    background: #FFCECD;
+    font-size: 20px;
+    line-height: 20px;
+    color: #AF3F3C;
+    padding: 5px 25px;
+    box-sizing: border-box;
+    margin: 10px 0;
+}
+
+.loginButton:hover {
+    background : #FFAAA8 ;
+}
+
+.google {
+    text-align: center;
+}
+
+#forgot{
+    display: block;
+    font-size: 15px;
+    text-decoration: underline;
+    text-align: center;
+}
+
+/* Fighters */
+#fightersTitle {
+    text-align: center;
+}
+
+
+.hidden {
+    display: none;
 }

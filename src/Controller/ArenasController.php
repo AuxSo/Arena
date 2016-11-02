@@ -13,7 +13,7 @@ use Google_Service_Oauth2;
 
 define('GOOGLE_OAUTH_CLIENT_ID', '454279630539-sg4a02pjdu33noimuamaaa61fst83t7m.apps.googleusercontent.com');
 define('GOOGLE_OAUTH_CLIENT_SECRET', 'Lyfrmfu9XPtkrNSkSRy4RCHQ');
-define('GOOGLE_OAUTH_REDIRECT_URI', 'http://localhost/arena/arenas/googlecallback');
+define('GOOGLE_OAUTH_REDIRECT_URI', 'http://localhost:8888/webarena_group_siGr1-03-AG/arenas/googlecallback');
 
 /**
  * Personal Controller
