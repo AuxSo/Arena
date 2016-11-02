@@ -329,18 +329,6 @@ class FightersTable extends Table
             $Tools->save($tool);
         }
 
-
-        /*$myfighter->level = 1;
-        $myfighter->xp = 0;
-        $myfighter->skill_sight = 2;
-        $myfighter->skill_strength = 1;
-        $myfighter->skill_health = 3;
-        $myfighter->current_health = 0;
-
-        while ($this->getElementsByCoord($myfighter->coordinate_x = rand(0, $this->ARENA_WIDTH), $myfighter->coordinate_y = rand(0, $this->ARENA_HEIGHT)) != null) ;
-
-        $this->save($myfighter);*/
-
     }
 
     public function fighterProgression($idFighter, $choice)
