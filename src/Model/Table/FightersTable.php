@@ -335,15 +335,10 @@ class FightersTable extends Table
 
     }
 
-
-
-
-
     public function reset($idFighter)
     {
         $Tools = TableRegistry::get('Tools');
 
-        $myfighter = $this->get($idFighter);
         $fighterTools = $Tools->getFighterTools($idFighter);
         foreach ($fighterTools as $tool) {
             $tool->fighter_id = null;
@@ -355,24 +350,34 @@ class FightersTable extends Table
     public function fighterProgression($idFighter, $choice)
     {
         $myfighter = $this->get($idFighter);
+        $events = TableRegistry::get('Events');
+
+
+        $myfighterName = $myfighter->name;
+        $myfighter_x = $myfighter->coordinate_x;
+        $myfighter_y = $myfighter->coordinate_y;
+
 
 
         switch ($choice) {
             case 1: //Vue
                 $myfighter->skill_sight += 1;
+                $events->create_event("$myfighterName increase skill sight" , $myfighter_x, $myfighter_y);
                 break;
             case 2://Force
                 $myfighter->skill_strength += 1;
+                $events->create_event("$myfighterName increase skill strength" , $myfighter_x, $myfighter_y);
                 break;
             case 3://Vie
                 $myfighter->skill_health += 3;
                 $myfighter->current_health += 3;
+                $events->create_event("$myfighterName increase skill health" , $myfighter_x, $myfighter_y);
                 break;
             default;
         }
 
         $myfighter->level += 1;
-
+        $events->create_event("$myfighterName level up" , $myfighter_x, $myfighter_y);
 
         $this->save($myfighter);
     }
