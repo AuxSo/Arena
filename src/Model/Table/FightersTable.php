@@ -34,8 +34,8 @@ class FightersTable extends Table
 
         $extension = strtolower(pathinfo($avatar['name'], PATHINFO_EXTENSION));
 
-        if(!empty($avatar['tmp_name'])&&(in_array($extension, array('jpg','jpeg','png')))){
-            move_uploaded_file($avatar['tmp_name'],'img/avatars/' . $fighter->id . '.' . $extension);
+        if (!empty($avatar['tmp_name']) && (in_array($extension, array('jpg', 'jpeg', 'png')))) {
+            move_uploaded_file($avatar['tmp_name'], 'img/avatars/' . $fighter->id . '.' . $extension);
             $fighter->level = 1;
             $fighter->xp = 0;
             $fighter->skill_sight = 2;
@@ -43,12 +43,11 @@ class FightersTable extends Table
             $fighter->skill_health = 3;
             $fighter->current_health = 3;
 
-            while ($this->getElementsByCoord($fighter->coordinate_x = rand(0, $this->ARENA_WIDTH-1), $fighter->coordinate_y = rand(0, $this->ARENA_HEIGHT-1)) != null) ;
+            while ($this->getElementsByCoord($fighter->coordinate_x = rand(0, $this->ARENA_WIDTH - 1), $fighter->coordinate_y = rand(0, $this->ARENA_HEIGHT - 1)) != null) ;
 
             $this->save($fighter);
             return $fighter->id;
-        }
-        else{
+        } else {
             $this->delete($fighter);
             return -1;
         }
@@ -132,14 +131,19 @@ class FightersTable extends Table
         $fighterName = $fighters->name;
         $fighter_x = $fighters->coordinate_x;
         $fighter_y = $fighters->coordinate_y;
-        $fighters->coordinate_x = $coord_x;
-        $fighters->coordinate_y = $coord_y;
 
-        $this->save($fighters);
+        if ($this->getFighterByCoord($coord_x, $coord_y) == null) {
+            $fighters->coordinate_x = $coord_x;
+            $fighters->coordinate_y = $coord_y;
 
-        $eventName = "Move of $fighterName";
+            $this->save($fighters);
 
-        $events->create_event($eventName, $fighter_x, $fighter_y);
+            $eventName = "Move of $fighterName";
+
+            $events->create_event($eventName, $fighter_x, $fighter_y);
+        }
+
+
     }
 
     // TODO Retirer l'id du fighter quand un objet est "écrasé"
@@ -254,6 +258,8 @@ class FightersTable extends Table
         $fighterattackedLevel = $fighterattacked->level;
         $fighterattackedName = $fighterattacked->name;
         $fighterattackedHealth = $fighterattacked->current_health;
+        $myfighterAttack_X = $fighterattacked->coordinate_x;
+        $myfighterAttack_Y = $fighterattacked->coordinate_y;
 
         $randomNumber = rand(1, 20);
 
@@ -285,9 +291,11 @@ class FightersTable extends Table
         $this->save($myfighter);
         $this->save($fighterattacked);
 
+
         return $result;
 
     }
+
     public function fighterAttackDead($idFighter)
     {
         $myfighter = $this->get($idFighter);
@@ -316,10 +324,9 @@ class FightersTable extends Table
         $myfighterName = $myfighter->name;
         $myfighter_x = $myfighter->coordinate_x;
         $myfighter_y = $myfighter->coordinate_y;
-     
 
-        if($myFighterHealth<=0)
-        {
+
+        if ($myFighterHealth <= 0) {
             $eventName = "Death of $myfighterName";
             $events->create_event($eventName, $myfighter_x, $myfighter_y);
             $this->reset($idFighter);
@@ -328,14 +335,14 @@ class FightersTable extends Table
 
 
             return true;
-        }
-        else
+        } else
             return false;
 
 
     }
 
-    public function isFighterDead($myfighterId){
+    public function isFighterDead($myfighterId)
+    {
         $fighter = $this->find()->extract('id');
         foreach ($fighter as $thisFighter) {
             if ($thisFighter == $myfighterId)
@@ -369,36 +376,36 @@ class FightersTable extends Table
         $myfighter_y = $myfighter->coordinate_y;
 
 
-
         switch ($choice) {
             case 1: //Vue
                 $myfighter->skill_sight += 1;
-                $events->create_event("$myfighterName increase skill sight" , $myfighter_x, $myfighter_y);
+                $events->create_event("$myfighterName increase skill sight", $myfighter_x, $myfighter_y);
                 break;
             case 2://Force
                 $myfighter->skill_strength += 1;
-                $events->create_event("$myfighterName increase skill strength" , $myfighter_x, $myfighter_y);
+                $events->create_event("$myfighterName increase skill strength", $myfighter_x, $myfighter_y);
                 break;
             case 3://Vie
                 $myfighter->skill_health += 3;
                 $myfighter->current_health += 3;
-                $events->create_event("$myfighterName increase skill health" , $myfighter_x, $myfighter_y);
+                $events->create_event("$myfighterName increase skill health", $myfighter_x, $myfighter_y);
                 break;
             default;
         }
 
         $myfighter->level += 1;
-        $events->create_event("$myfighterName level up" , $myfighter_x, $myfighter_y);
+        $events->create_event("$myfighterName level up", $myfighter_x, $myfighter_y);
 
         $this->save($myfighter);
     }
 
-    public function isFighterReadyToLvlUp($fighterId){
+    public function isFighterReadyToLvlUp($fighterId)
+    {
         $myfighter = $this->get($fighterId);
         $myFighterXP = $myfighter->xp;
         $myFighterLvl = $myfighter->level;
 
-        if ($myFighterXP  - (4*$myFighterLvl) >= 4) {
+        if ($myFighterXP - (4 * $myFighterLvl) >= 4) {
             return true;
         }
     }
@@ -566,7 +573,8 @@ class FightersTable extends Table
     public function getFighterByCoord($x, $y)
     {
         $temp = $this->getElementsByCoord($x, $y);
-        $fighter = null;
+        if ($temp == false)
+            return null;
         foreach ($temp as $element) {
             if ($element->player_id) {
                 $fighter = $element;

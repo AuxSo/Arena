@@ -59,6 +59,7 @@
             </article>
         </section>
         <section id="midColumn">
+            <?= $this->Html->link('Refresh', ['controller' => 'Arenas', 'action' => 'sight']) ?>
             <table id="arena">
                 <tr>
                     <td class="case noBorder"></td>

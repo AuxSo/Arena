@@ -301,19 +301,21 @@ class ArenasController extends AppController
                         $this->Fighters->moveFighter($this->request->session()->read('myFighterId'), $this->request->data('xSelected'), $this->request->data('ySelected'));
                     }
                     // En cas d'attaque du combattant
-                    if ($this->request->data('attack')) {
-                        switch ($this->Fighters->attack($this->request->session()->read('myFighterId'),
-                            $this->Fighters->getFighterByCoord($this->request->data('xSelected'),
-                                $this->request->data('ySelected'))->id)) {
-                            case 0 :
-                                $this->Flash->error('Your attack failed.');
-                                break;
-                            case 1 :
-                                $this->Flash->success('Your attack succeeded.');
-                                break;
-                            case 2 :
-                                $this->Flash->success('You killed the fighter.');
-                                break;
+                    if($this->Fighters->getFighterByCoord($this->request->data('xSelected'), $this->request->data('ySelected'))!=null){
+
+                        if ($this->request->data('attack')) {
+                            switch ($this->Fighters->attack($this->request->session()->read('myFighterId'),
+                                $this->Fighters->getFighterByCoord($this->request->data('xSelected'), $this->request->data('ySelected'))->id)) {
+                                case 0 :
+                                    $this->Flash->error('Your attack failed.');
+                                    break;
+                                case 1 :
+                                    $this->Flash->success('Your attack succeeded.');
+                                    break;
+                                case 2 :
+                                    $this->Flash->success('You killed the fighter.');
+                                    break;
+                            }
                         }
                     }
                     // En cas de ramassage d'un objet
