@@ -21,8 +21,8 @@ $(function () {
     })
 
     // Quand on clique sur "I forgot my password"
-    $('#forgot').click(function () {
-        $('#lostMdp').slideDown();
+    $('#showBloc').click(function () {
+        $('#zone').slideDown();
     })
 
 })

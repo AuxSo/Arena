@@ -11,7 +11,7 @@
 </section>
 
 <?php if($isConnected){ ?>
-    <form method="post">
+    <form method="post" id="zone" class="hidden">
         <label>Enter your old password</label>
         <input type="password" name="oldPassword" id="oldPassword">
         <label>Enter your new password</label>
@@ -20,6 +20,8 @@
         <input type="password" name="newPassword2" id="password">
         <input type="submit" id="changePassword" name="changePassword" value="Change my password">
     </form>
+
+    <div id="showBloc" style="margin-top:50px">I forgot my password</div>
 <?php } ?>
 
 <?php $this->assign('title','Home');?>
