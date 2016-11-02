@@ -365,3 +365,12 @@ footer {
 .hidden {
     display: none;
 }
+
+/*Index*/
+#indexTitle {
+    background: #AF3F3C;
+    text-align: center;
+    color: #FFFFFF;
+    padding: 10px;
+    margin: 0;
+}
