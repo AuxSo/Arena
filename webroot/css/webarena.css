@@ -8,6 +8,10 @@ table {
     width: auto;
 }
 
+ul {
+    margin:0;
+}
+
 tr {
     height: 20px;
 }
@@ -322,7 +326,28 @@ footer {
     margin : 10px;
 }
 
+/* Diary */
+#diaryTitle {
+    background: #AF3F3C;
+    text-align: center;
+    color: #FFFFFF;
+    padding: 10px;
+    margin: 0;
+}
 
+.light{
+    background: #FFCECD;
+}
+
+.dark{
+    background: #FFAAA8;
+}
+
+.light, .dark {
+    list-style: none;
+    margin: 0;
+    padding: 10px;
+}
 
 .selected {
     background-color: #FFAAA8;
