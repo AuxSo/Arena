@@ -2,6 +2,7 @@
 namespace App\Model\Table;
 
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 
 /**
  * Created by PhpStorm.
@@ -11,7 +12,8 @@ use Cake\ORM\Table;
  */
 class ToolsTable extends Table
 {
-
+    public $ARENA_WIDTH = 15;
+    public $ARENA_HEIGHT = 10;
     /**
      *
      */
@@ -85,4 +87,40 @@ class ToolsTable extends Table
     {
         return $this->find('all', ['conditions' => 'fighter_id =' . $fighterId])->toArray();
     }
+
+    public function createTool($type, $bonus)
+    {
+        $tool = $this->newEntity();
+        $fighter = TableRegistry::get('Fighters');
+        $tool->type = $type;
+        $tool->bonus = $bonus;
+        $tool->coordinate_x = rand(0, $this->ARENA_WIDTH - 1);
+        $tool->coordinate_y = rand(0, $this->ARENA_HEIGHT - 1);
+        $this->save($tool);
+
+
+        //while ($fighter->getElementsByCoord(, ) != null) ;
+
+
+       /* if (!empty($avatar['tmp_name']) && (in_array($extension, array('jpg', 'jpeg', 'png')))) {
+            move_uploaded_file($avatar['tmp_name'], 'img/avatars/' . $fighter->id . '.' . $extension);
+            $fighter->level = 1;
+            $fighter->xp = 0;
+            $fighter->skill_sight = 2;
+            $fighter->skill_strength = 1;
+            $fighter->skill_health = 3;
+            $fighter->current_health = 3;
+
+            while ($this->getElementsByCoord($fighter->coordinate_x = rand(0, $this->ARENA_WIDTH - 1), $fighter->coordinate_y = rand(0, $this->ARENA_HEIGHT - 1)) != null) ;
+
+            $this->save($fighter);
+            return $fighter->id;
+        } else {
+            $this->delete($fighter);
+            return -1;
+        }*/
+
+    }
+
+
 }

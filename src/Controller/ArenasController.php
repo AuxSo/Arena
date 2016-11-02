@@ -13,7 +13,7 @@ use Google_Service_Oauth2;
 
 define('GOOGLE_OAUTH_CLIENT_ID', '454279630539-sg4a02pjdu33noimuamaaa61fst83t7m.apps.googleusercontent.com');
 define('GOOGLE_OAUTH_CLIENT_SECRET', 'Lyfrmfu9XPtkrNSkSRy4RCHQ');
-define('GOOGLE_OAUTH_REDIRECT_URI', 'http://localhost/arena/arenas/googlecallback');
+define('GOOGLE_OAUTH_REDIRECT_URI', 'http://localhost:8888/arena/arenas/googlecallback');
 
 /**
  * Personal Controller
@@ -137,7 +137,7 @@ class ArenasController extends AppController
 
                         if ($this->Players->save($entity)) {
                     // et ensuite nous déclarons l'utilisateur comme authentifié sur CakePHP
-                            $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($result->toArray()['email'])->id);
+                            $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($result->toArray()->email)->id);
                             $this->Flash->success('NEW PLAYER');
                             $this->redirect(['action' => 'index']);
                         } else {
@@ -169,6 +169,7 @@ class ArenasController extends AppController
 
         $this->loadModel('Players');
         $this->loadModel('Fighters');
+        $this->loadModel('Tools');
 
         $data_post = $this->request->is('post');
         if ($this->request->data('inscription')) {
@@ -187,6 +188,7 @@ class ArenasController extends AppController
                         $this->request->session()->write('myFighterId', null);
                         $this->Flash->success('Votre compte a bien été créé');
                         return $this->redirect(['action' => 'index']);
+
                     }
                 }
             }
@@ -268,6 +270,7 @@ class ArenasController extends AppController
                     $this->set('myFighter', $this->Fighters->get($this->request->session()->read('myFighterId')));
 
                     $this->set('myFightersByPlayer', $this->Fighters->getFightersByPlayer($this->request->session()->read('myPlayerId')));
+
                 }
                 else {
                     $this->set('fighterAlive', false);
@@ -291,6 +294,13 @@ class ArenasController extends AppController
         else {
             $this->loadModel('Fighters');
             $this->loadModel('Tools');
+
+            //Création des objets
+            $this->Tools->createTool('health', 2);
+            $this->Tools->createTool('strength', 2);
+            $this->Tools->createTool('sight', 2);
+            $this->Tools->createTool('health', 4);
+            $this->Tools->createTool('sight', 6);
 
             // Traitement des actions
             if ($this->request->is('post')) {
