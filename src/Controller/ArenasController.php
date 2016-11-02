@@ -62,9 +62,13 @@ class ArenasController extends AppController
                     $this->Flash->success('You are now logged in.');
 
                     //enregistrement des variables des variables de session
+
                     $this->request->session()->write('myPlayerId', $this->Players->getPlayerByEmail($this->request->data['email'])->id);
-                    if ($this->Fighters->getFightersByPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id))
+                    if ($this->Fighters->getFightersByPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id)) {
+
+
                         $this->request->session()->write('myFighterId', $this->Fighters->getBestFighterbyPlayer($this->Players->getPlayerByEmail($this->request->data['email'])->id)[0]->id);
+                    }
                     else
                         $this->request->session()->write('myFighterId', null);
 
@@ -95,14 +99,19 @@ class ArenasController extends AppController
             if ($this->request->is('post')) {
                 if ($this->request->data('select')) {
                     $this->request->session()->write('myFighterId',$this->request->data('fighterId'));
+
                 }
                 if ($this->request->data('newFighter')) {
-                    if (!$this->Fighters->createFighter($this->request->data('name'), $this->request->data('avatar'), $this->request->session()->read('myPlayerId'))) {
+                    if ($this->Fighters->createFighter($this->request->data('name'), $this->request->data('avatar'), $this->request->session()->read('myPlayerId'))==-1) {
                         $this->Flash->error('Could not upload your avatar. Check the extension.');
                     } else {
                         $this->Flash->success('Your fighter has been created.');
+                        $this->request->session()->write('myFighterId', $this->Fighters->createFighter($this->request->data('name'), $this->request->data('avatar'), $this->request->session()->read('myPlayerId')));
                     }
                 }
+            }
+
+
             }
 
             //Si le joueur possède au moins un fighter...
@@ -122,7 +131,7 @@ class ArenasController extends AppController
 
 
         }
-    }
+
 
     public function sight()
     {
