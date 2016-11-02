@@ -21,10 +21,9 @@
         <input type="password" name="newPassword2" id="password">
         <input class="loginButton"type="submit" id="changePassword" name="changePassword" value="Change my password">
     </form>
-    </section>
 
-        <div id="showBloc" style="margin-top:50px">I forgot my password</div>
-    </section>
+    <div id="showBloc" style="margin-top:50px">I forgot my password</div>
+</section>
 <?php } ?>
 
 <?php $this->assign('title','Home');?>
