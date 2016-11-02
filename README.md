@@ -24,3 +24,4 @@ the setup traffic lights.
 
 Read and edit `config/app.php` and setup the 'Datasources' and any other
 configuration relevant for your application.
+Groupe : Gr1-03-AG | Membres : Baticle, Bourhim, Gauthier, Thouary | DB Login: root | DB Password: root | DB name: webarena | For Google Authentication : in ArenasController.php, line 16, check if the server name matches yours. 

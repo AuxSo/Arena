@@ -184,10 +184,10 @@ footer {
 /* Login */
 .inscriptionSection {
     width: 500px;
-    background: #AF3F3C;
+    background: #FFFFFF;
     margin: 0 auto;
     border-width: 0;
-    color: #FFFFFF;
+    color: #000000;
     padding: 10px 20px;
     height: 430px;
     box-sizing: border-box;
@@ -204,7 +204,7 @@ footer {
 }
 
 .inscriptionSection label, .inscriptionSection h3, #forgot {
-    color: #FFFFFF;
+    color: #000000;
 }
 
 .inscriptionSection h3 {
