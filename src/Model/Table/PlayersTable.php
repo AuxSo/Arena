@@ -120,6 +120,7 @@ class PlayersTable extends Table
     }
 
 
+
     /**
      * Fonction qui retourne le mot de passe correspondant a lemail récupérée en paramètre
      * @param $email
@@ -153,13 +154,51 @@ class PlayersTable extends Table
         return $idByEmail;
     }
 
-
-    public function sendPasswordByMail($email){
-        $subject = 'Web arena password';
-        $message = 'Here is your Web Arena password : '.$this->getPasswordByEmail($email);
-
-        mail($email, $subject, $message);
+    public function getPasswordById($playerId){
+        $player= $this->find('all')->order('id desc');
+        $tabPlayer = $player->toArray();
+        foreach ($tabPlayer as $key => $myPlayer) {
+            if ($myPlayer['id'] == $playerId) {
+                return $myPlayer->password;
+            }
+        }
+        return null;
     }
 
+    public function setPassWordById($playerId, $newPassword){
+        $player = $this->get($playerId);
+        $player->password = $newPassword;
+        $this->save($player);
+    }
+
+    public function getPasswordMail($playerId){
+
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $passWord = '';
+        for ($i = 0; $i < 6; $i++) {
+            $passWord .= $characters[rand(0, strlen($characters) - 1)];
+        }
+        $player = $this->get($playerId);
+        $player->password = $passWord;
+
+        $email = $player->email;
+        $subject = 'Web arena password';
+        $message = 'Here is your new Web Arena password : '.$passWord;
+
+        $this->save($player);
+
+        return ($email.' | '.$subject.' | '.$message);
+    }
+
+    public function emailExists($myemail)
+    {
+        $email = $this->find()->extract('email');
+
+        foreach ($email as $thisEmail) {
+            if ($thisEmail == $myemail)
+                return true;
+        }
+        return false;
+    }
 }
 ?>

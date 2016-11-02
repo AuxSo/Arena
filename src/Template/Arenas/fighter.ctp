@@ -4,11 +4,13 @@
     <ul>
         <?php
         if (isset($myFighter)) {
+
             $addedClass = '';
         } else {
             $addedClass = 'selected';
         }
         if (!empty($myFightersByPlayer)) {
+
             foreach ($myFightersByPlayer as $index => $fighter) {
                 if (isset($myFighter)) {
                     if ($fighter->id == $myFighter->id) {
@@ -42,6 +44,7 @@
     </ul>
 </nav>
 <?php
+
 $addedClass = '';
 if (!empty($myFightersByPlayer)) {
     foreach ($myFightersByPlayer as $index => $fighter) {

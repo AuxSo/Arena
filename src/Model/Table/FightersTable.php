@@ -43,14 +43,14 @@ class FightersTable extends Table
             $fighter->skill_health = 3;
             $fighter->current_health = 3;
 
-            while ($this->getElementsByCoord($fighter->coordinate_x = rand(0, $this->ARENA_WIDTH), $fighter->coordinate_y = rand(0, $this->ARENA_HEIGHT)) != null) ;
+            while ($this->getElementsByCoord($fighter->coordinate_x = rand(0, $this->ARENA_WIDTH-1), $fighter->coordinate_y = rand(0, $this->ARENA_HEIGHT-1)) != null) ;
 
             $this->save($fighter);
-            return 1;
+            return $fighter->id;
         }
         else{
             $this->delete($fighter);
-            return 0;
+            return -1;
         }
 
     }
@@ -137,7 +137,7 @@ class FightersTable extends Table
 
         $this->save($fighters);
 
-        $eventName = "Déplacement de $fighterName";
+        $eventName = "Move of $fighterName";
 
         $events->create_event($eventName, $fighter_x, $fighter_y);
     }
@@ -268,11 +268,12 @@ class FightersTable extends Table
             $events->create_event($eventName, $myfighter_x, $myfighter_y);
             $result = 1;
             //Si l'attaqué meurt
-            if ($fighterattackedHealth - $myfighterStrength == 0) {
+            if ($fighterattackedHealth - $myfighterStrength <= 0) {
                 $myfighter->xp += $fighterattackedLevel;
-                $this->fighterDead($fighterAttackedId);
+
                 $eventName = "$myfighterName kills $fighterattackedName";
                 $events->create_event($eventName, $myfighter_x, $myfighter_y);
+                $this->fighterAttackDead($fighterAttackedId);
                 $result = 2;
             }
         } else {
@@ -287,9 +288,27 @@ class FightersTable extends Table
         return $result;
 
     }
+    public function fighterAttackDead($idFighter)
+    {
+        $myfighter = $this->get($idFighter);
+        $events = TableRegistry::get('Events');
+
+
+        $myfighterName = $myfighter->name;
+        $myfighter_x = $myfighter->coordinate_x;
+        $myfighter_y = $myfighter->coordinate_y;
+
+        $eventName = "Death of $myfighterName";
+        $events->create_event($eventName, $myfighter_x, $myfighter_y);
+        $this->reset($idFighter);
+        $this->delete($myfighter);
+        $this->save($myfighter);
+
+    }
 
     public function fighterDead($idFighter)
     {
+
         $myfighter = $this->get($idFighter);
         $events = TableRegistry::get('Events');
 
@@ -297,14 +316,16 @@ class FightersTable extends Table
         $myfighterName = $myfighter->name;
         $myfighter_x = $myfighter->coordinate_x;
         $myfighter_y = $myfighter->coordinate_y;
+     
 
-        if($myFighterHealth==0)
+        if($myFighterHealth<=0)
         {
             $eventName = "Death of $myfighterName";
             $events->create_event($eventName, $myfighter_x, $myfighter_y);
             $this->reset($idFighter);
             $this->delete($myfighter);
             $this->save($myfighter);
+
 
             return true;
         }
@@ -314,57 +335,72 @@ class FightersTable extends Table
 
     }
 
+    public function isFighterDead($myfighterId){
+        $fighter = $this->find()->extract('id');
+        foreach ($fighter as $thisFighter) {
+            if ($thisFighter == $myfighterId)
+                return false;
+        }
+        return true;
 
-
+    }
 
 
     public function reset($idFighter)
     {
         $Tools = TableRegistry::get('Tools');
 
-        $myfighter = $this->get($idFighter);
         $fighterTools = $Tools->getFighterTools($idFighter);
         foreach ($fighterTools as $tool) {
             $tool->fighter_id = null;
             $Tools->save($tool);
         }
 
-
-        /*$myfighter->level = 1;
-        $myfighter->xp = 0;
-        $myfighter->skill_sight = 2;
-        $myfighter->skill_strength = 1;
-        $myfighter->skill_health = 3;
-        $myfighter->current_health = 0;
-
-        while ($this->getElementsByCoord($myfighter->coordinate_x = rand(0, $this->ARENA_WIDTH), $myfighter->coordinate_y = rand(0, $this->ARENA_HEIGHT)) != null) ;
-
-        $this->save($myfighter);*/
-
     }
 
     public function fighterProgression($idFighter, $choice)
     {
         $myfighter = $this->get($idFighter);
-        $myFighterXP = $myfighter->xp;
+        $events = TableRegistry::get('Events');
 
-        if ($myFighterXP == $myFighterXP - ($myFighterXP % 4)) {
-            $myfighter->level += 1;
-            switch ($choice) {
-                case 1: //Vue
-                    $myfighter->skill_sight += 1;
-                    break;
-                case 2://Force
-                    $myfighter->skill_strength += 1;
-                    break;
-                case 3://Vie
-                    $myfighter->skill_health += 3;
-                    break;
-                default;
-            }
 
+        $myfighterName = $myfighter->name;
+        $myfighter_x = $myfighter->coordinate_x;
+        $myfighter_y = $myfighter->coordinate_y;
+
+
+
+        switch ($choice) {
+            case 1: //Vue
+                $myfighter->skill_sight += 1;
+                $events->create_event("$myfighterName increase skill sight" , $myfighter_x, $myfighter_y);
+                break;
+            case 2://Force
+                $myfighter->skill_strength += 1;
+                $events->create_event("$myfighterName increase skill strength" , $myfighter_x, $myfighter_y);
+                break;
+            case 3://Vie
+                $myfighter->skill_health += 3;
+                $myfighter->current_health += 3;
+                $events->create_event("$myfighterName increase skill health" , $myfighter_x, $myfighter_y);
+                break;
+            default;
         }
+
+        $myfighter->level += 1;
+        $events->create_event("$myfighterName level up" , $myfighter_x, $myfighter_y);
+
         $this->save($myfighter);
+    }
+
+    public function isFighterReadyToLvlUp($fighterId){
+        $myfighter = $this->get($fighterId);
+        $myFighterXP = $myfighter->xp;
+        $myFighterLvl = $myfighter->level;
+
+        if ($myFighterXP  - (4*$myFighterLvl) >= 4) {
+            return true;
+        }
     }
 
     /**
