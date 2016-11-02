@@ -13,7 +13,7 @@ if ($fighterExists) {
                     echo " - ";
                     echo($event['name']);
                     echo " - ";
-                    echo " Coordonnées : ";
+                    echo " Coordinates : ";
                     echo $event['coordinate_x'];
                     echo " ";
                     echo($event['coordinate_y']);
