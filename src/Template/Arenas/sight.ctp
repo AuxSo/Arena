@@ -18,26 +18,48 @@
             </article>
             <article>
                 <h4>Stats :</h4>
+
+
+
                 <dl>
                     <dt>Health :</dt>
+
+
                     <dd><?= $myFighter->current_health ?>/<?= $myFighter->skill_health ?>
                         <?php if (isset($healthTool)) { ?>
                             (including <strong>+<?= $healthTool->bonus ?></strong> tool bonus)
                             <?php
                         } ?>
+                        <?php if($isReadyToLvlUp){ ?>
+                        <form method="post">
+                            <input  type="submit" id="health" name="health" value="+3 level up!">
+                        </form>
+                        <?php } ?>
                     </dd>
                     <dt> Strength :</dt>
                     <dd><?= $myFighter->skill_strength ?>
                         <?php if (isset($strengthTool)) { ?>
                             (including <strong>+<?= $strengthTool->bonus ?></strong> tool bonus)
                             <?php
-                        } ?></dd>
+                        } ?>
+                        <?php if($isReadyToLvlUp){ ?>
+                        <form method="post">
+                            <input  type="submit" id="strength" name="strength" value="+1 level up!">
+                        </form>
+                        <?php } ?>
+                    </dd>
                     <dt>Sight :</dt>
                     <dd><?= $myFighter->skill_sight ?>
                         <?php if (isset($sightTool)) { ?>
                             (including <strong>+<?= $sightTool->bonus ?></strong> tool bonus)
                             <?php
-                        } ?></dd>
+                        } ?>
+                        <?php if($isReadyToLvlUp){ ?>
+                        <form method="post">
+                            <input  type="submit" id="sight" name="sight" value="+1 level up!">
+                        </form>
+                        <?php } ?>
+                    </dd>
                 </dl>
             </article>
         </section>

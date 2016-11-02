@@ -137,7 +137,7 @@ class FightersTable extends Table
 
         $this->save($fighters);
 
-        $eventName = "Déplacement de $fighterName";
+        $eventName = "Move of $fighterName";
 
         $events->create_event($eventName, $fighter_x, $fighter_y);
     }
@@ -268,11 +268,12 @@ class FightersTable extends Table
             $events->create_event($eventName, $myfighter_x, $myfighter_y);
             $result = 1;
             //Si l'attaqué meurt
-            if ($fighterattackedHealth - $myfighterStrength == 0) {
+            if ($fighterattackedHealth - $myfighterStrength <= 0) {
                 $myfighter->xp += $fighterattackedLevel;
-                $this->fighterDead($fighterAttackedId);
+
                 $eventName = "$myfighterName kills $fighterattackedName";
                 $events->create_event($eventName, $myfighter_x, $myfighter_y);
+                $this->fighterAttackDead($fighterAttackedId);
                 $result = 2;
             }
         } else {
@@ -287,9 +288,27 @@ class FightersTable extends Table
         return $result;
 
     }
+    public function fighterAttackDead($idFighter)
+    {
+        $myfighter = $this->get($idFighter);
+        $events = TableRegistry::get('Events');
+
+
+        $myfighterName = $myfighter->name;
+        $myfighter_x = $myfighter->coordinate_x;
+        $myfighter_y = $myfighter->coordinate_y;
+
+        $eventName = "Death of $myfighterName";
+        $events->create_event($eventName, $myfighter_x, $myfighter_y);
+        $this->reset($idFighter);
+        $this->delete($myfighter);
+        $this->save($myfighter);
+
+    }
 
     public function fighterDead($idFighter)
     {
+
         $myfighter = $this->get($idFighter);
         $events = TableRegistry::get('Events');
 
@@ -297,14 +316,16 @@ class FightersTable extends Table
         $myfighterName = $myfighter->name;
         $myfighter_x = $myfighter->coordinate_x;
         $myfighter_y = $myfighter->coordinate_y;
+     
 
-        if($myFighterHealth==0)
+        if($myFighterHealth<=0)
         {
             $eventName = "Death of $myfighterName";
             $events->create_event($eventName, $myfighter_x, $myfighter_y);
             $this->reset($idFighter);
             $this->delete($myfighter);
             $this->save($myfighter);
+
 
             return true;
         }
@@ -334,25 +355,36 @@ class FightersTable extends Table
     public function fighterProgression($idFighter, $choice)
     {
         $myfighter = $this->get($idFighter);
-        $myFighterXP = $myfighter->xp;
 
-        if ($myFighterXP == $myFighterXP - ($myFighterXP % 4)) {
-            $myfighter->level += 1;
-            switch ($choice) {
-                case 1: //Vue
-                    $myfighter->skill_sight += 1;
-                    break;
-                case 2://Force
-                    $myfighter->skill_strength += 1;
-                    break;
-                case 3://Vie
-                    $myfighter->skill_health += 3;
-                    break;
-                default;
-            }
 
+        switch ($choice) {
+            case 1: //Vue
+                $myfighter->skill_sight += 1;
+                break;
+            case 2://Force
+                $myfighter->skill_strength += 1;
+                break;
+            case 3://Vie
+                $myfighter->skill_health += 3;
+                $myfighter->current_health += 3;
+                break;
+            default;
         }
+
+        $myfighter->level += 1;
+
+
         $this->save($myfighter);
+    }
+
+    public function isFighterReadyToLvlUp($fighterId){
+        $myfighter = $this->get($fighterId);
+        $myFighterXP = $myfighter->xp;
+        $myFighterLvl = $myfighter->level;
+
+        if ($myFighterXP  - (4*$myFighterLvl) >= 4) {
+            return true;
+        }
     }
 
     /**
