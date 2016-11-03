@@ -52,8 +52,8 @@
             ?>
             <section class="fighterCard <?= $addedClass ?>" id="<?= $index ?>">
                 <h3><?= $fighter->name ?></h3>
-                <form id="fighterForm" method="post">
-                    <input type="hidden" name="fighterId" id="fighterID" value="<?= $fighter->id ?>">
+                <form class="fighterForm" method="post">
+                    <input type="hidden" name="fighterId" value="<?= $fighter->id ?>">
                     <input class="chooseButton" type="submit" name="select" value="Use <?= $fighter->name ?> to fight">
                 </form>
                 <?php if (file_exists(WWW_ROOT . 'img' . DS . 'avatars' . DS . $fighter->id . '.png')) {
@@ -114,7 +114,7 @@
         <h3>Create a new fighter</h3>
         <form method="post" enctype="multipart/form-data">
             <input type="text" name="name" id="name" placeholder="Your fighter's name">
-            <label for="avatar">Pick an avatar (.jpg or .png) :</label>
+            <label>Pick an avatar (.jpg or .png) :</label>
             <input type="file" name="avatar">
             <input class="chooseButton" type="submit" name="newFighter" value="Create a new fighter">
         </form>

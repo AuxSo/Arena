@@ -2,7 +2,7 @@
     <h3>Join the game</h3>
     <form method="post">
         <?php if (!isset($mail)) $mail = "" ?>
-        <input type="text" name="email" id="email" value="<?= $mail ?>" placeholder="email">
+        <input type="text" name="email" class="email" value="<?= $mail ?>" placeholder="email">
         <input type="password" name="password" id="password" placeholder="password">
         <a id="forgot">I've forgotten my password</a>
         <article id="buttons">
